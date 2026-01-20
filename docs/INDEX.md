@@ -285,7 +285,7 @@ Abre un PR con cambios. Por favor:
 | ARCHITECTURE_QUICK_REF.md | ~400   | 20 min  | Referencia visual       |
 | TASK_TEMPLATE.md          | ~250   | 10 min  | Plantilla de tareas     |
 
-**Total: ~1,680 líneas de documentación**
+**Total: ~2,080 líneas de documentación**
 
 ---
 

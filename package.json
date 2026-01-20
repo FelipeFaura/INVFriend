@@ -4,7 +4,7 @@
   "description": "Secret Santa / Amigo Invisible web application",
   "private": true,
   "scripts": {
-    "frontend:install": "cd frontend && npm install",
+    "frontend:install": "cd frontend && npm install --legacy-peer-deps",
     "backend:install": "cd backend && npm install",
     "frontend:dev": "cd frontend && npm start",
     "backend:dev": "cd backend && npm run dev",

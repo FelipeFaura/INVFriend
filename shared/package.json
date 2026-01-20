@@ -1,0 +1,13 @@
+{
+  "name": "@invfriend/shared",
+  "version": "1.0.0",
+  "description": "INVFriend - Shared Models and Constants",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "private": true,
+  "dependencies": {
+    "typescript": "^5.3.3"
+  }
+}
