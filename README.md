@@ -1,124 +1,134 @@
-# INVFriend — Amigo Invisible (MVP)
+# INVFriend 🎁
 
-## Descripción
+**INVFriend** es una aplicación web y móvil para organizar sorteos de Amigo Invisible de forma sencilla y segura. Los usuarios pueden crear grupos, realizar sorteos automáticos y compartir sus deseos de regalo con su amigo invisible asignado.
 
-- `INVFriend` es una aplicación sencilla para organizar sorteos de "amigo invisible": crear grupos, invitar participantes mediante enlace, permitir que cada participante añada sus deseos y ejecutar un sorteo que asigna a cada persona su amigo invisible.
-- Objetivo: lanzar un MVP gratuito y fácil de mantener usando tecnologías con capa gratuita (Stack A: Angular + Firebase).
+## 🚀 Características
 
-## Características principales
+- ✅ Crear y gestionar grupos de Amigo Invisible
+- ✅ Autenticación con email/contraseña y Google Login
+- ✅ Sorteo automático e equitativo para grupos
+- ✅ Gestión de deseos (texto e URLs)
+- ✅ Privacidad garantizada: solo ves a tu amigo invisible
+- ✅ Notificaciones cuando se realiza el sorteo
+- ✅ Responsive design para web y móvil
 
-- Crear grupo con nombre y fecha del evento.
-- Generar enlace de invitación (token) para unirse sin obligar a crear cuenta.
-- Añadir/editar lista de deseos por participante.
-- Ejecutar sorteo en servidor (evita trampas) respetando exclusiones.
-- Ver asignación y deseos (solo accesible para cada participante).
-- Administración básica: eliminar participante, reabrir antes del sorteo, borrar datos al finalizar.
+## 🛠️ Stack Tecnológico
 
-## Arquitectura
+- **Frontend:** Angular 18+
+- **Backend:** Node.js + Express
+- **Base de Datos:** Firebase Realtime Database
+- **Autenticación:** Firebase Authentication
+- **Hosting:** Firebase Hosting (frontend) + Cloud Functions (backend)
+- **Arquitectura:** Hexagonal
 
-- Enfoque: Arquitectura hexagonal (pragmática) dentro de Cloud Functions.
-  - Puertos/Adaptadores: HTTP handlers (Cloud Functions) y repositorios Firestore.
-  - Capa de dominio: entidades (`Group`, `Participant`) y utilidades puras (`drawUtils`).
-  - Use-cases: `createGroup`, `joinGroup`, `addWishes`, `runDraw`.
-  - Infra: implementaciones de repositorios que usan Firestore.
+## 📋 Requisitos Previos
 
-Ventajas: testabilidad, desacoplo de Firestore/HTTP, facilidad para cambiar persistencia.
+- Node.js 18+ instalado
+- npm o yarn como gestor de paquetes
+- Firebase CLI (`npm install -g firebase-tools`)
+- Una cuenta en Firebase (gratuita)
+- Angular CLI (`npm install -g @angular/cli`)
 
-## Tecnologías recomendadas (Stack A)
+## 🔧 Instalación Local
 
-- Frontend: Angular + Angular Material
-- Hosting + Backend: Firebase Hosting + Cloud Functions (Node/TypeScript)
-- Base de datos: Firestore (NoSQL)
-- Emuladores: Firebase Emulator Suite para desarrollo local
-- CI/CD: GitHub + GitHub Actions (deploy a Firebase)
-- Testing: Jest para unitarios, Cypress para E2E
-
-## Modelo de datos (resumen)
-
-- `groups/{groupId}`
-  - `name`: string
-  - `createdAt`: timestamp
-  - `ownerId`: string
-  - `eventDate`: timestamp
-  - `status`: "open" | "drawn"
-  - `exclusions`: array de pares opcionales
-  - `inviteToken`: string
-- `groups/{groupId}/participants/{participantId}`
-  - `name`: string
-  - `joinedAt`: timestamp
-  - `wishes`: array[string]
-  - `email`: string (opcional)
-- `groups/{groupId}/assignments/{participantId}`
-  - `assignedTo`: participantId
-  - `assignedAt`: timestamp
-
-## Funciones / Endpoints (Cloud Functions)
-
-- `createGroup(data)` → crea grupo y devuelve `groupId` + `inviteToken`.
-- `joinGroup({groupId, token, name})` → añade participante validando token.
-- `addWishes({groupId, participantId, wishes})` → actualiza deseos.
-- `runDraw({groupId, ownerId})` → ejecuta sorteo atómico y persiste asignaciones.
-- `getAssignment({groupId, participantId})` → devuelve asignado si está permitido.
-- `removeParticipant({groupId, participantId})` → solo organizador.
-
-## Nota sobre el algoritmo de sorteo
-
-- Se debe evitar la auto-asignación y respetar exclusiones.
-- Implementación recomendada: intentar `shuffle` + validación; si no encuentra solución tras N intentos, usar algoritmo de emparejamiento/derangement determinista (backtracking limitado o algoritmo de Graham-Schmidt para derangements).
-- Persistir asignaciones dentro de una transacción o en la Cloud Function de forma atómica y marcar `status: "drawn"`.
-
-## Seguridad y privacidad (mínimos)
-
-- No exponer `assignments` antes de `status == "drawn"`.
-- `runDraw` solo ejecutable por `ownerId` verificado.
-- Invite tokens con expiración y validación.
-- Minimizar PII: almacenar nombre y deseos; correo solo opt-in.
-- Proveer borrado de datos tras evento si el organizador lo solicita.
-
-## Instalación y desarrollo local
-
-Prerrequisitos: Node >= 16, npm, Angular CLI (opcional), Firebase CLI
-
-Pasos rápidos:
+### 1. Clonar el repositorio
 
 ```bash
-git clone <repo>
-cd <repo>
+git clone https://github.com/tu-usuario/INVFriend.git
+cd INVFriend
+```
+
+### 2. Configurar Firebase
+
+```bash
+firebase login
+firebase init
+```
+
+Selecciona las opciones:
+
+- Database: Firebase Realtime Database
+- Hosting: Firebase Hosting
+- Functions: Cloud Functions (backend)
+- Authentication: sí
+
+### 3. Instalar dependencias
+
+**Frontend (Angular):**
+
+```bash
+cd frontend
 npm install
-# frontend dev (si existe carpeta frontend)
-ng serve
-# iniciar emuladores (Firestore + Functions + Hosting)
-firebase emulators:start --only firestore,functions,hosting
 ```
 
-## Despliegue (producción)
+**Backend (Node):**
 
 ```bash
-# build frontend
-npm run build -- --prod
-# deploy hosting y funciones
-firebase deploy --only hosting,functions
+cd ../backend
+npm install
 ```
 
-## Buenas prácticas para el repositorio
+### 4. Variables de entorno
 
-- Mantener la lógica de negocio en `functions/src/domain` y `functions/src/usecases`.
-- Tests unitarios para `drawUtils` y use-cases; mocks para repositorios.
-- Usar Firebase Emulator Suite en CI para pruebas de reglas básicas de seguridad.
+Crea los archivos de configuración necesarios:
 
-## Contribuir
+**`frontend/.env`:**
 
-- Abrir issue o PR con descripción clara.
-- Ejecutar tests y lint antes de enviar PR.
+```
+ANGULAR_APP_FIREBASE_API_KEY=tu_api_key
+ANGULAR_APP_FIREBASE_AUTH_DOMAIN=tu_auth_domain
+ANGULAR_APP_FIREBASE_DATABASE_URL=tu_database_url
+ANGULAR_APP_FIREBASE_PROJECT_ID=tu_project_id
+```
 
-## Licencia
+**`backend/.env`:**
 
-- MIT (sugerido).
+```
+FIREBASE_PROJECT_ID=tu_project_id
+FIREBASE_PRIVATE_KEY=tu_private_key
+FIREBASE_CLIENT_EMAIL=tu_client_email
+NODE_ENV=development
+```
 
-## Contacto
+### 5. Ejecutar localmente
 
-- Mantén issues y discusiones en GitHub.
+**Terminal 1 - Frontend:**
+
+```bash
+cd frontend
+ng serve
+```
+
+Accede a `http://localhost:4200`
+
+**Terminal 2 - Backend:**
+
+```bash
+cd backend
+npm run dev
+```
+
+El servidor estará en `http://localhost:3000`
+
+## 📖 Documentación
+
+- [ARCHITECTURE.md](./ARCHITECTURE.md) - Arquitectura, modelos de datos y especificaciones técnicas
+- [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md) - Referencia rápida y visual
+- [GUIDELINES.md](./GUIDELINES.md) - Guías de desarrollo y convenciones de código
+
+## 🤝 Contribuir
+
+Este es un proyecto personal desarrollado con apoyo de IA. Consulta [GUIDELINES.md](./GUIDELINES.md) para convenciones de código y scope de tareas.
+
+## 📄 Licencia
+
+MIT License - Ver archivo LICENSE para más detalles
+
+## 💬 Preguntas o Sugerencias
+
+Abre un issue en el repositorio para reportar bugs o sugerir mejoras.
 
 ---
 
-Este README proporciona la guía inicial para el MVP. Si quieres, puedo crear el esqueleto de `functions/src/` y un ejemplo de `runDraw` con test usando Jest; dime si procede.
+**Versión MVP:** 1.0.0
+**Última actualización:** Enero 2026

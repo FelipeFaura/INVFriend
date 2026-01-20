@@ -1,0 +1,38 @@
+{
+  "name": "invfriend",
+  "version": "1.0.0",
+  "description": "Secret Santa / Amigo Invisible web application",
+  "private": true,
+  "scripts": {
+    "frontend:install": "cd frontend && npm install",
+    "backend:install": "cd backend && npm install",
+    "frontend:dev": "cd frontend && npm start",
+    "backend:dev": "cd backend && npm run dev",
+    "frontend:build": "cd frontend && npm run build",
+    "backend:build": "cd backend && npm run build",
+    "setup": "npm install && npm run frontend:install && npm run backend:install",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:backend": "cd backend && npm run lint",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && npm test",
+    "test:backend": "cd backend && npm test",
+    "deploy": "firebase deploy"
+  },
+  "keywords": [
+    "secret-santa",
+    "amigo-invisible",
+    "raffle",
+    "game",
+    "angular",
+    "node",
+    "firebase"
+  ],
+  "author": "",
+  "license": "MIT",
+  "workspaces": [
+    "frontend",
+    "backend",
+    "shared"
+  ]
+}
