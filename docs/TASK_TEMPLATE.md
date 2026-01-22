@@ -1,90 +1,90 @@
-# INVFriend - Plantilla de Tareas para IA
+# INVFriend - Task Template for AI
 
-Esta es una plantilla para asignar tareas a la IA de manera clara, específica y controlada.
+This is a template for assigning tasks to AI in a clear, specific, and controlled way.
 
-## 📋 Plantilla Estándar
+## 📋 Standard Template
 
-Copiar y completar este template cuando se asigne una tarea a IA:
+Copy and complete this template when assigning a task to AI:
 
 ```markdown
-# TAREA: [Nombre descriptivo de la tarea]
+# TASK: [Descriptive task name]
 
-## 📝 Descripción
+## 📝 Description
 
-[Qué es lo que se necesita hacer exactamente]
+[Exactly what needs to be done]
 
-## 📍 Ubicación
+## 📍 Location
 
-- Archivo(s): [Rutas exactas donde ir los cambios]
-- Ejemplo: `backend/src/application/use-cases/CreateGroupUseCase.ts`
+- File(s): [Exact paths where changes go]
+- Example: `backend/src/application/use-cases/CreateGroupUseCase.ts`
 
-## 🏗️ Modelo/Referencia
+## 🏗️ Model/Reference
 
-[Interfaces, tipos, o modelos existentes que deben seguirse]
+[Existing interfaces, types, or models that must be followed]
 
-- Referencia a ARCHITECTURE.md si aplica
-- Ejemplos de código similar existente
+- Reference to ARCHITECTURE.md if applicable
+- Examples of similar existing code
 
-## 🎯 Requisitos Específicos
+## 🎯 Specific Requirements
 
-- [ ] Requisito 1
-- [ ] Requisito 2
-- [ ] Requisito 3
+- [ ] Requirement 1
+- [ ] Requirement 2
+- [ ] Requirement 3
 
-## 🚫 Scope / Límites (MUY IMPORTANTE)
+## 🚫 Scope / Limits (VERY IMPORTANT)
 
-**Lo que NO debe hacer:**
+**What NOT to do:**
 
-- ❌ [Cosa que no debe hacer 1]
-- ❌ [Cosa que no debe hacer 2]
-- ❌ No crear archivos adicionales no mencionados
-- ❌ No cambiar código existente sin indicación
+- ❌ [Thing not to do 1]
+- ❌ [Thing not to do 2]
+- ❌ Do not create additional files not mentioned
+- ❌ Do not change existing code without instruction
 
-## ✅ Aceptación / Checklist
+## ✅ Acceptance / Checklist
 
-- [ ] Sigue convenciones de GUIDELINES.md
-- [ ] Incluye tests (si aplica)
-- [ ] Sin logs de debug
-- [ ] Documentado con JSDoc
-- [ ] Archivos creados siguen nombrado exacto
+- [ ] Follows GUIDELINES.md conventions
+- [ ] Includes tests (if applicable)
+- [ ] No debug logs
+- [ ] Documented with JSDoc
+- [ ] Files created follow exact naming
 
-## 📚 Referencias
+## 📚 References
 
-- Sección relevante de GUIDELINES.md: [link]
-- Entidades relacionadas en ARCHITECTURE.md: [link]
-- Archivo similar de ejemplo: [path]
+- Relevant GUIDELINES.md section: [link]
+- Related entities in ARCHITECTURE.md: [link]
+- Similar example file: [path]
 ```
 
 ---
 
-## 📖 Ejemplos Reales
+## 📖 Real Examples
 
-### Ejemplo 1: Implementar Entity
+### Example 1: Implement Entity
 
 ````markdown
-# TAREA: Crear entidad Group
+# TASK: Create Group entity
 
-## 📝 Descripción
+## 📝 Description
 
-Crear la entidad Group que representa un grupo de Amigo Invisible.
-Debe tener validaciones básicas y métodos de creación.
+Create the Group entity representing a Secret Santa group.
+Must have basic validations and creation methods.
 
-## 📍 Ubicación
+## 📍 Location
 
-- Archivo: `backend/src/domain/entities/Group.ts`
+- File: `backend/src/domain/entities/Group.ts`
 
-## 🏗️ Modelo/Referencia
+## 🏗️ Model/Reference
 
-Basarse en la estructura definida en ARCHITECTURE.md, sección "Modelos de Datos > Group":
+Based on structure defined in ARCHITECTURE.md, section "Data Models > Group":
 
 ```typescript
 {
-  id: string;                    // UID generado
-  name: string;                  // Nombre del grupo
-  description?: string;          // Descripción opcional
-  adminId: string;               // UID del admin que creó el grupo
-  members: string[];             // Array de UIDs de miembros
-  budgetLimit: number;           // Límite de presupuesto en moneda
+  id: string;                    // Generated UID
+  name: string;                  // Group name
+  description?: string;          // Optional description
+  adminId: string;               // UID of admin who created the group
+  members: string[];             // Array of member UIDs
+  budgetLimit: number;           // Budget limit in currency
   raffleStatus: 'pending' | 'completed';
   raffleDate?: number;
   createdAt: number;
@@ -93,54 +93,54 @@ Basarse en la estructura definida en ARCHITECTURE.md, sección "Modelos de Datos
 ```
 ````
 
-## 🎯 Requisitos Específicos
+## 🎯 Specific Requirements
 
-- [ ] Constructor privado + factory method static `create()`
-- [ ] Validar que `name` no esté vacío
-- [ ] Validar que `budgetLimit > 0`
-- [ ] El admin debe ser agregado al array de members en creación
-- [ ] `raffleStatus` por defecto debe ser 'pending'
-- [ ] Timestamps generados con `Date.now()`
-- [ ] Método `isValidForRaffle()`: verifica que tenga al menos 2 miembros
+- [ ] Private constructor + factory method static `create()`
+- [ ] Validate that `name` is not empty
+- [ ] Validate that `budgetLimit > 0`
+- [ ] Admin must be added to members array on creation
+- [ ] `raffleStatus` default must be 'pending'
+- [ ] Timestamps generated with `Date.now()`
+- [ ] Method `isValidForRaffle()`: verifies at least 2 members
 
-## 🚫 Scope / Límites
+## 🚫 Scope / Limits
 
-- ❌ No crear repositorios
-- ❌ No crear controladores
-- ❌ No hacer llamadas a Firebase
-- ❌ No incluir lógica de notificaciones
-- ❌ Solo es la entidad de dominio
+- ❌ Do not create repositories
+- ❌ Do not create controllers
+- ❌ Do not make Firebase calls
+- ❌ Do not include notification logic
+- ❌ Only the domain entity
 
-## ✅ Aceptación / Checklist
+## ✅ Acceptance / Checklist
 
-- [ ] Sigue GUIDELINES.md sección "TypeScript > Tipos"
-- [ ] Incluye JSDoc en métodos públicos
-- [ ] Archivo es exactamente: `backend/src/domain/entities/Group.ts`
-- [ ] Clase se llama exactamente `Group`
-- [ ] Tests en: `backend/src/domain/entities/__tests__/Group.spec.ts`
+- [ ] Follows GUIDELINES.md section "TypeScript > Types"
+- [ ] Includes JSDoc on public methods
+- [ ] File is exactly: `backend/src/domain/entities/Group.ts`
+- [ ] Class is named exactly `Group`
+- [ ] Tests in: `backend/src/domain/entities/__tests__/Group.spec.ts`
 
-## 📚 Referencias
+## 📚 References
 
-- GUIDELINES.md: Sección "TypeScript > Nombres de Variables"
-- ARCHITECTURE.md: Sección "🗄️ Modelos de Datos"
+- GUIDELINES.md: Section "TypeScript > Variable Names"
+- ARCHITECTURE.md: Section "🗄️ Data Models"
 
 ````
 
-### Ejemplo 2: Implementar Use Case
+### Example 2: Implement Use Case
 ```markdown
-# TAREA: Implementar CreateGroupUseCase
+# TASK: Implement CreateGroupUseCase
 
-## 📝 Descripción
-Use case que crea un nuevo grupo de Amigo Invisible.
-Valida datos, crea la entidad Group, persiste en BD y retorna el grupo creado.
+## 📝 Description
+Use case that creates a new Secret Santa group.
+Validates data, creates Group entity, persists to database and returns the created group.
 
-## 📍 Ubicación
-- Archivo: `backend/src/application/use-cases/CreateGroupUseCase.ts`
+## 📍 Location
+- File: `backend/src/application/use-cases/CreateGroupUseCase.ts`
 - DTO: `backend/src/application/dto/CreateGroupDTO.ts`
 
-## 🏗️ Modelo/Referencia
+## 🏗️ Model/Reference
 ```typescript
-// DTO esperado
+// Expected DTO
 export interface CreateGroupDTO {
   name: string;
   description?: string;
@@ -148,92 +148,91 @@ export interface CreateGroupDTO {
   adminId: string;
 }
 
-// Use Case debe retornar Group (de domain/entities)
-````
+// Use Case must return Group (from domain/entities)
+```
 
-Referencia: Similar a patrón en GUIDELINES.md, sección "Node.js/Express > Use Cases"
+Reference: Similar pattern in GUIDELINES.md, section "Node.js/Express > Use Cases"
 
-## 🎯 Requisitos Específicos
+## 🎯 Specific Requirements
 
-- [ ] Inyectar `IGroupRepository` en constructor
-- [ ] Validar que `budgetLimit > 0`, sino lanzar `InvalidBudgetError`
-- [ ] Validar que `name` no esté vacío, sino lanzar `ValidationError`
-- [ ] Usar `Group.create()` para crear la entidad
-- [ ] Guardar en repositorio usando `repository.create(group)`
-- [ ] Retornar la entidad creada
-- [ ] Capturar errores de repositorio y re-lanzarlos
+- [ ] Inject `IGroupRepository` in constructor
+- [ ] Validate that `budgetLimit > 0`, else throw `InvalidBudgetError`
+- [ ] Validate that `name` is not empty, else throw `ValidationError`
+- [ ] Use `Group.create()` to create the entity
+- [ ] Save in repository using `repository.create(group)`
+- [ ] Return the created entity
+- [ ] Catch repository errors and re-throw them
 
-## 🚫 Scope / Límites
+## 🚫 Scope / Limits
 
-- ❌ No crear notificaciones
-- ❌ No agregar autenticación
-- ❌ No crear controller o endpoint
-- ❌ No hacer logging más allá de errores
-- ❌ Solo lógica de creación
+- ❌ Do not create notifications
+- ❌ Do not add authentication
+- ❌ Do not create controller or endpoint
+- ❌ Do not do logging beyond errors
+- ❌ Only creation logic
 
-## ✅ Aceptación / Checklist
+## ✅ Acceptance / Checklist
 
-- [ ] Sigue patrón de GUIDELINES.md > Node.js/Express > Use Cases
-- [ ] JSDoc documenta parámetros, retorno y excepciones
-- [ ] Tests en `backend/src/application/use-cases/__tests__/CreateGroupUseCase.spec.ts`
-- [ ] Tests incluyen casos: éxito, budget inválido, name vacío
-- [ ] Cobertura >90%
+- [ ] Follows GUIDELINES.md > Node.js/Express > Use Cases pattern
+- [ ] JSDoc documents parameters, return and exceptions
+- [ ] Tests in `backend/src/application/use-cases/__tests__/CreateGroupUseCase.spec.ts`
+- [ ] Tests include cases: success, invalid budget, empty name
+- [ ] Coverage >90%
 
-## 📚 Referencias
+## 📚 References
 
-- GUIDELINES.md: "Buenas Prácticas > Inyección de Dependencias"
-- GUIDELINES.md: "Buenas Prácticas > Error Handling"
+- GUIDELINES.md: "Best Practices > Dependency Injection"
+- GUIDELINES.md: "Best Practices > Error Handling"
 - ARCHITECTURE.md: "🎯 Use Cases (MVP)"
 
 ```
 
 ---
 
-## 🎓 Guía para el que Asigna
+## 🎓 Guide for Task Assigners
 
-1. **Sé específico:** Incluye rutas exactas, nombres exactos, ejemplos
-2. **Define límites:** Qué SÍ y qué NO debe hacer
-3. **Referencia código:** Apunta a ejemplos similares existentes
-4. **Documenta contexto:** Por qué esta tarea, qué problema resuelve
-5. **Checklist claro:** Qué significa "estar listo"
+1. **Be specific:** Include exact paths, exact names, examples
+2. **Define limits:** What YES and what NO must do
+3. **Reference code:** Point to similar existing examples
+4. **Document context:** Why this task, what problem it solves
+5. **Clear checklist:** What means "ready"
 
-### ❌ Mala tarea:
-```
-
-"Implementar autenticación para que los usuarios puedan loguearse"
+### ❌ Bad task:
 
 ```
-
-### ✅ Buena tarea:
+"Implement authentication so users can log in"
 ```
 
-TAREA: Crear FirebaseAuthAdapter
+### ✅ Good task:
 
-Ubicación exacta: backend/src/adapters/auth/FirebaseAuthAdapter.ts
-Debe implementar interfaz IAuthPort (ver backend/src/ports/IAuthPort.ts)
-Métodos requeridos: loginWithEmail(), loginWithGoogle(), logout(), getCurrentUser()
-NO incluir: Controllers, endpoints, manejo de tokens
-Sigue patrón en GUIDELINES.md > Inyección de Dependencias
+```
+TASK: Create FirebaseAuthAdapter
 
+Exact location: backend/src/adapters/auth/FirebaseAuthAdapter.ts
+Must implement IAuthPort interface (see backend/src/ports/IAuthPort.ts)
+Required methods: loginWithEmail(), loginWithGoogle(), logout(), getCurrentUser()
+DO NOT include: Controllers, endpoints, token handling
+Follow pattern in GUIDELINES.md > Dependency Injection
 ```
 
 ---
 
-## 📞 Comunicación AI ↔ Humano
+## 📞 AI ↔ Human Communication
 
-Si la IA está en duda sobre una tarea, debe preguntar:
+If AI is unsure about a task, it should ask:
 
-**IA pregunta:**
-- "La tarea dice [X], pero también necesito [Y]. ¿Es parte del scope?"
-- "¿Debo crear archivo [Z] o ya existe?"
-- "La validación ¿se hace en Use Case o en Controller?"
+**AI asks:**
+- "The task says [X], but I also need [Y]. Is that in scope?"
+- "Does file [Z] already exist or should I create it?"
+- "Should validation be in Use Case or Controller?"
 
-**Respuesta rápida esperada:**
-- "Sí, incluye [Y]"
-- "No existe, créalo"
-- "Siempre en Use Case"
+**Quick response expected:**
+- "Yes, include [Y]"
+- "It doesn't exist, create it"
+- "Always in Use Case"
 
 ---
 
-**Última actualización:** Enero 2026
+**Last updated:** January 2026
 ```
+````

@@ -1,89 +1,92 @@
-# INVFriend - Guías de Desarrollo y Convenciones
+# INVFriend - Development Guidelines and Conventions
 
-## 📋 Contenido
+## 📋 Contents
 
-1. [Control de Scope para IA](#control-de-scope-para-ia)
-2. [Estructura de Carpetas](#estructura-de-carpetas)
-3. [Convenciones de Código](#convenciones-de-código)
-4. [Estándares de Nombrado](#estándares-de-nombrado)
-5. [Buenas Prácticas](#buenas-prácticas)
-6. [Proceso de Desarrollo](#proceso-de-desarrollo)
-7. [Documentación](#documentación)
+1. [Scope Control for AI](#scope-control-for-ai)
+2. [Folder Structure](#folder-structure)
+3. [Code Conventions](#code-conventions)
+4. [Naming Standards](#naming-standards)
+5. [Best Practices](#best-practices)
+6. [Development Process](#development-process)
+7. [Documentation](#documentation)
+8. [Testing](#testing)
+9. [Versioning](#versioning)
+10. [Language Requirements](#language-requirements)
 
 ---
 
-## 🎯 Control de Scope para IA
+## 🎯 Scope Control for AI
 
-**REGLA CRÍTICA:** Las tareas asignadas a IA deben ser **específicas, acotadas y con descripción clara**.
+**CRITICAL RULE:** Tasks assigned to AI must be **specific, limited and with clear description**.
 
-### ✅ Tareas bien definidas para IA:
+### ✅ Well-defined tasks for AI:
 
 ```
-❌ "Implementar autenticación"
-✅ "Crear el servicio FirebaseAuthAdapter siguiendo interface IAuthPort,
-   con métodos: loginWithEmail(email, password),
+❌ "Implement authentication"
+✅ "Create FirebaseAuthAdapter service following IAuthPort interface,
+   with methods: loginWithEmail(email, password),
    loginWithGoogle(), logout(), getCurrentUser().
-   Ubicar en: backend/src/adapters/auth/FirebaseAuthAdapter.ts"
+   Location: backend/src/adapters/auth/FirebaseAuthAdapter.ts"
 ```
 
-### 📝 Plantilla de Tarea IA
+### 📝 AI Task Template
 
-Cuando se asigne una tarea a IA, incluir:
+When assigning a task to AI, include:
 
-1. **Qué:** Descripción clara del qué se debe hacer
-2. **Dónde:** Ubicación exacta de archivos
-3. **Modelo:** Referencias a interfaces o modelos existentes
-4. **Límites:** Qué NO incluir (scope controlado)
-5. **Testing:** Si requiere tests
+1. **What:** Clear description of what must be done
+2. **Where:** Exact file location
+3. **Model:** References to existing interfaces or models
+4. **Limits:** What NOT to include (controlled scope)
+5. **Testing:** If tests are required
 
-**Ejemplo:**
+**Example:**
 
 ```
-TAREA: Implementar CreateGroupUseCase
+TASK: Implement CreateGroupUseCase
 
-QUÉ: Use case que crea un nuevo grupo y retorna la instancia creada.
-     - Debe validar que el presupuesto sea > 0
-     - Debe asignar admin como primer miembro
-     - Debe generar timestamps correctamente
+WHAT: Use case that creates a new group and returns the created instance.
+     - Must validate that budget is > 0
+     - Must assign admin as first member
+     - Must generate timestamps correctly
 
-DÓNDE: backend/src/application/use-cases/CreateGroupUseCase.ts
+WHERE: backend/src/application/use-cases/CreateGroupUseCase.ts
 
-MODELO:
-- Implementar interfaz descrita en ARCHITECTURE.md
-- Usar repository inyectado (IGroupRepository)
-- Retornar Group con estructura definida en ARCHITECTURE.md
+MODEL:
+- Implement interface described in ARCHITECTURE.md
+- Use injected repository (IGroupRepository)
+- Return Group with structure defined in ARCHITECTURE.md
 
-LÍMITES:
-- No incluir notificaciones
-- No crear endpoints
-- No hacer validación de autenticación (eso va en controller)
+LIMITS:
+- Do not include notifications
+- Do not create endpoints
+- Do not perform authentication validation (that goes in controller)
 
-TESTING: Crear backend/src/application/use-cases/__tests__/CreateGroupUseCase.spec.ts
+TESTING: Create backend/src/application/use-cases/__tests__/CreateGroupUseCase.spec.ts
 ```
 
 ### 🚫 Scope Blocker
 
-Tareas que **NO** debe hacer la IA sin supervisión:
+Tasks that AI should **NOT** do without supervision:
 
-- ❌ Cambiar arquitectura o estructura existente
-- ❌ Agregar dependencias nuevas (npm packages)
-- ❌ Eliminar o refactorizar código existente sin indicación
-- ❌ Modificar archivos de configuración (tsconfig, angular.json, etc)
-- ❌ Cambiar nombre de interfaces o métodos públicos
-- ❌ Saltarse documentación
+- ❌ Change existing architecture or structure
+- ❌ Add new dependencies (npm packages)
+- ❌ Delete or refactor existing code without instruction
+- ❌ Modify configuration files (tsconfig, angular.json, etc)
+- ❌ Change names of interfaces or public methods
+- ❌ Skip documentation
 
-**Si necesita algo de esto, debe pedir confirmación explícita.**
+**If something from this list is needed, explicit confirmation must be requested.**
 
 ---
 
-## 📁 Estructura de Carpetas
+## 📁 Folder Structure
 
 ### Backend (Node.js)
 
 ```
 backend/
 ├── src/
-│   ├── adapters/                    # Layer de adaptadores (entrada y salida)
+│   ├── adapters/                    # Adapters layer (input and output)
 │   │   ├── auth/
 │   │   │   ├── FirebaseAuthAdapter.ts
 │   │   │   └── __tests__/
@@ -100,7 +103,7 @@ backend/
 │   │       ├── FirebaseUserRepository.ts
 │   │       └── __tests__/
 │   │
-│   ├── domain/                      # Business logic, sin dependencias externas
+│   ├── domain/                      # Business logic, without external dependencies
 │   │   ├── entities/
 │   │   │   ├── Group.ts
 │   │   │   ├── User.ts
@@ -125,16 +128,16 @@ backend/
 │   │       ├── CreateGroupDTO.ts
 │   │       └── RaffleResultDTO.ts
 │   │
-│   ├── ports/                       # Interfaces (contratos)
+│   ├── ports/                       # Interfaces (contracts)
 │   │   ├── IGroupRepository.ts
 │   │   ├── IUserRepository.ts
 │   │   ├── INotificationPort.ts
 │   │   └── IAuthPort.ts
 │   │
-│   ├── shared/                      # Utilidades compartidas
+│   ├── shared/                      # Shared utilities
 │   │   ├── utils/
 │   │   │   ├── logger.ts
-│   │   │   ├── randomizer.ts        # Para sorteo justo
+│   │   │   ├── randomizer.ts        # For fair raffle
 │   │   │   └── validators.ts
 │   │   ├── constants/
 │   │   │   └── AppConstants.ts
@@ -146,10 +149,10 @@ backend/
 │   │   ├── environment.ts
 │   │   └── routes.ts
 │   │
-│   └── index.ts                    # Entry point de Express
+│   └── index.ts                    # Express entry point
 │
 ├── __tests__/
-│   └── integration/                 # Tests de integración
+│   └── integration/                 # Integration tests
 │       └── group.integration.spec.ts
 │
 ├── .env.example
@@ -164,7 +167,7 @@ backend/
 frontend/
 ├── src/
 │   ├── app/
-│   │   ├── adapters/                # Componentes, servicios HTTP, guards
+│   │   ├── adapters/                # Components, HTTP services, guards
 │   │   │   ├── components/
 │   │   │   │   ├── header/
 │   │   │   │   ├── group-list/
@@ -180,7 +183,7 @@ frontend/
 │   │   │       ├── AuthGuard.ts
 │   │   │       └── AdminGuard.ts
 │   │   │
-│   │   ├── domain/                  # Modelos, interfaces
+│   │   ├── domain/                  # Models, interfaces
 │   │   │   ├── models/
 │   │   │   │   ├── group.model.ts
 │   │   │   │   ├── user.model.ts
@@ -235,17 +238,17 @@ frontend/
 
 ---
 
-## 🔤 Convenciones de Código
+## 🔤 Code Conventions
 
 ### TypeScript
 
-#### **Tipos**
+#### **Types**
 
 ```typescript
-// ❌ NO usar 'any'
+// ❌ DO NOT use 'any'
 let data: any;
 
-// ✅ Definir tipos explícitos
+// ✅ Define explicit types
 let data: Group | null;
 interface Group {
   /* ... */
@@ -253,53 +256,53 @@ interface Group {
 type GroupId = string & { readonly brand: "GroupId" };
 ```
 
-#### **Nombres de Variables**
+#### **Variable Names**
 
 ```typescript
-// ❌ Abreviaciones
+// ❌ Abbreviations
 const grp = new Group();
 const usr_name = "John";
 
-// ✅ Nombres descriptivos
+// ✅ Descriptive names
 const group = new Group();
 const userName = "John";
 const isGroupActive = true;
 const groupsCount = 5;
 ```
 
-#### **Constantes**
+#### **Constants**
 
 ```typescript
-// ✅ UPPER_SNAKE_CASE para constantes globales
+// ✅ UPPER_SNAKE_CASE for global constants
 const MAX_BUDGET = 10000;
 const MIN_MEMBERS = 2;
 const DATABASE_TIMEOUT_MS = 5000;
 
-// ✅ camelCase para constantes locales
+// ✅ camelCase for local constants
 const defaultBudget = 500;
 ```
 
-#### **Funciones**
+#### **Functions**
 
 ```typescript
-// ✅ Verbos para funciones que hacen algo
+// ✅ Verbs for functions that do something
 const createGroup = (...) => {};
 const updateWish = (...) => {};
 const isValidBudget = (...) => {};
 
-// ✅ Nombres descriptivos de parámetros
+// ✅ Descriptive parameter names
 function inviteUser(userId: string, groupId: string): Promise<void>
 
-// ❌ Nombres genéricos
+// ❌ Generic names
 function invoke(id: string, ref: string): Promise<void>
 ```
 
 ### Angular
 
-#### **Componentes**
+#### **Components**
 
 ```typescript
-// Estructura recomendada:
+// Recommended structure:
 @Component({
   selector: "app-group-detail", // kebab-case
   templateUrl: "./group-detail.component.html",
@@ -307,11 +310,11 @@ function invoke(id: string, ref: string): Promise<void>
   changeDetection: ChangeDetectionStrategy.OnPush, // Performance
 })
 export class GroupDetailComponent implements OnInit, OnDestroy {
-  // Propiedades públicas primero
+  // Public properties first
   @Input() groupId: string = "";
   @Output() groupDeleted = new EventEmitter<string>();
 
-  // Propiedades privadas
+  // Private properties
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -328,7 +331,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
 }
 ```
 
-#### **Servicios (Application Services)**
+#### **Services (Application Services)**
 
 ```typescript
 @Injectable({
@@ -412,29 +415,29 @@ export class CreateGroupUseCase {
 
 ---
 
-## 📛 Estándares de Nombrado
+## 📛 Naming Standards
 
-### Archivos
+### Files
 
 ```
-// Componentes Angular
+// Angular Components
 group-list.component.ts
 group-list.component.html
 group-list.component.scss
 
-// Servicios
-group.service.ts (si es adapter/HTTP)
-GroupApplicationService.ts (si es application service)
+// Services
+group.service.ts (if adapter/HTTP)
+GroupApplicationService.ts (if application service)
 
 // Use Cases
 CreateGroupUseCase.ts
 PerformRaffleUseCase.ts
 
-// Repositorios
-IGroupRepository.ts (interfaz)
-FirebaseGroupRepository.ts (implementación)
+// Repositories
+IGroupRepository.ts (interface)
+FirebaseGroupRepository.ts (implementation)
 
-// Modelos/Entities
+// Models/Entities
 Group.ts
 User.ts
 
@@ -444,7 +447,7 @@ GroupApplicationService.spec.ts
 group.integration.spec.ts
 ```
 
-### Clases
+### Classes
 
 ```
 // ✅ PascalCase
@@ -452,7 +455,7 @@ class GroupApplicationService { }
 class CreateGroupUseCase { }
 class FirebaseGroupRepository { }
 
-// ❌ camelCase o snake_case
+// ❌ camelCase or snake_case
 class groupApplicationService { }
 class create_group_use_case { }
 ```
@@ -460,39 +463,39 @@ class create_group_use_case { }
 ### Interfaces
 
 ```
-// ✅ Prefijo 'I' para interfaces
+// ✅ Prefix 'I' for interfaces
 interface IGroupRepository { }
 interface INotificationPort { }
 
-// ❌ Sin prefijo
+// ❌ Without prefix
 interface GroupRepository { }
 ```
 
-### Métodos
+### Methods
 
 ```
 // ✅ camelCase
 public async createGroup(): Promise<Group> { }
 public isValidBudget(budget: number): boolean { }
 
-// ❌ PascalCase o snake_case
+// ❌ PascalCase or snake_case
 public async CreateGroup(): Promise<Group> { }
 public Is_Valid_Budget(): boolean { }
 ```
 
 ---
 
-## 💡 Buenas Prácticas
+## 💡 Best Practices
 
-### Inyección de Dependencias
+### Dependency Injection
 
 ```typescript
-// ✅ Siempre inyectar dependencias
+// ✅ Always inject dependencies
 export class GroupController {
   constructor(private useCase: CreateGroupUseCase) {}
 }
 
-// ❌ Instanciar directamente
+// ❌ Instantiate directly
 export class GroupController {
   private useCase = new CreateGroupUseCase();
 }
@@ -501,7 +504,7 @@ export class GroupController {
 ### Error Handling
 
 ```typescript
-// ✅ Errores específicos del dominio
+// ✅ Domain-specific errors
 export class InvalidBudgetError extends DomainError {
   constructor(message: string) {
     super(message);
@@ -509,7 +512,7 @@ export class InvalidBudgetError extends DomainError {
   }
 }
 
-// ✅ Capturar y manejar
+// ✅ Catch and handle
 try {
   await useCase.execute(dto);
 } catch (error) {
@@ -522,7 +525,7 @@ try {
 ### RxJS (Angular)
 
 ```typescript
-// ✅ Usar async pipe y takeUntil
+// ✅ Use async pipe and takeUntil
 export class GroupListComponent implements OnDestroy {
   private destroy$ = new Subject<void>();
   groups$ = this.groupService.getGroups().pipe(
@@ -540,7 +543,7 @@ export class GroupListComponent implements OnDestroy {
   {{ group.name }}
 </div>
 
-// ❌ Subscribir sin desuscribirse
+// ❌ Subscribe without unsubscribing
 this.groupService.getGroups().subscribe(groups => {
   this.groups = groups;
 });
@@ -549,7 +552,7 @@ this.groupService.getGroups().subscribe(groups => {
 ### Null Safety
 
 ```typescript
-// ✅ Chequear null explícitamente
+// ✅ Check null explicitly
 const group = await this.groupRepository.findById(id);
 if (!group) {
   throw new GroupNotFoundError();
@@ -558,95 +561,95 @@ if (!group) {
 // ✅ Optional chaining
 const adminName = group?.admin?.name;
 
-// ❌ Asumir que existe
-const adminName = group.admin.name; // Puede crash si admin es null
+// ❌ Assume it exists
+const adminName = group.admin.name; // Can crash if admin is null
 ```
 
-### Logueo
+### Logging
 
 ```typescript
-// ✅ Usar logger consistentemente
+// ✅ Use logger consistently
 this.logger.info(`Group created: ${group.id}`);
 this.logger.error(`Failed to create group`, error);
 this.logger.debug(`Group data:`, group);
 
-// ❌ console.log en producción
+// ❌ console.log in production
 console.log("Group created");
 ```
 
-### Validación
+### Validation
 
 ```typescript
-// ✅ Validar en Use Case o Controller
+// ✅ Validate in Use Case or Controller
 if (!dto.name || dto.name.trim().length === 0) {
   throw new ValidationError("Group name is required");
 }
 
-// ✅ Usar librerías especializadas (Joi, Zod)
+// ✅ Use specialized libraries (Joi, Zod)
 const schema = Joi.object({
   name: Joi.string().required(),
   budgetLimit: Joi.number().positive().required(),
 });
 
-// ❌ Validación inconsistente o faltante
+// ❌ Inconsistent or missing validation
 ```
 
 ---
 
-## 🔄 Proceso de Desarrollo
+## 🔄 Development Process
 
-### Antes de Escribir Código
+### Before Writing Code
 
-1. **Leer ARCHITECTURE.md** - Entender la estructura y responsabilidades
-2. **Identificar la capa** - ¿Adapter, Domain, Application?
-3. **Revisar interfaces existentes** - En `ports/`
-4. **Planificar tests** - Qué necesita testear
+1. **Read ARCHITECTURE.md** - Understand structure and responsibilities
+2. **Identify the layer** - Adapter, Domain, Application?
+3. **Review existing interfaces** - In `ports/`
+4. **Plan tests** - What needs testing
 
-### Escribiendo Código
+### Writing Code
 
-1. **Crear tests primero** (TDD si es posible)
-2. **Implementar con tipos explícitos** - No usar `any`
-3. **Seguir convenciones de nombrado** - Exactamente como en GUIDELINES
-4. **Documentar público APIs** - JSDoc/comments
-5. **Manejar errores** - Errores específicos del dominio
+1. **Create tests first** (TDD if possible)
+2. **Implement with explicit types** - Do not use `any`
+3. **Follow naming conventions** - Exactly as in GUIDELINES
+4. **Document public APIs** - JSDoc/comments
+5. **Handle errors** - Domain-specific errors
 
-### Después de Escribir Código
+### After Writing Code
 
-1. **Pasar todos los tests** - Incluidos los nuevos
-2. **Lint y format** - `npm run lint` y `npm run format`
-3. **Revisar cobertura** - >80% de cobertura si es posible
-4. **Documentar cambios** - Actualizar ARCHITECTURE.md si hay cambios de arch
+1. **Pass all tests** - Including new ones
+2. **Lint and format** - `npm run lint` and `npm run format`
+3. **Review coverage** - >80% coverage if possible
+4. **Document changes** - Update ARCHITECTURE.md if there are architecture changes
 
-### Checklist antes de Commit
+### Checklist before Commit
 
 ```
-- [ ] Tests verdes (unit + integration si aplica)
-- [ ] Código sigue convenciones de GUIDELINES
-- [ ] Sin errores de linting
-- [ ] Sin logs de debug
-- [ ] Documentación actualizada
-- [ ] Mensaje commit descriptivo
-- [ ] Scope está contenido (no se salió de la tarea)
+- [ ] Green tests (unit + integration if applicable)
+- [ ] Code follows GUIDELINES conventions
+- [ ] No linting errors
+- [ ] No debug logs
+- [ ] Documentation updated
+- [ ] Descriptive commit message
+- [ ] Scope is contained (didn't go beyond the task)
 ```
 
 ---
 
-## 📚 Documentación
+## 📚 Documentation
 
 ### JSDoc/Comments
 
 ```typescript
 /**
- * Crea un nuevo grupo de Amigo Invisible
+ * Creates a new Secret Santa group
  *
- * @param dto - DTO con datos del grupo
- * @returns Grupo creado con ID asignado
- * @throws InvalidBudgetError si budget <= 0
- * @throws InvalidNameError si name está vacío
+ * @param dto - DTO with group data
+ * @returns Created group with assigned ID
+ * @throws InvalidBudgetError if budget <= 0
+ * @throws InvalidNameError if name is empty
  *
  * @example
  * const group = await createGroupUseCase.execute({
- *   name: 'Familia 2026',
+ *   name: 'Family 2026',
  *   budgetLimit: 500,
  *   adminId: 'user123'
  * });
@@ -654,36 +657,36 @@ const schema = Joi.object({
 export async function execute(dto: CreateGroupDTO): Promise<Group> {}
 ```
 
-### README de Carpetas
+### Folder READMEs
 
-Si una carpeta tiene lógica compleja, agregar `README.md`:
+If a folder has complex logic, add `README.md`:
 
 ```
 adapters/persistence/README.md
-- Explicar qué es cada repository
-- Cómo añadir uno nuevo
-- Patrones utilizados
+- Explain what each repository is
+- How to add a new one
+- Patterns used
 ```
 
-### Cambios Arquitectónicos
+### Architectural Changes
 
-Siempre actualizar ARCHITECTURE.md si:
+Always update ARCHITECTURE.md if:
 
-- Se añade una nueva capa
-- Se cambia flujo de datos
-- Se añaden nuevas entidades
-- Se cambian puertos
+- A new layer is added
+- Data flow changes
+- New entities are added
+- Ports change
 
 ---
 
 ## 🧪 Testing
 
-### Estructura
+### Structure
 
 ```
-- Unit Tests: Junto a código (ej: `CreateGroupUseCase.spec.ts`)
-- Integration Tests: Carpeta `__tests__/integration/`
-- E2E Tests: Futuro, no en MVP
+- Unit Tests: Next to code (e.g., `CreateGroupUseCase.spec.ts`)
+- Integration Tests: Folder `__tests__/integration/`
+- E2E Tests: Future, not in MVP
 ```
 
 ### Naming
@@ -717,11 +720,174 @@ describe('CreateGroupUseCase', () => {
 
 ## 📝 Versioning
 
-- Usar **Semantic Versioning**: MAJOR.MINOR.PATCH
-- Commits descriptivos: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`
-- Ejemplo: `feat: add group deletion functionality`
+- Use **Semantic Versioning**: MAJOR.MINOR.PATCH
+- Descriptive commits: `feat:`, `fix:`, `refactor:`, `docs:`, `test:`
+- Example: `feat: add group deletion functionality`
 
 ---
 
-**Última actualización:** Enero 2026
-**Versión:** 1.0.0 (MVP)
+## 🌐 Language Requirements
+
+**CRITICAL:** ALL code in this project MUST be written in English.
+
+### Mandatory English Usage
+
+```typescript
+// ✅ CORRECT - English everywhere
+export class GroupController {
+  constructor(private createGroupUseCase: CreateGroupUseCase) {}
+
+  async createGroup(req: Request, res: Response): Promise<void> {
+    // Create new group with validation
+    const group = await this.createGroupUseCase.execute(req.body);
+    res.status(201).json(group);
+  }
+}
+
+// ❌ INCORRECT - Spanish in code
+export class ControladorGrupo {
+  constructor(private crearGrupoUseCase: CrearGrupoUseCase) {}
+
+  async crearGrupo(req: Request, res: Response): Promise<void> {
+    // Crear nuevo grupo con validación
+    const grupo = await this.crearGrupoUseCase.ejecutar(req.body);
+    res.status(201).json(grupo);
+  }
+}
+```
+
+### What Must Be in English
+
+1. **Class names**: `GroupService`, not `ServicioGrupo`
+2. **Method names**: `createGroup()`, not `crearGrupo()`
+3. **Variable names**: `userName`, not `nombreUsuario`
+4. **Interface names**: `IGroupRepository`, not `IRepositorioGrupo`
+5. **File names**: `group-controller.ts`, not `controlador-grupo.ts`
+6. **Comments**: Use English for all code comments
+7. **Error messages**: User-facing messages can be in Spanish, but error class names and internal messages should be English
+8. **Type names**: `GroupDTO`, not `GrupoDTO`
+9. **Constants**: `MAX_BUDGET`, not `PRESUPUESTO_MAXIMO`
+10. **Database fields**: Use English field names when possible
+
+### Examples
+
+#### Variables and Functions
+
+```typescript
+// ✅ CORRECT
+const userList = [];
+function calculateBudget() {}
+const isValidEmail = true;
+
+// ❌ INCORRECT
+const listaUsuarios = [];
+function calcularPresupuesto() {}
+const esEmailValido = true;
+```
+
+#### Interfaces and Types
+
+```typescript
+// ✅ CORRECT
+interface IUserRepository {
+  findById(id: string): Promise<User | null>;
+  create(user: User): Promise<void>;
+}
+
+type GroupStatus = "active" | "completed" | "cancelled";
+
+// ❌ INCORRECT
+interface IRepositorioUsuario {
+  encontrarPorId(id: string): Promise<Usuario | null>;
+  crear(usuario: Usuario): Promise<void>;
+}
+
+type EstadoGrupo = "activo" | "completado" | "cancelado";
+```
+
+#### Error Handling
+
+```typescript
+// ✅ CORRECT
+export class InvalidBudgetError extends DomainError {
+  constructor(message: string) {
+    super(message);
+    this.name = "InvalidBudgetError";
+  }
+}
+
+throw new InvalidBudgetError("Budget must be positive");
+
+// ❌ INCORRECT
+export class ErrorPresupuestoInvalido extends DomainError {
+  constructor(mensaje: string) {
+    super(mensaje);
+    this.name = "ErrorPresupuestoInvalido";
+  }
+}
+
+throw new ErrorPresupuestoInvalido("El presupuesto debe ser positivo");
+```
+
+#### Documentation
+
+```typescript
+// ✅ CORRECT
+/**
+ * Creates a new user in the system
+ * @param userData - User information
+ * @returns Created user with generated ID
+ */
+async function createUser(userData: CreateUserDTO): Promise<User> {}
+
+// ❌ INCORRECT
+/**
+ * Crea un nuevo usuario en el sistema
+ * @param datosUsuario - Información del usuario
+ * @returns Usuario creado con ID generado
+ */
+async function crearUsuario(datosUsuario: CrearUsuarioDTO): Promise<Usuario> {}
+```
+
+### Exception: User-Facing Content
+
+The ONLY acceptable Spanish usage is in:
+
+- **UI text**: Messages shown directly to end users
+- **Validation error messages**: User-visible validation feedback
+- **Email templates**: Emails sent to users
+- **Documentation**: README files, architecture docs (can be bilingual)
+
+```typescript
+// ✅ CORRECT - Internal code in English, user message in Spanish
+export class GroupController {
+  async createGroup(req: Request, res: Response): Promise<void> {
+    try {
+      const group = await this.createGroupUseCase.execute(req.body);
+      res.status(201).json({
+        group,
+        message: "Grupo creado exitosamente", // User-facing message
+      });
+    } catch (error) {
+      if (error instanceof InvalidBudgetError) {
+        res.status(400).json({
+          error: "InvalidBudgetError", // Error code in English
+          message: "El presupuesto debe ser mayor a 0", // User message in Spanish
+        });
+      }
+    }
+  }
+}
+```
+
+### Enforcement
+
+- All pull requests will be reviewed for English compliance
+- CI/CD linting rules enforce English naming conventions
+- Code reviews must reject Spanish code elements
+- This is a **non-negotiable** project standard
+
+---
+
+**Last Updated:** January 2026
+**Version:** 1.0.0 (MVP)

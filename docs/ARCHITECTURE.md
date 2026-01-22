@@ -1,12 +1,12 @@
-# INVFriend - Arquitectura y Especificación Técnica
+# INVFriend - Architecture and Technical Specification
 
-## 📐 Arquitectura Hexagonal
+## 📐 Hexagonal Architecture
 
-La aplicación sigue el patrón de **Arquitectura Hexagonal (Ports & Adapters)** para maximizar mantenibilidad, testabilidad y separación de concernencias.
+The application follows the **Hexagonal Architecture (Ports & Adapters)** pattern to maximize maintainability, testability, and separation of concerns.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    ADAPTERS (EXTERNOS)                      │
+│                    ADAPTERS (EXTERNAL)                      │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
 │  │  UI Angular  │  │ Firebase DB  │  │Firebase Auth │      │
 │  └──────────────┘  └──────────────┘  └──────────────┘      │
@@ -17,7 +17,7 @@ La aplicación sigue el patrón de **Arquitectura Hexagonal (Ports & Adapters)**
                     └───────┬────────┘
                             │
 ┌───────────────────────────▼─────────────────────────────────┐
-│               BUSINESS LOGIC (NÚCLEO)                       │
+│               BUSINESS LOGIC (CORE)                         │
 │  ┌──────────────────────────────────────────────────────┐  │
 │  │ Use Cases / Application Services                     │  │
 │  │  - CreateGroupUseCase                              │  │
@@ -36,7 +36,7 @@ La aplicación sigue el patrón de **Arquitectura Hexagonal (Ports & Adapters)**
                     └───────┬────────┘
                             │
 ┌───────────────────────────▼─────────────────────────────────┐
-│              ADAPTERS (EXTERNOS - OUTPUT)                   │
+│              ADAPTERS (EXTERNAL - OUTPUT)                   │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
 │  │Repositories  │  │  Notification│  │  Email/Push  │      │
 │  │ (Firebase)   │  │   Service    │  │   Service    │      │
@@ -44,15 +44,15 @@ La aplicación sigue el patrón de **Arquitectura Hexagonal (Ports & Adapters)**
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## 📁 Estructura del Monorepo
+## 📁 Monorepo Structure
 
 ```
 INVFriend/
 ├── frontend/                      # Angular Application
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── adapters/         # Angular Components, Services HTTP
-│   │   │   ├── domain/           # Modelos de dominio
+│   │   │   ├── adapters/         # Angular Components, HTTP Services
+│   │   │   ├── domain/           # Domain models
 │   │   │   ├── application/      # Use Cases, Application Services
 │   │   │   ├── shared/           # Guards, Interceptors, Utils
 │   │   │   └── ports/            # Interfaces (Repositories, Services)
@@ -77,159 +77,159 @@ INVFriend/
 │   ├── tsconfig.json
 │   └── .env.example
 │
-├── shared/                        # Código compartido (types, constants)
+├── shared/                        # Shared code (types, constants)
 │   ├── src/
 │   │   ├── models/
 │   │   ├── constants/
 │   │   └── utils/
 │   └── package.json
 │
-├── ARCHITECTURE.md                # Este archivo
-├── GUIDELINES.md                  # Guías de desarrollo
-├── README.md                      # Documentación pública
+├── ARCHITECTURE.md                # This file
+├── GUIDELINES.md                  # Development guidelines
+├── README.md                      # Public documentation
 ├── firebase.json
 ├── .gitignore
 ├── package.json (root)            # Monorepo config
 └── tsconfig.base.json
 ```
 
-## 🗄️ Modelos de Datos
+## 🗄️ Data Models
 
-### **User (Usuario)**
-
-```typescript
-{
-  id: string;                    // UID de Firebase Auth
-  email: string;                 // Email único
-  name: string;                  // Nombre del usuario
-  photoUrl?: string;             // URL de foto de perfil
-  createdAt: number;             // Timestamp de creación
-  updatedAt: number;             // Timestamp de última actualización
-}
-```
-
-### **Group (Grupo)**
+### **User**
 
 ```typescript
 {
-  id: string;                    // UID generado
-  name: string;                  // Nombre del grupo
-  description?: string;          // Descripción opcional
-  adminId: string;               // UID del admin que creó el grupo
-  members: string[];             // Array de UIDs de miembros
-  budgetLimit: number;           // Límite de presupuesto en moneda
-  raffleStatus: 'pending' | 'completed'; // Estado del sorteo
-  raffleDate?: number;           // Timestamp cuando se realizó sorteo
-  createdAt: number;             // Timestamp de creación
-  updatedAt: number;             // Timestamp de última actualización
+  id: string;                    // Firebase Auth UID
+  email: string;                 // Unique email
+  name: string;                  // User name
+  photoUrl?: string;             // Profile photo URL
+  createdAt: number;             // Creation timestamp
+  updatedAt: number;             // Last update timestamp
 }
 ```
 
-### **Assignment (Asignación)**
+### **Group**
 
 ```typescript
 {
-  id: string; // UID generado
-  groupId: string; // UID del grupo
-  userId: string; // UID del usuario (quien recibe regalos)
-  secretSantaId: string; // UID del amigo invisible
-  createdAt: number; // Timestamp de creación
+  id: string;                    // Generated UID
+  name: string;                  // Group name
+  description?: string;          // Optional description
+  adminId: string;               // UID of the admin who created the group
+  members: string[];             // Array of member UIDs
+  budgetLimit: number;           // Budget limit in currency
+  raffleStatus: 'pending' | 'completed'; // Raffle status
+  raffleDate?: number;           // Timestamp when raffle was performed
+  createdAt: number;             // Creation timestamp
+  updatedAt: number;             // Last update timestamp
 }
 ```
 
-### **Wish (Deseo)**
+### **Assignment**
 
 ```typescript
 {
-  id: string;                    // UID generado
-  userId: string;                // UID del usuario que pone el deseo
-  groupId: string;               // UID del grupo
-  title: string;                 // Título del deseo
-  description?: string;          // Descripción del deseo
-  url?: string;                  // URL de referencia (ej: producto)
-  createdAt: number;             // Timestamp de creación
-  updatedAt: number;             // Timestamp de última actualización
+  id: string; // Generated UID
+  groupId: string; // Group UID
+  userId: string; // User UID (who receives gifts)
+  secretSantaId: string; // Secret Santa UID
+  createdAt: number; // Creation timestamp
 }
 ```
 
-### **Notification (Notificación)**
+### **Wish**
 
 ```typescript
 {
-  id: string; // UID generado
-  userId: string; // UID del usuario que recibe notificación
-  groupId: string; // UID del grupo
-  type: "raffle_completed" | "wish_added"; // Tipo de notificación
-  message: string; // Mensaje descriptivo
-  read: boolean; // Si fue leída
-  createdAt: number; // Timestamp de creación
+  id: string;                    // Generated UID
+  userId: string;                // UID of the user who creates the wish
+  groupId: string;               // Group UID
+  title: string;                 // Wish title
+  description?: string;          // Wish description
+  url?: string;                  // Reference URL (e.g., product)
+  createdAt: number;             // Creation timestamp
+  updatedAt: number;             // Last update timestamp
 }
 ```
 
-## 🔄 Flujos Principales
-
-### **1. Crear Grupo**
-
-1. Admin crea grupo con nombre, descripción (opcional) y presupuesto
-2. Se genera ID del grupo
-3. El admin es añadido como miembro
-4. Se genera enlace/código para invitar (opcional: compartible)
-
-### **2. Invitar Miembros**
-
-1. Admin añade emails de usuarios a invitar
-2. Si el usuario no existe, se envía invitación
-3. Si existe, se añade al grupo
-4. Se notifica al usuario que ha sido invitado a un grupo
-
-### **3. Realizar Sorteo**
-
-1. Admin verifica que todos los miembros estén en el grupo
-2. Admin inicia el sorteo
-3. Sistema realiza asignación aleatoria (cada usuario ≠ amigo invisible)
-4. Se generan registros de Assignment
-5. Se notifica a todos los usuarios que el sorteo se completó
-6. `raffleStatus` cambia a 'completed'
-
-### **4. Ver Amigo Invisible**
-
-1. Usuario accede a su grupo
-2. Solo ve la asignación (amigo invisible) si sorteo está completado
-3. Puede ver los deseos de su amigo invisible
-
-### **5. Añadir/Editar Deseos**
-
-1. Usuario añade deseos para su grupo
-2. Solo su amigo invisible puede verlos (después de sorteo)
-3. Notifica al amigo invisible que hay nuevos deseos
-
-### **6. Eliminar Grupo**
-
-1. Solo admin puede eliminar
-2. Se eliminan todas las asignaciones del grupo
-3. Se eliminan todos los deseos del grupo
-4. Se notifica a miembros que el grupo fue eliminado
-
-## 🔌 Puertos y Adaptadores
-
-### **Adapters de Entrada (Input Ports)**
-
-- **GroupController** (API REST): Endpoints para crear, editar, eliminar grupos
-- **RaffleController** (API REST): Endpoint para realizar sorteo
-- **WishController** (API REST): Endpoints para CRUD de deseos
-- **UserController** (API REST): Endpoints de autenticación y perfil
-
-### **Adapters de Salida (Output Ports)**
-
-- **FirebaseGroupRepository**: Implementación de IGroupRepository
-- **FirebaseUserRepository**: Implementación de IUserRepository
-- **FirebaseWishRepository**: Implementación de IWishRepository
-- **FirebaseNotificationService**: Implementación de INotificationService
-
-### **Puertos (Interfaces)**
+### **Notification**
 
 ```typescript
-// Puertos de Repositorio
+{
+  id: string; // Generated UID
+  userId: string; // UID of the user who receives the notification
+  groupId: string; // Group UID
+  type: "raffle_completed" | "wish_added"; // Notification type
+  message: string; // Descriptive message
+  read: boolean; // Whether it was read
+  createdAt: number; // Creation timestamp
+}
+```
+
+## 🔄 Main Flows
+
+### **1. Create Group**
+
+1. Admin creates group with name, description (optional), and budget
+2. Group ID is generated
+3. Admin is added as a member
+4. Invitation link/code is generated (optional: shareable)
+
+### **2. Invite Members**
+
+1. Admin adds emails of users to invite
+2. If the user doesn't exist, an invitation is sent
+3. If they exist, they are added to the group
+4. User is notified that they have been invited to a group
+
+### **3. Perform Raffle**
+
+1. Admin verifies that all members are in the group
+2. Admin starts the raffle
+3. System performs random assignment (each user ≠ secret santa)
+4. Assignment records are generated
+5. All users are notified that the raffle has been completed
+6. `raffleStatus` changes to 'completed'
+
+### **4. View Secret Santa**
+
+1. User accesses their group
+2. They only see the assignment (secret santa) if raffle is completed
+3. They can view their secret santa's wishes
+
+### **5. Add/Edit Wishes**
+
+1. User adds wishes for their group
+2. Only their secret santa can see them (after raffle)
+3. Notifies the secret santa that there are new wishes
+
+### **6. Delete Group**
+
+1. Only admin can delete
+2. All group assignments are deleted
+3. All group wishes are deleted
+4. Members are notified that the group was deleted
+
+## 🔌 Ports and Adapters
+
+### **Input Adapters (Input Ports)**
+
+- **GroupController** (REST API): Endpoints to create, edit, delete groups
+- **RaffleController** (REST API): Endpoint to perform raffle
+- **WishController** (REST API): Endpoints for CRUD of wishes
+- **UserController** (REST API): Endpoints for authentication and profile
+
+### **Output Adapters (Output Ports)**
+
+- **FirebaseGroupRepository**: Implementation of IGroupRepository
+- **FirebaseUserRepository**: Implementation of IUserRepository
+- **FirebaseWishRepository**: Implementation of IWishRepository
+- **FirebaseNotificationService**: Implementation of INotificationService
+
+### **Ports (Interfaces)**
+
+```typescript
+// Repository Ports
 interface IGroupRepository {
   create(group: Group): Promise<Group>;
   findById(id: string): Promise<Group | null>;
@@ -251,7 +251,7 @@ interface IWishRepository {
   delete(id: string): Promise<void>;
 }
 
-// Puertos de Servicio
+// Service Ports
 interface INotificationService {
   sendGroupInvite(userId: string, groupId: string): Promise<void>;
   sendRaffleCompleted(userId: string, groupId: string): Promise<void>;
@@ -267,46 +267,46 @@ interface INotificationService {
 
 ### Backend
 
-- `CreateGroupUseCase` - Crear nuevo grupo
-- `InviteUserToGroupUseCase` - Invitar usuario a grupo
-- `PerformRaffleUseCase` - Realizar sorteo automático
-- `AddWishUseCase` - Añadir deseo
-- `UpdateWishUseCase` - Editar deseo
-- `DeleteWishUseCase` - Eliminar deseo
-- `DeleteGroupUseCase` - Eliminar grupo
-- `GetGroupDetailsUseCase` - Obtener detalles del grupo
-- `GetSecretSantaWishesUseCase` - Obtener deseos del amigo invisible
-- `AuthenticateUserUseCase` - Autenticar usuario (email/Google)
+- `CreateGroupUseCase` - Create new group
+- `InviteUserToGroupUseCase` - Invite user to group
+- `PerformRaffleUseCase` - Perform automatic raffle
+- `AddWishUseCase` - Add wish
+- `UpdateWishUseCase` - Edit wish
+- `DeleteWishUseCase` - Delete wish
+- `DeleteGroupUseCase` - Delete group
+- `GetGroupDetailsUseCase` - Get group details
+- `GetSecretSantaWishesUseCase` - Get secret santa wishes
+- `AuthenticateUserUseCase` - Authenticate user (email/Google)
 
 ### Frontend
 
-- Pantalla de login
-- Pantalla de registro
-- Lista de grupos del usuario
-- Crear nuevo grupo
-- Detalles del grupo
-- Panel de admin para invitar y realizar sorteo
-- Ver amigo invisible y sus deseos
-- Añadir/editar deseos propios
-- Notificaciones
+- Login screen
+- Registration screen
+- User's group list
+- Create new group
+- Group details
+- Admin panel to invite and perform raffle
+- View secret santa and their wishes
+- Add/edit own wishes
+- Notifications
 
-## 🔐 Seguridad
+## 🔐 Security
 
-- **Autenticación:** Firebase Authentication (email + Google)
-- **Autorización:**
-  - Solo admin puede realizar sorteo y eliminar grupo
-  - Solo miembros pueden ver detalles del grupo
-  - Solo el amigo invisible asignado puede ver tus deseos (post-sorteo)
-- **Reglas Firestore:** Definidas por UID y roles
-- **CORS:** Backend solo acepta requests desde frontend autorizado
+- **Authentication:** Firebase Authentication (email + Google)
+- **Authorization:**
+  - Only admin can perform raffle and delete group
+  - Only members can view group details
+  - Only the assigned secret santa can view your wishes (post-raffle)
+- **Firestore Rules:** Defined by UID and roles
+- **CORS:** Backend only accepts requests from authorized frontend
 
-## 🧪 Testing (Futuro - No en MVP)
+## 🧪 Testing (Future - Not in MVP)
 
 - Unit Tests: Jest
 - Integration Tests: Supertest (backend)
 - E2E Tests: Cypress (frontend)
 
-## 📊 Dependencias Principales
+## 📊 Main Dependencies
 
 **Frontend:**
 
@@ -327,16 +327,16 @@ interface INotificationService {
 **Shared:**
 
 - typescript
-- Types comunes
+- Common types
 
 ## 🚀 Deployment
 
 - **Frontend:** Firebase Hosting
-- **Backend:** Cloud Functions o Cloud Run
-- **BD:** Firebase Realtime Database
+- **Backend:** Cloud Functions or Cloud Run
+- **DB:** Firebase Realtime Database
 - **Auth:** Firebase Authentication
 
 ---
 
-**Versión:** 1.0.0 (MVP)  
-**Última actualización:** Enero 2026
+**Version:** 1.0.0 (MVP)  
+**Last updated:** January 2026

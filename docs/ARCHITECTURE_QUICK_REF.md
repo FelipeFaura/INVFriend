@@ -1,6 +1,6 @@
-# 🏗️ INVFriend - Referencia Rápida de Arquitectura
+# 🏗️ INVFriend - Architecture Quick Reference
 
-## 📊 Flujo de Datos
+## 📊 Data Flow
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -27,20 +27,20 @@
 │           🔥 FIREBASE (Cloud + Authentication)             │
 │  ┌──────────────────┬──────────────┬────────────────┐     │
 │  │ Realtime DB      │ Auth         │ Cloud Functions│     │
-│  │ (Datos)          │ (Usuarios)   │ (Lógica)       │     │
+│  │ (Data)           │ (Users)      │ (Logic)        │     │
 │  └──────────────────┴──────────────┴────────────────┘     │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🗂️ Capas Hexagonales
+## 🗂️ Hexagonal Layers
 
 ### **Frontend (Angular)**
 
 ```
-┌─ ADAPTERS (Presentación)
-│  └─ Componentes: LoginComponent, GroupListComponent, etc
+┌─ ADAPTERS (Presentation)
+│  └─ Components: LoginComponent, GroupListComponent, etc
 │  └─ HTTP Services: GroupHttpService, AuthHttpService
 │  └─ Guards: AuthGuard, AdminGuard
 │
@@ -48,16 +48,16 @@
 │  └─ IGroupRepository
 │  └─ IGroupHttpPort
 │
-├─ APPLICATION (Lógica)
+├─ APPLICATION (Logic)
 │  └─ Use Cases: CreateGroupUseCase, GetSecretSantaUseCase
 │  └─ Services: GroupApplicationService
 │  └─ DTOs: CreateGroupDTO
 │
-├─ DOMAIN (Modelos)
-│  └─ Modelos: Group, User, Wish
-│  └─ Errores: GroupNotFoundError
+├─ DOMAIN (Models)
+│  └─ Models: Group, User, Wish
+│  └─ Errors: GroupNotFoundError
 │
-└─ SHARED (Utilidades)
+└─ SHARED (Utilities)
    └─ Pipes, Directives, Utils, Constants
 ```
 
@@ -75,12 +75,12 @@
 │  └─ IAuthPort
 │  └─ INotificationPort
 │
-├─ APPLICATION (Lógica)
+├─ APPLICATION (Logic)
 │  └─ Use Cases: CreateGroupUseCase, PerformRaffleUseCase
 │  └─ Services: GroupApplicationService
 │  └─ DTOs: CreateGroupDTO, RaffleResultDTO
 │
-├─ DOMAIN (Lógica Pura)
+├─ DOMAIN (Pure Logic)
 │  └─ Entities: Group, User, Wish, Assignment, Notification
 │  └─ Errors: DomainError, InvalidBudgetError, GroupNotFoundError
 │
@@ -92,74 +92,74 @@
 
 ---
 
-## 🔄 Flujos Principales
+## 🔄 Main Flows
 
-### **1️⃣ Crear Grupo**
+### **1️⃣ Create Group**
 
 ```
 Angular Component
     ↓ (user input)
 GroupApplicationService (Frontend)
-    ↓ (llamada HTTP POST /api/groups)
+    ↓ (HTTP POST /api/groups call)
 GroupController (Backend)
     ↓
 CreateGroupUseCase
-    ↓ (inyecta IGroupRepository)
+    ↓ (injects IGroupRepository)
 FirebaseGroupRepository
     ↓ (Firebase SDK)
 Realtime Database
-    ↓ (retorna Group creado)
+    ↓ (returns created Group)
 ```
 
-### **2️⃣ Realizar Sorteo**
+### **2️⃣ Perform Raffle**
 
 ```
-Admin click "Iniciar Sorteo"
+Admin click "Start Raffle"
     ↓
 RaffleController
     ↓
 PerformRaffleUseCase
-    ├─ Valida que tenga ≥2 miembros
-    ├─ Genera asignaciones aleatorias
-    ├─ Guarda en FirebaseAssignmentRepository
-    └─ Envía notificaciones
+    ├─ Validates ≥2 members
+    ├─ Generates random assignments
+    ├─ Saves to FirebaseAssignmentRepository
+    └─ Sends notifications
     ↓
-Notificación a cada usuario
+Notification to each user
     ↓
-Frontend recibe y muestra
+Frontend receives and displays
 ```
 
-### **3️⃣ Ver Amigo Invisible**
+### **3️⃣ View Secret Santa**
 
 ```
-Usuario entra a grupo
+User enters group
     ↓
 GetSecretSantaUseCase (Frontend)
     ↓ (HTTP GET /api/groups/:id/secret-santa)
 GetSecretSantaController (Backend)
-    ↓ (valida que sorteo esté completado)
+    ↓ (validates raffle is completed)
 GetSecretSantaWishesUseCase
-    ├─ Obtiene assignment del usuario
-    ├─ Obtiene deseos del amigo invisible
-    ├─ Retorna Anonymous (sin nombre)
+    ├─ Gets user's assignment
+    ├─ Gets secret santa's wishes
+    ├─ Returns Anonymous (no name)
     ↓
-Frontend muestra deseos de amigo invisible
+Frontend displays secret santa's wishes
 ```
 
 ---
 
-## 📦 Archivos Clave
+## 📦 Key Files
 
 ### Backend
 
 ```
 backend/src/
-├── domain/entities/Group.ts         ⭐ Entidad principal
-├── application/use-cases/           ⭐ Lógica de negocio
+├── domain/entities/Group.ts         ⭐ Main entity
+├── application/use-cases/           ⭐ Business logic
 │   ├── CreateGroupUseCase.ts
 │   ├── PerformRaffleUseCase.ts
 │   └── AddWishUseCase.ts
-├── adapters/persistence/            ⭐ BD
+├── adapters/persistence/            ⭐ DB
 │   └── FirebaseGroupRepository.ts
 └── adapters/http/controllers/       ⭐ API
     ├── GroupController.ts
@@ -170,8 +170,8 @@ backend/src/
 
 ```
 frontend/src/app/
-├── domain/models/group.model.ts     ⭐ Modelos
-├── application/use-cases/           ⭐ Lógica
+├── domain/models/group.model.ts     ⭐ Models
+├── application/use-cases/           ⭐ Logic
 ├── adapters/components/             ⭐ UI
 │   ├── group-list/
 │   ├── group-detail/
@@ -183,84 +183,84 @@ frontend/src/app/
 
 ---
 
-## 🔐 Seguridad - Quién Ve Qué
+## 🔐 Security - Who Sees What
 
 ```
-USUARIO A (Admin)
-├─ Puede ver: todos los miembros, crear sorteo, eliminar grupo
-└─ NO puede: ver deseos de otros hasta sorteo
+USER A (Admin)
+├─ Can view: all members, create raffle, delete group
+└─ CANNOT: see others' wishes until raffle
 
-USUARIO B (Miembro)
-├─ Puede ver: lista de miembros del grupo
-└─ Después del sorteo:
-   ├─ Puede ver: su amigo invisible (anónimo) y sus deseos
-   └─ NO puede ver: amigos invisibles de otros
+USER B (Member)
+├─ Can view: group member list
+└─ After raffle:
+   ├─ Can view: their secret santa (anonymous) and their wishes
+   └─ CANNOT view: others' secret santas
 
-SISTEMA
-└─ Verifica Firebase Rules antes de retornar datos
+SYSTEM
+└─ Verifies Firebase Rules before returning data
 ```
 
 ---
 
-## 🎯 Validaciones en Capas
+## 🎯 Layer Validations
 
 ```
 ┌─────────────────────────────────┐
-│ CAPA 1: Frontend (Angular)       │
-│ - Validación UX (campos)        │
-│ - DTO validation antes de enviar│
+│ LAYER 1: Frontend (Angular)     │
+│ - UX validation (fields)        │
+│ - DTO validation before sending │
 └──────────────┬──────────────────┘
                │ HTTP
 ┌──────────────▼──────────────────┐
-│ CAPA 2: Backend HTTP (Express)  │
-│ - Autenticación                 │
-│ - Autorización (es admin?)      │
+│ LAYER 2: Backend HTTP (Express) │
+│ - Authentication                │
+│ - Authorization (is admin?)     │
 │ - DTO validation                │
 └──────────────┬──────────────────┘
                │
 ┌──────────────▼──────────────────┐
-│ CAPA 3: Use Case                │
-│ - Lógica de negocio             │
-│ - Reglas de dominio             │
+│ LAYER 3: Use Case               │
+│ - Business logic                │
+│ - Domain rules                  │
 └──────────────┬──────────────────┘
                │
 ┌──────────────▼──────────────────┐
-│ CAPA 4: Entity (Domain)         │
-│ - Validaciones invariantes      │
-│ - Estado válido                 │
+│ LAYER 4: Entity (Domain)        │
+│ - Invariant validations         │
+│ - Valid state                   │
 └──────────────┬──────────────────┘
                │
 ┌──────────────▼──────────────────┐
-│ CAPA 5: Firebase Rules          │
-│ - Seguridad a nivel datos       │
-│ - Quién puede ver qué           │
+│ LAYER 5: Firebase Rules         │
+│ - Data-level security           │
+│ - Who can see what              │
 └─────────────────────────────────┘
 ```
 
 ---
 
-## 📋 Checklist de Desarrollo
+## 📋 Development Checklist
 
-Cuando implementas una feature nueva:
+When implementing a new feature:
 
 ```
-☐ Lee ARCHITECTURE.md para tu feature
-☐ Identifica qué capas necesita tocar
-☐ Comienza por Domain (entities)
-☐ Luego Application (use cases)
-☐ Luego Adapters (controllers, services)
-☐ Tests en cada capa
-☐ Respeta las interfaces (ports)
-☐ Actualiza documentación si cambia arch
+☐ Read ARCHITECTURE.md for your feature
+☐ Identify which layers need to be touched
+☐ Start with Domain (entities)
+☐ Then Application (use cases)
+☐ Then Adapters (controllers, services)
+☐ Tests in each layer
+☐ Respect interfaces (ports)
+☐ Update documentation if architecture changes
 ```
 
 ---
 
-## 🚀 Ejemplo: Agregar Nueva Feature
+## 🚀 Example: Add New Feature
 
-Supongamos: "Cambiar nombre del grupo"
+Suppose: "Change group name"
 
-**1. Domain (Entidad)**
+**1. Domain (Entity)**
 
 ```typescript
 // backend/src/domain/entities/Group.ts
@@ -273,14 +273,14 @@ class Group {
 }
 ```
 
-**2. Application (Lógica)**
+**2. Application (Logic)**
 
 ```typescript
 // backend/src/application/use-cases/ChangeGroupNameUseCase.ts
 class ChangeGroupNameUseCase {
   execute(groupId: string, newName: string): Promise<void> {
     const group = await this.repository.findById(groupId);
-    group.changeName(newName); // Usa método de entity
+    group.changeName(newName); // Uses entity method
     await this.repository.update(group);
   }
 }
@@ -320,10 +320,10 @@ frontend/src/app/adapters/components/__tests__/group-detail.spec.ts
 
 ---
 
-## 📞 Referencia de Interfaces Principales
+## 📞 Main Interfaces Reference
 
 ```typescript
-// Puertos de Repositorio (Backend)
+// Repository Ports (Backend)
 interface IGroupRepository {
   create(group: Group): Promise<Group>;
   findById(id: string): Promise<Group | null>;
@@ -331,13 +331,13 @@ interface IGroupRepository {
   delete(id: string): Promise<void>;
 }
 
-// Puertos de Servicio (Backend)
+// Service Ports (Backend)
 interface INotificationPort {
   sendRaffleCompleted(userId: string, groupId: string): Promise<void>;
   sendWishAdded(userId: string, groupId: string): Promise<void>;
 }
 
-// DTOs (Ambos)
+// DTOs (Both)
 interface CreateGroupDTO {
   name: string;
   budgetLimit: number;
@@ -347,6 +347,6 @@ interface CreateGroupDTO {
 
 ---
 
-**Esta es tu hoja de referencia. Cuando estés en duda: READ → ARCHITECTURE.md**
+**This is your reference sheet. When in doubt: READ → ARCHITECTURE.md**
 
-_Última actualización: Enero 2026_
+_Last updated: January 2026_

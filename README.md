@@ -1,58 +1,58 @@
 # INVFriend 🎁
 
-**INVFriend** es una aplicación web y móvil para organizar sorteos de Amigo Invisible de forma sencilla y segura. Los usuarios pueden crear grupos, realizar sorteos automáticos y compartir sus deseos de regalo con su amigo invisible asignado.
+**INVFriend** is a web and mobile application to organize Secret Santa raffles in a simple and secure way. Users can create groups, perform automatic raffles, and share their gift wishes with their assigned secret santa.
 
-## 🚀 Características
+## 🚀 Features
 
-- ✅ Crear y gestionar grupos de Amigo Invisible
-- ✅ Autenticación con email/contraseña y Google Login
-- ✅ Sorteo automático e equitativo para grupos
-- ✅ Gestión de deseos (texto e URLs)
-- ✅ Privacidad garantizada: solo ves a tu amigo invisible
-- ✅ Notificaciones cuando se realiza el sorteo
-- ✅ Responsive design para web y móvil
+- ✅ Create and manage Secret Santa groups
+- ✅ Authentication with email/password and Google Login
+- ✅ Automatic and fair raffle for groups
+- ✅ Wishes management (text and URLs)
+- ✅ Privacy guaranteed: you only see your secret santa
+- ✅ Notifications when the raffle is performed
+- ✅ Responsive design for web and mobile
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Technology Stack
 
 - **Frontend:** Angular 18+
 - **Backend:** Node.js + Express
-- **Base de Datos:** Firebase Realtime Database
-- **Autenticación:** Firebase Authentication
+- **Database:** Firebase Realtime Database
+- **Authentication:** Firebase Authentication
 - **Hosting:** Firebase Hosting (frontend) + Cloud Functions (backend)
-- **Arquitectura:** Hexagonal
+- **Architecture:** Hexagonal
 
-## 📋 Requisitos Previos
+## 📋 Prerequisites
 
-- Node.js 18+ instalado
-- npm o yarn como gestor de paquetes
+- Node.js 18+ installed
+- npm or yarn as package manager
 - Firebase CLI (`npm install -g firebase-tools`)
-- Una cuenta en Firebase (gratuita)
+- A Firebase account (free)
 - Angular CLI (`npm install -g @angular/cli`)
 
-## 🔧 Instalación Local
+## 🔧 Local Installation
 
-### 1. Clonar el repositorio
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/tu-usuario/INVFriend.git
+git clone https://github.com/your-user/INVFriend.git
 cd INVFriend
 ```
 
-### 2. Configurar Firebase
+### 2. Configure Firebase
 
 ```bash
 firebase login
 firebase init
 ```
 
-Selecciona las opciones:
+Select the options:
 
 - Database: Firebase Realtime Database
 - Hosting: Firebase Hosting
 - Functions: Cloud Functions (backend)
-- Authentication: sí
+- Authentication: yes
 
-### 3. Instalar dependencias
+### 3. Install dependencies
 
 **Frontend (Angular):**
 
@@ -68,29 +68,29 @@ cd ../backend
 npm install
 ```
 
-### 4. Variables de entorno
+### 4. Environment variables
 
-Crea los archivos de configuración necesarios:
+Create the necessary configuration files:
 
 **`frontend/.env`:**
 
 ```
-ANGULAR_APP_FIREBASE_API_KEY=tu_api_key
-ANGULAR_APP_FIREBASE_AUTH_DOMAIN=tu_auth_domain
-ANGULAR_APP_FIREBASE_DATABASE_URL=tu_database_url
-ANGULAR_APP_FIREBASE_PROJECT_ID=tu_project_id
+ANGULAR_APP_FIREBASE_API_KEY=your_api_key
+ANGULAR_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
+ANGULAR_APP_FIREBASE_DATABASE_URL=your_database_url
+ANGULAR_APP_FIREBASE_PROJECT_ID=your_project_id
 ```
 
 **`backend/.env`:**
 
 ```
-FIREBASE_PROJECT_ID=tu_project_id
-FIREBASE_PRIVATE_KEY=tu_private_key
-FIREBASE_CLIENT_EMAIL=tu_client_email
+FIREBASE_PROJECT_ID=your_project_id
+FIREBASE_PRIVATE_KEY=your_private_key
+FIREBASE_CLIENT_EMAIL=your_client_email
 NODE_ENV=development
 ```
 
-### 5. Ejecutar localmente
+### 5. Run locally
 
 **Terminal 1 - Frontend:**
 
@@ -99,7 +99,7 @@ cd frontend
 ng serve
 ```
 
-Accede a `http://localhost:4200`
+Access `http://localhost:4200`
 
 **Terminal 2 - Backend:**
 
@@ -108,27 +108,27 @@ cd backend
 npm run dev
 ```
 
-El servidor estará en `http://localhost:3000`
+The server will be at `http://localhost:3000`
 
-## 📖 Documentación
+## 📖 Documentation
 
-- [ARCHITECTURE.md](./ARCHITECTURE.md) - Arquitectura, modelos de datos y especificaciones técnicas
-- [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md) - Referencia rápida y visual
-- [GUIDELINES.md](./GUIDELINES.md) - Guías de desarrollo y convenciones de código
+- [ARCHITECTURE.md](./ARCHITECTURE.md) - Architecture, data models, and technical specifications
+- [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md) - Quick reference and visual guide
+- [GUIDELINES.md](./GUIDELINES.md) - Development guides and code conventions
 
-## 🤝 Contribuir
+## 🤝 Contributing
 
-Este es un proyecto personal desarrollado con apoyo de IA. Consulta [GUIDELINES.md](./GUIDELINES.md) para convenciones de código y scope de tareas.
+This is a personal project developed with AI support. See [GUIDELINES.md](./GUIDELINES.md) for code conventions and task scope.
 
-## 📄 Licencia
+## 📄 License
 
-MIT License - Ver archivo LICENSE para más detalles
+MIT License - See LICENSE file for more details
 
-## 💬 Preguntas o Sugerencias
+## 💬 Questions or Suggestions
 
-Abre un issue en el repositorio para reportar bugs o sugerir mejoras.
+Open an issue in the repository to report bugs or suggest improvements.
 
 ---
 
-**Versión MVP:** 1.0.0
-**Última actualización:** Enero 2026
+**MVP Version:** 1.0.0
+**Last update:** January 2026

@@ -1,105 +1,105 @@
-# 📚 INVFriend - Índice de Documentación
+# 📚 INVFriend - Documentation Index
 
-**¿Dónde buscar?** Encontrá lo que necesitás en este índice.
-
----
-
-## 🚀 Comenzar Aquí
-
-| Si quieres...       | Lee...                           | Tiempo |
-| ------------------- | -------------------------------- | ------ |
-| **Entender qué es** | [README.md](./README.md)         | 10 min |
-| **Setup completo**  | README.md + backend/.env.example | 20 min |
+**Where to search?** Find what you need in this index.
 
 ---
 
-## 🏗️ Documentación Técnica
+## 🚀 Get Started Here
 
-| Documento                                                | Propósito                                                                 | Para quién                   | Cuándo leer        |
-| -------------------------------------------------------- | ------------------------------------------------------------------------- | ---------------------------- | ------------------ |
-| [ARCHITECTURE.md](./ARCHITECTURE.md)                     | **Diseño técnico completo** - Capas hexagonales, modelos de datos, flujos | Desarrolladores, Arquitectos | Antes de programar |
-| [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md) | **Hoja de referencia visual** - Diagramas, flujos, ejemplo                | Desarrolladores              | Durante desarrollo |
-| [GUIDELINES.md](./GUIDELINES.md)                         | **Cómo programar aquí** - Convenciones, estándares, buenas prácticas      | Desarrolladores              | Mientras codeas    |
-
----
-
-## ✍️ Desarrollo
-
-| Documento                                                                             | Propósito                                                    | Para quién                  |
-| ------------------------------------------------------------------------------------- | ------------------------------------------------------------ | --------------------------- |
-| [GUIDELINES.md](./GUIDELINES.md#-control-de-scope-para-ia) - Sección Control de Scope | **Asignar tareas a IA** sin que se salga del scope           | Product Owners, Arquitectos |
-| [TASK_TEMPLATE.md](./TASK_TEMPLATE.md)                                                | **Plantilla para tareas claras** - Ejemplos reales incluidos | Quién asigna tareas         |
+| If you want...            | Read...                          | Time   |
+| ------------------------- | -------------------------------- | ------ |
+| **Understand what it is** | [README.md](./README.md)         | 10 min |
+| **Complete setup**        | README.md + backend/.env.example | 20 min |
 
 ---
 
-## 📋 Matrices de Decisión Rápida
+## 🏗️ Technical Documentation
 
-### "No sé por dónde empezar"
+| Document                                                 | Purpose                                                              | For whom               | When to read       |
+| -------------------------------------------------------- | -------------------------------------------------------------------- | ---------------------- | ------------------ |
+| [ARCHITECTURE.md](./ARCHITECTURE.md)                     | **Complete technical design** - Hexagonal layers, data models, flows | Developers, Architects | Before coding      |
+| [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md) | **Visual quick reference** - Diagrams, flows, examples               | Developers             | During development |
+| [GUIDELINES.md](./GUIDELINES.md)                         | **How to code here** - Conventions, standards, best practices        | Developers             | While coding       |
 
-```
-¿Es tu primer día?
-  ├─ SÍ → Lee README.md
-  └─ NO → Ve a "Tengo una tarea"
-```
+---
 
-### "Tengo una tarea para implementar"
+## ✍️ Development
 
-```
-¿Es clara y específica?
-  ├─ SÍ → Ve a GUIDELINES.md, sigue la estructura
-  └─ NO → Usa TASK_TEMPLATE.md para formalizarla
+| Document                                                                           | Purpose                                               | For whom                   |
+| ---------------------------------------------------------------------------------- | ----------------------------------------------------- | -------------------------- |
+| [GUIDELINES.md](./GUIDELINES.md#-control-de-scope-para-ia) - Scope Control Section | **Assign tasks to AI** without going out of scope     | Product Owners, Architects |
+| [TASK_TEMPLATE.md](./TASK_TEMPLATE.md)                                             | **Template for clear tasks** - Real examples included | Task assigners             |
 
-Después:
-  ├─ Leer ARCHITECTURE.md sección relevante
-  ├─ Chequear GUIDELINES.md para convenciones
-  └─ Codear, testear, documentar
-```
+---
 
-### "Quiero empezar a codear"
+## 📋 Quick Decision Matrices
+
+### "I don't know where to start"
 
 ```
-1. Lee ARCHITECTURE.md
-2. Lee GUIDELINES.md
-3. Sigue flujo de git (branch, commit, PR)
-4. Implementa siguiendo GUIDELINES.md
+Is it your first day?
+  ├─ YES → Read README.md
+  └─ NO → Go to "I have a task"
 ```
 
-### "No entiendo la arquitectura"
+### "I have a task to implement"
 
 ```
-Sigue este orden:
-  1. Lee ARCHITECTURE.md sección "📐 Arquitectura Hexagonal"
-  2. Mira diagramas en ARCHITECTURE_QUICK_REF.md
-  3. Lee ejemplo de feature en ARCHITECTURE_QUICK_REF.md "🚀 Ejemplo"
-  4. Pregunta si no queda claro
+Is it clear and specific?
+  ├─ YES → Go to GUIDELINES.md, follow the structure
+  └─ NO → Use TASK_TEMPLATE.md to formalize it
+
+Then:
+  ├─ Read ARCHITECTURE.md relevant section
+  ├─ Check GUIDELINES.md for conventions
+  └─ Code, test, document
 ```
 
-### "Necesito asignar una tarea a IA"
+### "I want to start coding"
 
 ```
-1. Lee GUIDELINES.md sección "🎯 Control de Scope para IA"
-2. Usa TASK_TEMPLATE.md como plantilla
-3. Incluye: QUÉ, DÓNDE, MODELO, LÍMITES
-4. Sé específico y concreto
+1. Read ARCHITECTURE.md
+2. Read GUIDELINES.md
+3. Follow git flow (branch, commit, PR)
+4. Implement following GUIDELINES.md
+```
+
+### "I don't understand the architecture"
+
+```
+Follow this order:
+  1. Read ARCHITECTURE.md section "📐 Hexagonal Architecture"
+  2. Look at diagrams in ARCHITECTURE_QUICK_REF.md
+  3. Read feature example in ARCHITECTURE_QUICK_REF.md "🚀 Example"
+  4. Ask if not clear
+```
+
+### "I need to assign a task to AI"
+
+```
+1. Read GUIDELINES.md section "🎯 Scope Control for AI"
+2. Use TASK_TEMPLATE.md as template
+3. Include: WHAT, WHERE, MODEL, LIMITS
+4. Be specific and concrete
 ```
 
 ---
 
-## 🗺️ Estructura de Carpetas
+## 🗺️ Folder Structure
 
 ```
 INVFriend/
-├── 📄 README.md                    ← Empezar aquí
-├── 🏗️ ARCHITECTURE.md              ← Diseño técnico
-├── 🏗️ ARCHITECTURE_QUICK_REF.md    ← Referencia visual
-├── 📋 GUIDELINES.md                ← Cómo codear
-├── 📝 TASK_TEMPLATE.md             ← Plantilla de tareas
-├── 📚 INDEX.md                     ← Este archivo
+├── 📄 README.md                    ← Start here
+├── 🏗️ ARCHITECTURE.md              ← Technical design
+├── 🏗️ ARCHITECTURE_QUICK_REF.md    ← Visual reference
+├── 📋 GUIDELINES.md                ← How to code
+├── 📝 TASK_TEMPLATE.md             ← Task template
+├── 📚 INDEX.md                     ← This file
 │
 ├── frontend/                       ← Angular app
 │   ├── src/app/
-│   │   ├── adapters/              ← Componentes, servicios HTTP
-│   │   ├── domain/                ← Modelos, errores
+│   │   ├── adapters/              ← Components, HTTP services
+│   │   ├── domain/                ← Models, errors
 │   │   ├── application/           ← Use cases, services
 │   │   ├── ports/                 ← Interfaces
 │   │   └── shared/                ← Utilities
@@ -112,10 +112,10 @@ INVFriend/
 │   │   ├── application/           ← Use cases, services
 │   │   ├── ports/                 ← Interfaces
 │   │   └── shared/                ← Utilities
-│   ├── .env.example               ← Variables de entorno
+│   ├── .env.example               ← Environment variables
 │   └── [...]
 │
-└── shared/                         ← Código compartido
+└── shared/                         ← Shared code
     └── src/
         ├── models/
         ├── constants/
@@ -124,57 +124,57 @@ INVFriend/
 
 ---
 
-## 🎯 Por Rol
+## 🎯 By Role
 
-### **Desarrollador Frontend (Angular)**
+### **Frontend Developer (Angular)**
 
-1. Lee [README.md](./README.md) - setup
-2. Lee [ARCHITECTURE.md](./ARCHITECTURE.md) - entiende modelos
-3. Lee [GUIDELINES.md](./GUIDELINES.md) - convenciones Angular
-4. Implementa componentes/servicios en `frontend/src/app/`
+1. Read [README.md](./README.md) - setup
+2. Read [ARCHITECTURE.md](./ARCHITECTURE.md) - understand models
+3. Read [GUIDELINES.md](./GUIDELINES.md) - Angular conventions
+4. Implement components/services in `frontend/src/app/`
 
-### **Desarrollador Backend (Node/Express)**
+### **Backend Developer (Node/Express)**
 
-1. Lee [README.md](./README.md) - setup
-2. Lee [ARCHITECTURE.md](./ARCHITECTURE.md) - entiende capas
-3. Lee [GUIDELINES.md](./GUIDELINES.md) - convenciones Node
-4. Implementa controllers/use cases en `backend/src/`
+1. Read [README.md](./README.md) - setup
+2. Read [ARCHITECTURE.md](./ARCHITECTURE.md) - understand layers
+3. Read [GUIDELINES.md](./GUIDELINES.md) - Node conventions
+4. Implement controllers/use cases in `backend/src/`
 
-### **Product Owner / Diseñador**
+### **Product Owner / Designer**
 
-1. Lee [README.md](./README.md) - qué hace
-2. Lee [ARCHITECTURE.md](./ARCHITECTURE.md) - qué es posible
-3. Usa [TASK_TEMPLATE.md](./TASK_TEMPLATE.md) - asigna tareas claras
+1. Read [README.md](./README.md) - what it does
+2. Read [ARCHITECTURE.md](./ARCHITECTURE.md) - what's possible
+3. Use [TASK_TEMPLATE.md](./TASK_TEMPLATE.md) - assign clear tasks
 
-### **Contribuidor Externo**
+### **External Contributor**
 
-1. Lee [README.md](./README.md) - qué es
-2. Lee [GUIDELINES.md](./GUIDELINES.md) - estándares
-3. Sigue convenciones
-4. Abre PR
+1. Read [README.md](./README.md) - what it is
+2. Read [GUIDELINES.md](./GUIDELINES.md) - standards
+3. Follow conventions
+4. Open PR
 
 ### **QA / Tester**
 
-1. Lee [README.md](./README.md) - cómo ejecutar
-2. Lee [ARCHITECTURE.md](./ARCHITECTURE.md) - flujos principales
-3. Prueba los 6 flujos en sección "🔄 Flujos Principales"
+1. Read [README.md](./README.md) - how to run
+2. Read [ARCHITECTURE.md](./ARCHITECTURE.md) - main flows
+3. Test the 6 flows in section "🔄 Main Flows"
 
 ---
 
-## 📖 Lecturas Recomendadas por Tiempo
+## 📖 Recommended Reading by Time
 
-### ⚡ 20 minutos (Mínimo)
+### ⚡ 20 minutes (Minimum)
 
 - [README.md](./README.md) (10 min)
 - [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md) (10 min)
 
-### 🔥 45 minutos (Recomendado)
+### 🔥 45 minutes (Recommended)
 
 - [README.md](./README.md) (10 min)
 - [ARCHITECTURE.md](./ARCHITECTURE.md) (25 min)
 - [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md) (10 min)
 
-### 📚 1.5 horas (Completo)
+### 📚 1.5 hours (Complete)
 
 - [README.md](./README.md) (10 min)
 - [ARCHITECTURE.md](./ARCHITECTURE.md) (25 min)
@@ -183,163 +183,163 @@ INVFriend/
 
 ---
 
-## 🔍 Buscar Respuestas
+## 🔍 Find Answers
 
-### "¿Cómo se estructura el backend?"
+### "How is the backend structured?"
 
-→ [ARCHITECTURE.md](./ARCHITECTURE.md#-estructura-del-monorepo) - Sección "📁 Estructura del Monorepo"
+→ [ARCHITECTURE.md](./ARCHITECTURE.md#-estructura-del-monorepo) - Section "📁 Monorepo Structure"
 
-### "¿Cuál es la convención de nombres?"
+### "What is the naming convention?"
 
 → [GUIDELINES.md](./GUIDELINES.md#-estándares-de-nombrado)
 
-### "¿Cómo creo un Use Case?"
+### "How do I create a Use Case?"
 
 → [GUIDELINES.md](./GUIDELINES.md#nodejs-express) + [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md#-ejemplo-agregar-nueva-feature)
 
-### "¿Cómo hago tests?"
+### "How do I do tests?"
 
 → [GUIDELINES.md](./GUIDELINES.md#-testing)
 
-### "¿Cómo asigno tareas a IA?"
+### "How do I assign tasks to AI?"
 
 → [GUIDELINES.md](./GUIDELINES.md#-control-de-scope-para-ia) + [TASK_TEMPLATE.md](./TASK_TEMPLATE.md)
 
-### "¿Cómo instalo el proyecto?"
+### "How do I install the project?"
 
 → [README.md](./README.md#-instalación-local)
 
-### "¿Cuáles son los flujos principales?"
+### "What are the main flows?"
 
-→ [ARCHITECTURE.md](./ARCHITECTURE.md#-flujos-principales) o [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md#-flujos-principales)
+→ [ARCHITECTURE.md](./ARCHITECTURE.md#-flujos-principales) or [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md#-flujos-principales)
 
-### "¿Qué es la arquitectura hexagonal?"
+### "What is hexagonal architecture?"
 
 → [ARCHITECTURE.md](./ARCHITECTURE.md#-arquitectura-hexagonal) + [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md#-capas-hexagonales)
 
-### "¿Cómo contribuyo?"
+### "How do I contribute?"
 
-→ Lee [GUIDELINES.md](./GUIDELINES.md) y sigue convenciones
+→ Read [GUIDELINES.md](./GUIDELINES.md) and follow conventions
 
-### "¿Cómo manejo errores?"
+### "How do I handle errors?"
 
-→ [GUIDELINES.md](./GUIDELINES.md#-buenas-prácticas) - Sección "Error Handling"
-
----
-
-## 🚨 Documentos Críticos (No Omitir)
-
-**Estos son OBLIGATORIOS antes de programar:**
-
-1. ✅ [README.md](./README.md) - Descripción y setup
-2. ✅ [ARCHITECTURE.md](./ARCHITECTURE.md) - Estructura
-3. ✅ [GUIDELINES.md](./GUIDELINES.md) - Cómo codear
-
-**Estos son CRÍTICOS si asignas tareas:**
-
-1. ✅ [GUIDELINES.md](./GUIDELINES.md#-control-de-scope-para-ia) - Control de scope
-2. ✅ [TASK_TEMPLATE.md](./TASK_TEMPLATE.md) - Plantilla de tareas
+→ [GUIDELINES.md](./GUIDELINES.md#-buenas-prácticas) - Section "Error Handling"
 
 ---
 
-## 📞 Ayuda Rápida
+## 🚨 Critical Documents (Do Not Skip)
 
-### Si estás atrapado:
+**These are MANDATORY before coding:**
 
-1. Busca en este INDEX
-2. Lee el documento recomendado
-3. Si aún tienes dudas, abre una **Discussión** en GitHub
+1. ✅ [README.md](./README.md) - Description and setup
+2. ✅ [ARCHITECTURE.md](./ARCHITECTURE.md) - Structure
+3. ✅ [GUIDELINES.md](./GUIDELINES.md) - How to code
 
-### Si quieres mejorar la documentación:
+**These are CRITICAL if you assign tasks:**
 
-Abre un PR con cambios. Por favor:
-
-- Mantén la estructura de este INDEX
-- Actualiza referencias cruzadas
-- Usa la misma notación y formato
+1. ✅ [GUIDELINES.md](./GUIDELINES.md#-control-de-scope-para-ia) - Scope control
+2. ✅ [TASK_TEMPLATE.md](./TASK_TEMPLATE.md) - Task template
 
 ---
 
-## 🔗 Links Directos
+## 📞 Quick Help
 
-**Archivos de Configuración:**
+### If you're stuck:
 
-- [firebase.json](./firebase.json) - Config Firebase
-- [package.json](./package.json) - Scripts del proyecto
-- [backend/.env.example](./backend/.env.example) - Variables de entorno
-- [.gitignore](./.gitignore) - Archivos ignorados
+1. Search in this INDEX
+2. Read the recommended document
+3. If you still have questions, open a **Discussion** on GitHub
 
-**Licencia:**
+### If you want to improve documentation:
+
+Open a PR with changes. Please:
+
+- Keep the structure of this INDEX
+- Update cross-references
+- Use the same notation and format
+
+---
+
+## 🔗 Direct Links
+
+**Configuration Files:**
+
+- [firebase.json](./firebase.json) - Firebase config
+- [package.json](./package.json) - Project scripts
+- [backend/.env.example](./backend/.env.example) - Environment variables
+- [.gitignore](./.gitignore) - Ignored files
+
+**License:**
 
 - [LICENSE](./LICENSE) - MIT License
 
 ---
 
-## 📊 Estadísticas de Documentación
+## 📊 Documentation Statistics
 
-| Documento                 | Líneas | Lectura | Cubre                   |
-| ------------------------- | ------ | ------- | ----------------------- |
-| README.md                 | ~180   | 10 min  | Descripción, setup      |
-| ARCHITECTURE.md           | ~350   | 25 min  | Diseño técnico completo |
-| GUIDELINES.md             | ~500   | 30 min  | Convenciones, prácticas |
-| ARCHITECTURE_QUICK_REF.md | ~400   | 20 min  | Referencia visual       |
-| TASK_TEMPLATE.md          | ~250   | 10 min  | Plantilla de tareas     |
+| Document                  | Lines | Reading | Covers                    |
+| ------------------------- | ----- | ------- | ------------------------- |
+| README.md                 | ~180  | 10 min  | Description, setup        |
+| ARCHITECTURE.md           | ~350  | 25 min  | Complete technical design |
+| GUIDELINES.md             | ~500  | 30 min  | Conventions, practices    |
+| ARCHITECTURE_QUICK_REF.md | ~400  | 20 min  | Visual reference          |
+| TASK_TEMPLATE.md          | ~250  | 10 min  | Task template             |
 
-**Total: ~2,080 líneas de documentación**
-
----
-
-## ✅ Checklist para Nuevo Desarrollador
-
-- [ ] He leído README.md
-- [ ] He leído ARCHITECTURE.md
-- [ ] He leído GUIDELINES.md
-- [ ] Entiendo la estructura de carpetas
-- [ ] Entiendo las 4 capas hexagonales
-- [ ] Sé dónde están los modelos, use cases, adapters
-- [ ] He visto un ejemplo en ARCHITECTURE_QUICK_REF.md
-- [ ] Estoy listo para mi primera tarea ✨
+**Total: ~2,080 lines of documentation**
 
 ---
 
-## 🎓 Orden Recomendado de Lectura
+## ✅ New Developer Checklist
+
+- [ ] I've read README.md
+- [ ] I've read ARCHITECTURE.md
+- [ ] I've read GUIDELINES.md
+- [ ] I understand the folder structure
+- [ ] I understand the 4 hexagonal layers
+- [ ] I know where models, use cases, adapters are
+- [ ] I've seen an example in ARCHITECTURE_QUICK_REF.md
+- [ ] I'm ready for my first task ✨
+
+---
+
+## 🎓 Recommended Reading Order
 
 ```
-1. Este archivo (INDEX.md)              ← Estás aquí
+1. This file (INDEX.md)                 ← You are here
    │
-   ├─ 2. README.md                      ← Qué es INVFriend (10 min)
+   ├─ 2. README.md                      ← What is INVFriend (10 min)
    │   │
-   │   ├─ 3. ARCHITECTURE.md            ← Cómo funciona (25 min)
+   │   ├─ 3. ARCHITECTURE.md            ← How it works (25 min)
    │   │   │
-   │   │   └─ 4. ARCHITECTURE_QUICK_REF.md ← Referencia (15 min)
+   │   │   └─ 4. ARCHITECTURE_QUICK_REF.md ← Reference (15 min)
    │   │
-   │   ├─ 5. GUIDELINES.md              ← Cómo codear (30 min)
+   │   ├─ 5. GUIDELINES.md              ← How to code (30 min)
    │   │
-   │   └─ 6. Según tu rol:
-   │       ├─ Dev Backend → GUIDELINES.md (Node section)
-   │       ├─ Dev Frontend → GUIDELINES.md (Angular section)
+   │   └─ 6. Based on your role:
+   │       ├─ Backend Dev → GUIDELINES.md (Node section)
+   │       ├─ Frontend Dev → GUIDELINES.md (Angular section)
    │       ├─ PO/Designer → TASK_TEMPLATE.md
    │       └─ Manager → GUIDELINES "scope control"
    │
-   └─ ¡Listo! Comienza tu primera tarea
+   └─ Ready! Begin your first task
 ```
 
 ---
 
-**Versión:** 1.0.0  
-**Última actualización:** Enero 2026  
-**Mantenedor:** INVFriend Team
+**Version:** 1.0.0  
+**Last updated:** January 2026  
+**Maintainer:** INVFriend Team
 
 ---
 
-## 🎉 ¡Bienvenido a INVFriend!
+## 🎉 Welcome to INVFriend!
 
-Tienes toda la información que necesitas.
+You have all the information you need.
 
-**¿Por dónde empiezas?**
+**Where do you start?**
 
-- **Si es tu primer día:** [README.md](./README.md)
-- **Si tienes una tarea:** [GUIDELINES.md](./GUIDELINES.md) + [ARCHITECTURE.md](./ARCHITECTURE.md)
-- **Si necesitas asignar:** [TASK_TEMPLATE.md](./TASK_TEMPLATE.md)
+- **If it's your first day:** [README.md](./README.md)
+- **If you have a task:** [GUIDELINES.md](./GUIDELINES.md) + [ARCHITECTURE.md](./ARCHITECTURE.md)
+- **If you need to assign:** [TASK_TEMPLATE.md](./TASK_TEMPLATE.md)
 
-¡Adelante! 🚀
+Let's go! 🚀
