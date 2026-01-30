@@ -64,6 +64,7 @@ c:\git\INVFriend\
 - Create code without associated unit tests
 - Leave commented code, debug logs, or console.log()
 - Create files in unspecified locations
+- Avoid repetitive documents or explanations
 
 ### ✅ MANDATORY
 
@@ -73,6 +74,8 @@ c:\git\INVFriend\
 - Execute `npm run build` and validate successful compilation
 - If there are tests, run `npm test` and verify they pass
 - Ask at the end: _"Do you need adjustments or is there a next task?"_
+- ensure documentation is updated if necessary
+- avoid documents too lengthy; keep it concise and relevant
 
 ### 📏 SCOPE CONTROL
 
@@ -113,4 +116,4 @@ c:\git\INVFriend\
 
 ---
 
-**Context understood? Respond only: ✅ Context understood and ready to receive tasks**
+**Context understood? Respond only: ✅ Context understood and ready to receive task and show the actual project state progress (architecture statud and next task or sprint)**
