@@ -1,27 +1,27 @@
-{
-  "preset": "ts-jest",
-  "testEnvironment": "node",
-  "roots": [
+module.exports = {
+  preset: "ts-jest",
+  testEnvironment: "node",
+  roots: [
     "<rootDir>/src"
   ],
-  "testMatch": [
+  testMatch: [
     "**/__tests__/**/*.ts",
     "**/?(*.)+(spec|test).ts"
   ],
-  "moduleFileExtensions": [
+  moduleFileExtensions: [
     "ts",
     "js",
     "json"
   ],
-  "collectCoverageFrom": [
+  collectCoverageFrom: [
     "src/**/*.ts",
     "!src/**/*.spec.ts",
     "!src/index.ts"
   ],
-  "coverageDirectory": "coverage",
-  "coverageReporters": [
+  coverageDirectory: "coverage",
+  coverageReporters: [
     "text",
     "lcov",
     "html"
   ]
-}
+};
