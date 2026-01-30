@@ -18,6 +18,10 @@ yarn-error.log*
 /out-tsc/
 .angular/
 
+# INVFriend
+*/dist/invfriend/*
+
+
 # Build artifacts
 /build/
 /dist/
