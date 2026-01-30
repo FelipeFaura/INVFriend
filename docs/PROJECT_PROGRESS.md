@@ -7,7 +7,7 @@
 ## 🎯 Overall Progress
 
 ```
-██████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 15.6% Complete (5/32 tasks)
+███████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 18.75% Complete (6/32 tasks)
 ```
 
 **Sprint Completion**: 1/8 Sprints (12.5%)  
@@ -36,15 +36,15 @@
 ### 🔄 Sprint 2: Auth Frontend (IN PROGRESS)
 
 ```
-█████░░░░░░░░░░░░░░░ 25% (1/4 tasks)
+██████████░░░░░░░░░░ 50% (2/4 tasks)
 ```
 
 - ✅ TASK-005: Auth Models
-- 🔄 TASK-006: HTTP Service (READY TO START)
-- ⏸️ TASK-007: Login/Register UI
+- ✅ TASK-006: HTTP Service
+- 🔄 TASK-007: Login/Register UI (READY TO START)
 - ⏸️ TASK-008: Auth Guards
 
-**Status**: TASK-005 completed, TASK-006 ready to start
+**Status**: TASK-006 completed, TASK-007 ready to start
 
 ---
 

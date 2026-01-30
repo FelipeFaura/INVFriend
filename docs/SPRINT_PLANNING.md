@@ -119,40 +119,43 @@ Create domain models and error classes for frontend authentication.
 
 ---
 
-#### 🔄 TASK-006: Implement Auth HTTP Service (Frontend) - READY TO START
+#### ✅ TASK-006: Implement Auth HTTP Service (Frontend) - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 4 hours  
 **Dependencies**: TASK-005 (✅ Completed)  
-**Status**: 🔄 READY TO START
+**Status**: ✅ COMPLETED (January 30, 2026)
 
 **Description**:
 Create HTTP service to communicate with backend auth API.
 
-**Files to Create**:
+**Files Created**:
 
 - `frontend/src/app/adapters/services/auth-http.service.ts`
 - `frontend/src/app/adapters/services/__tests__/auth-http.service.spec.ts`
 - `frontend/src/app/application/services/auth-application.service.ts`
+- `frontend/src/app/adapters/http/auth.interceptor.ts`
+- `frontend/src/environments/environment.ts`
+- `frontend/src/environments/environment.prod.ts`
 
 **Requirements**:
 
-- [ ] All API calls typed with RxJS Observables
-- [ ] Error handling with catchError
-- [ ] Token storage in localStorage
-- [ ] Automatic token refresh on 401
-- [ ] HTTP interceptor for adding Authorization header
+- [x] All API calls typed with RxJS Observables
+- [x] Error handling with catchError
+- [x] Token storage in localStorage
+- [x] Automatic token refresh on 401
+- [x] HTTP interceptor for adding Authorization header
 
 **Reference**: [GUIDELINES.md](./GUIDELINES.md) - Angular Services
 
 ---
 
-#### ⏸️ TASK-007: Implement Login & Register Components
+#### 🔄 TASK-007: Implement Login & Register Components - READY TO START
 
 **Priority**: HIGH  
 **Estimated Effort**: 6 hours  
-**Dependencies**: TASK-006  
-**Status**: ⏸️ PENDING (Waiting for TASK-006)
+**Dependencies**: TASK-006 (✅ Completed)  
+**Status**: 🔄 READY TO START
 
 **Description**:
 Create login and registration UI components.
