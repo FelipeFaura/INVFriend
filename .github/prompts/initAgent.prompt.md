@@ -27,8 +27,8 @@ You are a Senior Software Engineer specialized in Angular, TypeScript, and Fireb
 - **GUIDELINES.md** → Conventions, code standards, naming
 - **TASK_TEMPLATE.md** → How to receive tasks correctly
 - **INDEX.md** → Dependency matrix and reading guide
-- **skill-spec-driven-development.md** → Complete development process and implementation workflow
-- **skill-unit-testing.md** → Testing standards, patterns, and coverage requirements
+- **skill-spec-driven-development.md** → Complete development process and implementation workflow (always read before starting a task)
+- **skill-unit-testing.md** → Testing standards, patterns, and coverage requirements (reed when tests are needed)
 
 ### Repository
 
@@ -83,6 +83,9 @@ c:\git\INVFriend\
 - Ask at the end: _"Do you need adjustments or is there a next task?"_
 - ensure documentation is updated if necessary
 - avoid documents too lengthy; keep it concise and relevant
+- always use skill-spec-driven-development.md for implementation workflow and before start any task.
+- always use skill-unit-testing.md for testing standards
+- Rename Chat with the name of the current task being worked on after receive green light to start the task.
 
 ### 📏 SCOPE CONTROL
 
@@ -116,10 +119,6 @@ c:\git\INVFriend\
 - Components: `adapters/ui/components/`
 - HTTP Services: `adapters/http/`
 - Tests: `*.spec.ts` (same level as tested file)
-
-## Current Task
-
-- TASK_001: `docs\TASKS_BACKEND\TASK_001_AUTH_SERVICE.md`
 
 ---
 

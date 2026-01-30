@@ -93,17 +93,17 @@ Sprint 8: Polish, Testing & Deployment
 
 ### SPRINT 2 - Task Breakdown
 
-#### 🔄 TASK-005: Implement Auth Domain Models & Errors (Frontend) - READY TO START
+#### ✅ TASK-005: Implement Auth Domain Models & Errors (Frontend) - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 2 hours  
 **Dependencies**: TASK-004 (✅ Completed)  
-**Status**: 🔄 READY TO START
+**Status**: ✅ COMPLETED (January 30, 2026)
 
 **Description**:
 Create domain models and error classes for frontend authentication.
 
-**Files to Create**:
+**Files Created**:
 
 - `frontend/src/app/domain/models/user.model.ts`
 - `frontend/src/app/domain/errors/auth-errors.ts`
@@ -111,20 +111,20 @@ Create domain models and error classes for frontend authentication.
 
 **Requirements**:
 
-- [ ] User model matches backend structure
-- [ ] Error classes for common auth failures
-- [ ] DTOs for login, register, Google login
+- [x] User model matches backend structure
+- [x] Error classes for common auth failures
+- [x] DTOs for login, register, Google login
 
 **Reference**: [ARCHITECTURE.md](./ARCHITECTURE.md) - Data Models
 
 ---
 
-#### ⏸️ TASK-006: Implement Auth HTTP Service (Frontend)
+#### 🔄 TASK-006: Implement Auth HTTP Service (Frontend) - READY TO START
 
 **Priority**: HIGH  
 **Estimated Effort**: 4 hours  
-**Dependencies**: TASK-005  
-**Status**: ⏸️ PENDING (Waiting for TASK-005)
+**Dependencies**: TASK-005 (✅ Completed)  
+**Status**: 🔄 READY TO START
 
 **Description**:
 Create HTTP service to communicate with backend auth API.
