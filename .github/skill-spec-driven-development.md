@@ -458,7 +458,7 @@ describe("CreateGroupUseCase", () => {
 });
 
 
-### Phase 6: Commit message (important - See Git Commits in GUIDELINES.md )
+### Phase 6: Commit message (important - See "Git Commits" in GUIDELINES.md )
 
 ```
 
