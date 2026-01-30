@@ -1,22 +1,25 @@
-import { TestBed } from '@angular/core/testing';
-import { Router, UrlTree } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { TestBed } from "@angular/core/testing";
+import { Router, UrlTree } from "@angular/router";
+import { BehaviorSubject, Observable } from "rxjs";
 
-import { AuthGuard } from '../auth.guard';
-import { AuthApplicationService } from '../../../application/services/auth-application.service';
-import { StoredAuthState, INITIAL_AUTH_STATE } from '../../../application/dto/auth.dto';
-import { User } from '../../../domain/models/user.model';
+import { AuthGuard } from "../auth.guard";
+import { AuthApplicationService } from "../../../application/services/auth-application.service";
+import {
+  StoredAuthState,
+  INITIAL_AUTH_STATE,
+} from "../../../application/dto/auth.dto";
+import { User } from "../../../domain/models/user.model";
 
-describe('AuthGuard', () => {
+describe("AuthGuard", () => {
   let guard: AuthGuard;
   let authServiceSpy: jasmine.SpyObj<AuthApplicationService>;
   let routerSpy: jasmine.SpyObj<Router>;
   let authStateSubject: BehaviorSubject<StoredAuthState>;
 
   const mockUser: User = {
-    id: 'user-123',
-    email: 'test@example.com',
-    name: 'Test User',
+    id: "user-123",
+    email: "test@example.com",
+    name: "Test User",
     photoUrl: null,
     createdAt: Date.now(),
     updatedAt: Date.now(),
@@ -24,21 +27,21 @@ describe('AuthGuard', () => {
 
   const authenticatedState: StoredAuthState = {
     user: mockUser,
-    accessToken: 'valid-token',
-    refreshToken: 'refresh-token',
+    accessToken: "valid-token",
+    refreshToken: "refresh-token",
     expiresAt: Date.now() + 3600000,
   };
 
   beforeEach(() => {
     authStateSubject = new BehaviorSubject<StoredAuthState>(INITIAL_AUTH_STATE);
 
-    authServiceSpy = jasmine.createSpyObj('AuthApplicationService', [], {
+    authServiceSpy = jasmine.createSpyObj("AuthApplicationService", [], {
       isAuthenticated: false,
       authState$: authStateSubject.asObservable(),
     });
 
-    routerSpy = jasmine.createSpyObj('Router', ['createUrlTree'], {
-      url: '/protected',
+    routerSpy = jasmine.createSpyObj("Router", ["createUrlTree"], {
+      url: "/protected",
     });
     routerSpy.createUrlTree.and.returnValue({} as UrlTree);
 
@@ -53,35 +56,39 @@ describe('AuthGuard', () => {
     guard = TestBed.inject(AuthGuard);
   });
 
-  describe('canActivate', () => {
-    it('should return true when user is authenticated (sync check)', () => {
-      Object.defineProperty(authServiceSpy, 'isAuthenticated', { value: true });
+  describe("canActivate", () => {
+    it("should return true when user is authenticated (sync check)", () => {
+      Object.defineProperty(authServiceSpy, "isAuthenticated", { value: true });
 
       const result = guard.canActivate();
 
       expect(result).toBeTrue();
     });
 
-    it('should redirect to login when user is not authenticated', (done) => {
-      Object.defineProperty(authServiceSpy, 'isAuthenticated', { value: false });
+    it("should redirect to login when user is not authenticated", (done) => {
+      Object.defineProperty(authServiceSpy, "isAuthenticated", {
+        value: false,
+      });
       authStateSubject.next(INITIAL_AUTH_STATE);
 
       const result = guard.canActivate();
 
       if (result instanceof Observable) {
         result.subscribe((value) => {
-          expect(routerSpy.createUrlTree).toHaveBeenCalledWith(['/login'], {
-            queryParams: { returnUrl: '/protected' },
+          expect(routerSpy.createUrlTree).toHaveBeenCalledWith(["/login"], {
+            queryParams: { returnUrl: "/protected" },
           });
           done();
         });
       } else {
-        fail('Expected Observable');
+        fail("Expected Observable");
       }
     });
 
-    it('should return true when async state shows authenticated', (done) => {
-      Object.defineProperty(authServiceSpy, 'isAuthenticated', { value: false });
+    it("should return true when async state shows authenticated", (done) => {
+      Object.defineProperty(authServiceSpy, "isAuthenticated", {
+        value: false,
+      });
       authStateSubject.next(authenticatedState);
 
       const result = guard.canActivate();
@@ -92,22 +99,24 @@ describe('AuthGuard', () => {
           done();
         });
       } else {
-        fail('Expected Observable');
+        fail("Expected Observable");
       }
     });
   });
 
-  describe('canActivateChild', () => {
-    it('should use the same logic as canActivate', () => {
-      Object.defineProperty(authServiceSpy, 'isAuthenticated', { value: true });
+  describe("canActivateChild", () => {
+    it("should use the same logic as canActivate", () => {
+      Object.defineProperty(authServiceSpy, "isAuthenticated", { value: true });
 
       const result = guard.canActivateChild();
 
       expect(result).toBeTrue();
     });
 
-    it('should redirect to login for child routes when not authenticated', (done) => {
-      Object.defineProperty(authServiceSpy, 'isAuthenticated', { value: false });
+    it("should redirect to login for child routes when not authenticated", (done) => {
+      Object.defineProperty(authServiceSpy, "isAuthenticated", {
+        value: false,
+      });
       authStateSubject.next(INITIAL_AUTH_STATE);
 
       const result = guard.canActivateChild();
@@ -118,7 +127,7 @@ describe('AuthGuard', () => {
           done();
         });
       } else {
-        fail('Expected Observable');
+        fail("Expected Observable");
       }
     });
   });

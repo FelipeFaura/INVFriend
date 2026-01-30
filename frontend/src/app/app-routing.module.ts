@@ -35,7 +35,7 @@ const routes: Routes = [
     title: "Dashboard - INVFriend",
     loadChildren: () =>
       import("./adapters/components/dashboard/dashboard.module").then(
-        (m) => m.DashboardModule
+        (m) => m.DashboardModule,
       ),
   },
   {
@@ -44,7 +44,7 @@ const routes: Routes = [
     title: "Groups - INVFriend",
     loadChildren: () =>
       import("./adapters/components/groups/groups.module").then(
-        (m) => m.GroupsModule
+        (m) => m.GroupsModule,
       ),
   },
   {
@@ -53,7 +53,7 @@ const routes: Routes = [
     title: "Profile - INVFriend",
     loadChildren: () =>
       import("./adapters/components/profile/profile.module").then(
-        (m) => m.ProfileModule
+        (m) => m.ProfileModule,
       ),
   },
   {

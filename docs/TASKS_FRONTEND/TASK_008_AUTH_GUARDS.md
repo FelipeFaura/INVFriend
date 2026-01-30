@@ -32,6 +32,7 @@ Create route guards to protect authenticated routes and implement proper routing
 ## 🚫 Scope / Limits
 
 ❌ Do NOT include:
+
 - Full admin verification against group.adminIds (Sprint 3)
 - Actual group/profile implementations (placeholders only)
 
@@ -45,19 +46,23 @@ Create route guards to protect authenticated routes and implement proper routing
 ## 📁 Files Created/Modified
 
 ### Guards
+
 - `frontend/src/app/adapters/guards/auth.guard.ts` - Protects authenticated routes
 - `frontend/src/app/adapters/guards/guest.guard.ts` - Prevents logged-in users accessing login/register
 - `frontend/src/app/adapters/guards/admin.guard.ts` - Admin route protection (basic implementation)
 
 ### Tests
+
 - `frontend/src/app/adapters/guards/__tests__/auth.guard.spec.ts`
 - `frontend/src/app/adapters/guards/__tests__/admin.guard.spec.ts`
 - `frontend/src/app/adapters/guards/__tests__/guest.guard.spec.ts`
 
 ### Routing
+
 - `frontend/src/app/app-routing.module.ts` - Updated with guards and lazy loading
 
 ### Placeholder Components
+
 - `frontend/src/app/adapters/components/dashboard/dashboard.component.ts`
 - `frontend/src/app/adapters/components/dashboard/dashboard.module.ts`
 - `frontend/src/app/adapters/components/groups/groups-list.component.ts`

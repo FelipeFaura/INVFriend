@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import {
   CanActivate,
   ActivatedRouteSnapshot,
   Router,
   UrlTree,
-} from '@angular/router';
-import { Observable, map, take } from 'rxjs';
+} from "@angular/router";
+import { Observable, map, take } from "rxjs";
 
-import { AuthApplicationService } from '../../application/services/auth-application.service';
+import { AuthApplicationService } from "../../application/services/auth-application.service";
 
 /**
  * Guard to protect routes that require admin privileges
@@ -16,26 +16,26 @@ import { AuthApplicationService } from '../../application/services/auth-applicat
  * For now, just checks authentication
  */
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class AdminGuard implements CanActivate {
   constructor(
     private readonly authService: AuthApplicationService,
-    private readonly router: Router
+    private readonly router: Router,
   ) {}
 
   canActivate(
-    route: ActivatedRouteSnapshot
+    route: ActivatedRouteSnapshot,
   ): Observable<boolean | UrlTree> | boolean | UrlTree {
     // First check if authenticated
     if (!this.authService.isAuthenticated) {
-      return this.router.createUrlTree(['/login'], {
+      return this.router.createUrlTree(["/login"], {
         queryParams: { returnUrl: route.url.toString() },
       });
     }
 
     // Get the group ID from route params
-    const groupId = route.paramMap.get('groupId') || route.params['groupId'];
+    const groupId = route.paramMap.get("groupId") || route.params["groupId"];
 
     if (!groupId) {
       // No group context, just check authentication
@@ -50,13 +50,13 @@ export class AdminGuard implements CanActivate {
         const user = state.user;
 
         if (!user) {
-          return this.router.createUrlTree(['/login']);
+          return this.router.createUrlTree(["/login"]);
         }
 
         // For now, allow access if authenticated
         // Full admin check will compare user.id with group.adminIds
         return true;
-      })
+      }),
     );
   }
 }

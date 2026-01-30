@@ -1,25 +1,25 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import {
   CanActivate,
   CanActivateChild,
   Router,
   UrlTree,
-} from '@angular/router';
-import { Observable, map, take } from 'rxjs';
+} from "@angular/router";
+import { Observable, map, take } from "rxjs";
 
-import { AuthApplicationService } from '../../application/services/auth-application.service';
+import { AuthApplicationService } from "../../application/services/auth-application.service";
 
 /**
  * Guard to protect routes that require authentication
  * Redirects to /login if user is not authenticated
  */
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class AuthGuard implements CanActivate, CanActivateChild {
   constructor(
     private readonly authService: AuthApplicationService,
-    private readonly router: Router
+    private readonly router: Router,
   ) {}
 
   canActivate(): Observable<boolean | UrlTree> | boolean | UrlTree {
@@ -30,7 +30,10 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     return this.checkAuthentication();
   }
 
-  private checkAuthentication(): Observable<boolean | UrlTree> | boolean | UrlTree {
+  private checkAuthentication():
+    | Observable<boolean | UrlTree>
+    | boolean
+    | UrlTree {
     // First check synchronous state
     if (this.authService.isAuthenticated) {
       return true;
@@ -44,10 +47,10 @@ export class AuthGuard implements CanActivate, CanActivateChild {
           return true;
         }
         // Redirect to login with return URL
-        return this.router.createUrlTree(['/login'], {
+        return this.router.createUrlTree(["/login"], {
           queryParams: { returnUrl: this.router.url },
         });
-      })
+      }),
     );
   }
 }
