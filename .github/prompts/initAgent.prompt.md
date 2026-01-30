@@ -56,6 +56,11 @@ c:\git\INVFriend\
 
 ## 🚫 CONSTRAINTS (Non-Negotiable Restrictions)
 
+**📖 For detailed scope control guidelines and task templates**, see:
+
+- [GUIDELINES.md - Scope Control for AI](../../docs/GUIDELINES.md#scope-control-for-ai)
+- [TASK_TEMPLATE.md](../../docs/TASK_TEMPLATE.md)
+
 ### ❌ FORBIDDEN
 
 - Modify hexagonal structure without explicit approval

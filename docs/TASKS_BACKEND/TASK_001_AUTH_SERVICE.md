@@ -57,97 +57,35 @@ Archivos a crear/modificar:
 
 ## 🏗️ Modelo/Referencia
 
-### Entidad User (Domain)
+**📖 Complete data model definitions**: See [ARCHITECTURE.md](../ARCHITECTURE.md#data-models)
+
+### User Entity Structure (Summary)
 
 ```typescript
-// backend/src/domain/entities/User.ts
-export class User {
-  private constructor(
-    readonly id: string,
-    readonly email: string,
-    readonly name: string,
-    readonly photoUrl: string | null,
-    readonly createdAt: number,
-    readonly updatedAt: number,
-  ) {}
-
-  /**
-   * Factory method para crear un nuevo usuario
-   */
-  static create(
-    id: string,
-    email: string,
-    name: string,
-    photoUrl?: string | null,
-  ): User {
-    const now = Date.now();
-    return new User(id, email, name, photoUrl || null, now, now);
-  }
-
-  /**
-   * Method to update an existing user
-   */
-  update(name?: string, photoUrl?: string | null): User {
-    return new User(
-      this.id,
-      this.email,
-      name || this.name,
-      photoUrl !== undefined ? photoUrl : this.photoUrl,
-      this.createdAt,
-      Date.now(),
-    );
-  }
-
-  /**
-   * Convert entity to serializable object
-   */
-  toJSON() {
-    return {
-      id: this.id,
-      email: this.email,
-      name: this.name,
-      photoUrl: this.photoUrl,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-    };
-  }
+User {
+  id: string;
+  email: string;
+  name: string;
+  photoUrl: string | null;
+  createdAt: number;
+  updatedAt: number;
 }
 ```
 
-### Excepciones de Dominio
+**Implementation details**:
+
+- Private constructor with factory method `User.create()`
+- Immutable entity following DDD principles
+- Methods: `update()`, `toJSON()`
+
+### Error Classes (Summary)
 
 ```typescript
-// backend/src/domain/errors/AuthErrors.ts
-
-export class AuthError extends Error {
-  constructor(
-    message: string,
-    readonly code: string,
-  ) {
-    super(message);
-    this.name = "AuthError";
-  }
-}
-
-export class InvalidCredentialsError extends AuthError {
-  constructor(message = "Email o contraseña inválidos") {
-    super(message, "INVALID_CREDENTIALS");
-  }
-}
-
-export class UserAlreadyExistsError extends AuthError {
-  constructor(email: string) {
-    super(`Usuario con email ${email} ya existe`, "USER_ALREADY_EXISTS");
-  }
-}
-
-export class UserNotFoundError extends AuthError {
-  constructor(email?: string) {
-    super(
-      `User not found${email ? ` with email ${email}` : ""}`,
-      "USER_NOT_FOUND",
-    );
-  }
+AuthError extends Error
+InvalidCredentialsError extends AuthError
+UserAlreadyExistsError extends AuthError
+UserNotFoundError extends AuthError
+UnauthorizedError extends AuthError
 }
 
 export class InvalidTokenError extends AuthError {

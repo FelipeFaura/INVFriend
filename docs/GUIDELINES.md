@@ -11,7 +11,8 @@
 7. [Documentation](#documentation)
 8. [Testing](#testing)
 9. [Versioning](#versioning)
-10. [Language Requirements](#language-requirements)
+10. [Git Commits](#git-commits)
+11. [Language Requirements](#language-requirements)
 
 ---
 
@@ -236,182 +237,69 @@ frontend/
 └── tsconfig.app.json
 ```
 
----
-
 ## 🔤 Code Conventions
+
+**📖 For detailed code examples and patterns**, see [GUIDELINES_DETAILED.md](./GUIDELINES_DETAILED.md)
 
 ### TypeScript
 
 #### **Types**
 
-```typescript
-// ❌ DO NOT use 'any'
-let data: any;
-
-// ✅ Define explicit types
-let data: Group | null;
-interface Group {
-  /* ... */
-}
-type GroupId = string & { readonly brand: "GroupId" };
-```
+- ❌ DO NOT use `any`
+- ✅ Define explicit types
+- ✅ Use interfaces for object shapes
+- ✅ Use type aliases for unions and branded types
 
 #### **Variable Names**
 
-```typescript
-// ❌ Abbreviations
-const grp = new Group();
-const usr_name = "John";
-
-// ✅ Descriptive names
-const group = new Group();
-const userName = "John";
-const isGroupActive = true;
-const groupsCount = 5;
-```
+- ✅ camelCase for variables and functions
+- ✅ Descriptive names, no abbreviations
+- ✅ Boolean variables start with `is`, `has`, `should`
+- ❌ Avoid generic names like `data`, `info`, `item`
 
 #### **Constants**
 
-```typescript
-// ✅ UPPER_SNAKE_CASE for global constants
-const MAX_BUDGET = 10000;
-const MIN_MEMBERS = 2;
-const DATABASE_TIMEOUT_MS = 5000;
-
-// ✅ camelCase for local constants
-const defaultBudget = 500;
-```
+- ✅ UPPER_SNAKE_CASE for global constants
+- ✅ camelCase for local constants
+- ✅ Group related constants in objects or enums
 
 #### **Functions**
 
-```typescript
-// ✅ Verbs for functions that do something
-const createGroup = (...) => {};
-const updateWish = (...) => {};
-const isValidBudget = (...) => {};
-
-// ✅ Descriptive parameter names
-function inviteUser(userId: string, groupId: string): Promise<void>
-
-// ❌ Generic names
-function invoke(id: string, ref: string): Promise<void>
-```
+- ✅ Use verbs for functions that perform actions
+- ✅ Descriptive parameter names
+- ✅ Keep functions small and focused (single responsibility)
 
 ### Angular
 
 #### **Components**
 
-```typescript
-// Recommended structure:
-@Component({
-  selector: "app-group-detail", // kebab-case
-  templateUrl: "./group-detail.component.html",
-  styleUrls: ["./group-detail.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush, // Performance
-})
-export class GroupDetailComponent implements OnInit, OnDestroy {
-  // Public properties first
-  @Input() groupId: string = "";
-  @Output() groupDeleted = new EventEmitter<string>();
+- ✅ kebab-case for selectors (`app-group-detail`)
+- ✅ OnPush change detection when possible
+- ✅ Public properties first, private properties after
+- ✅ Implement lifecycle hooks (OnInit, OnDestroy)
+- ✅ Unsubscribe from observables in ngOnDestroy
 
-  // Private properties
-  private destroy$ = new Subject<void>();
+#### **Services**
 
-  constructor(
-    private groupService: GroupApplicationService,
-    private cdr: ChangeDetectorRef,
-  ) {}
-
-  ngOnInit(): void {}
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-}
-```
-
-#### **Services (Application Services)**
-
-```typescript
-@Injectable({
-  providedIn: "root",
-})
-export class GroupApplicationService {
-  constructor(private groupHttpService: GroupHttpService) {}
-
-  createGroup(dto: CreateGroupDTO): Observable<Group> {
-    return this.groupHttpService.createGroup(dto);
-  }
-}
-```
-
-#### **HTTP Service**
-
-```typescript
-@Injectable({
-  providedIn: "root",
-})
-export class GroupHttpService {
-  constructor(private http: HttpClient) {}
-
-  createGroup(dto: CreateGroupDTO): Observable<Group> {
-    return this.http
-      .post<Group>("/api/groups", dto)
-      .pipe(catchError(this.handleError));
-  }
-
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    return throwError(() => new Error(error.error.message));
-  }
-}
-```
+- ✅ `providedIn: 'root'` for singleton services
+- ✅ Application services delegate to HTTP services
+- ✅ HTTP services handle API communication
 
 ### Node.js/Express
 
 #### **Controllers**
 
-```typescript
-export class GroupController {
-  constructor(
-    private createGroupUseCase: CreateGroupUseCase,
-    private logger: Logger,
-  ) {}
-
-  async createGroup(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
-    try {
-      const dto = req.body as CreateGroupDTO;
-      const group = await this.createGroupUseCase.execute(dto);
-      res.status(201).json(group);
-    } catch (error) {
-      next(error);
-    }
-  }
-}
-```
+- ✅ Thin controllers - delegate to use cases
+- ✅ Handle HTTP concerns only (request/response)
+- ✅ Use middleware for cross-cutting concerns
+- ✅ Proper error handling with try-catch
 
 #### **Use Cases**
 
-```typescript
-export class CreateGroupUseCase {
-  constructor(private groupRepository: IGroupRepository) {}
-
-  async execute(dto: CreateGroupDTO): Promise<Group> {
-    if (dto.budgetLimit <= 0) {
-      throw new InvalidBudgetError("Budget must be positive");
-    }
-
-    const group = Group.create(dto.name, dto.budgetLimit, dto.adminId);
-    await this.groupRepository.create(group);
-
-    return group;
-  }
-}
-```
+- ✅ Single responsibility per use case
+- ✅ Inject dependencies via constructor
+- ✅ Validate inputs before processing
+- ✅ Return domain entities, not DTOs
 
 ---
 
@@ -483,116 +371,49 @@ public async CreateGroup(): Promise<Group> { }
 public Is_Valid_Budget(): boolean { }
 ```
 
----
-
 ## 💡 Best Practices
+
+**📖 For detailed examples**, see [GUIDELINES_DETAILED.md](./GUIDELINES_DETAILED.md)
 
 ### Dependency Injection
 
-```typescript
-// ✅ Always inject dependencies
-export class GroupController {
-  constructor(private useCase: CreateGroupUseCase) {}
-}
-
-// ❌ Instantiate directly
-export class GroupController {
-  private useCase = new CreateGroupUseCase();
-}
-```
+- ✅ Always inject dependencies via constructor
+- ❌ Never instantiate dependencies directly
+- ✅ Use interfaces for loose coupling
 
 ### Error Handling
 
-```typescript
-// ✅ Domain-specific errors
-export class InvalidBudgetError extends DomainError {
-  constructor(message: string) {
-    super(message);
-    this.name = "InvalidBudgetError";
-  }
-}
-
-// ✅ Catch and handle
-try {
-  await useCase.execute(dto);
-} catch (error) {
-  if (error instanceof InvalidBudgetError) {
-    res.status(400).json({ message: error.message });
-  }
-}
-```
+- ✅ Create domain-specific error classes
+- ✅ Extend base `DomainError` class
+- ✅ Catch errors at appropriate boundaries
+- ✅ Log errors with context
 
 ### RxJS (Angular)
 
-```typescript
-// ✅ Use async pipe and takeUntil
-export class GroupListComponent implements OnDestroy {
-  private destroy$ = new Subject<void>();
-  groups$ = this.groupService.getGroups().pipe(
-    takeUntil(this.destroy$)
-  );
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-}
-
-// Template
-<div *ngFor="let group of groups$ | async">
-  {{ group.name }}
-</div>
-
-// ❌ Subscribe without unsubscribing
-this.groupService.getGroups().subscribe(groups => {
-  this.groups = groups;
-});
-```
+- ✅ Use async pipe in templates
+- ✅ Use takeUntil for subscription cleanup
+- ✅ Unsubscribe in ngOnDestroy
+- ❌ Avoid nested subscriptions
 
 ### Null Safety
 
-```typescript
-// ✅ Check null explicitly
-const group = await this.groupRepository.findById(id);
-if (!group) {
-  throw new GroupNotFoundError();
-}
-
-// ✅ Optional chaining
-const adminName = group?.admin?.name;
-
-// ❌ Assume it exists
-const adminName = group.admin.name; // Can crash if admin is null
-```
+- ✅ Check for null/undefined explicitly
+- ✅ Use optional chaining (`?.`)
+- ✅ Use nullish coalescing (`??`)
+- ❌ Don't assume values exist
 
 ### Logging
 
-```typescript
-// ✅ Use logger consistently
-this.logger.info(`Group created: ${group.id}`);
-this.logger.error(`Failed to create group`, error);
-this.logger.debug(`Group data:`, group);
-
-// ❌ console.log in production
-console.log("Group created");
-```
+- ✅ Use logger service consistently
+- ✅ Different levels: info, warn, error, debug
+- ❌ Never use console.log in production code
 
 ### Validation
 
-```typescript
-// ✅ Validate in Use Case or Controller
-if (!dto.name || dto.name.trim().length === 0) {
-  throw new ValidationError("Group name is required");
-}
-
-// ✅ Use specialized libraries (Joi, Zod)
-const schema = Joi.object({
-  name: Joi.string().required(),
-  budgetLimit: Joi.number().positive().required(),
-});
-
-// ❌ Inconsistent or missing validation
-```
+- ✅ Validate in Use Cases or Controllers
+- ✅ Use validation libraries (Joi, Zod)
+- ✅ Return meaningful error messages
+- ❌ Don't skip validation
 
 ---
 
@@ -744,44 +565,37 @@ export class GroupController {
   }
 }
 
-// ❌ INCORRECT - Spanish in code
-export class ControladorGrupo {
-  constructor(private crearGrupoUseCase: CrearGrupoUseCase) {}
+## 🧪 Testing
 
-  async crearGrupo(req: Request, res: Response): Promise<void> {
-    // Crear nuevo grupo con validación
-    const grupo = await this.crearGrupoUseCase.ejecutar(req.body);
-    res.status(201).json(grupo);
-  }
-}
+**📖 For detailed test examples**, see [GUIDELINES_DETAILED.md](./GUIDELINES_DETAILED.md#testing-patterns)
+
+### Structure
+
+- Unit Tests: Next to code (e.g., `CreateGroupUseCase.spec.ts`)
+- Integration Tests: Folder `__tests__/integration/`
+- E2E Tests: Future, not in MVP
+
+### Naming Convention
+
 ```
 
-### What Must Be in English
+describe('ClassName', () => {
+describe('methodName', () => {
+it('should do something when condition', () => {
+// Arrange
+// Act  
+ // Assert
+});
+});
+});
 
-1. **Class names**: `GroupService`, not `ServicioGrupo`
-2. **Method names**: `createGroup()`, not `crearGrupo()`
-3. **Variable names**: `userName`, not `nombreUsuario`
-4. **Interface names**: `IGroupRepository`, not `IRepositorioGrupo`
-5. **File names**: `group-controller.ts`, not `controlador-grupo.ts`
-6. **Comments**: Use English for all code comments
-7. **Error messages**: User-facing messages can be in Spanish, but error class names and internal messages should be English
-8. **Type names**: `GroupDTO`, not `GrupoDTO`
-9. **Constants**: `MAX_BUDGET`, not `PRESUPUESTO_MAXIMO`
-10. **Database fields**: Use English field names when possible
+```
 
-### Examples
+### Coverage Goals
 
-#### Variables and Functions
-
-```typescript
-// ✅ CORRECT
-const userList = [];
-function calculateBudget() {}
-const isValidEmail = true;
-
-// ❌ INCORRECT
-const listaUsuarios = [];
-function calcularPresupuesto() {}
+- Unit tests: >80% coverage
+- All use cases: 100% coverage
+- Critical paths: 100% coveragection calcularPresupuesto() {}
 const esEmailValido = true;
 ```
 
@@ -886,6 +700,58 @@ export class GroupController {
 - CI/CD linting rules enforce English naming conventions
 - Code reviews must reject Spanish code elements
 - This is a **non-negotiable** project standard
+
+---
+
+## 🔖 Git Commits
+
+We follow **[Conventional Commits](https://www.conventionalcommits.org/)** for all commit messages.
+
+### Format
+
+```
+<type>(<scope>): <description>
+
+<body>
+
+<footer>
+```
+
+### Types
+
+- `feat`: New API/UI feature
+- `fix`: Bug fix for API/UI
+- `refactor`: Code restructuring without behavior change
+- `perf`: Performance improvement (special refactor)
+- `style`: Formatting, whitespace (no behavior change)
+- `test`: Add or fix tests
+- `docs`: Documentation only
+- `build`: Dependencies, build tools, project version
+- `ops`: Infrastructure, deployment, CI/CD, backups
+- `chore`: Initial commit, .gitignore, maintenance tasks
+
+### Rules
+
+- **Description**: Imperative, lowercase, no period
+  - ✅ `feat: add email notifications`
+  - ❌ `feat: Added email notifications.`
+- **Scope**: Optional, project-specific (e.g., `feat(auth): ...`)
+- **Breaking changes**: Add `!` before `:` (e.g., `feat!: remove endpoint`)
+- **Footer**: Reference issues (`Closes #123`) or breaking changes
+
+### Examples
+
+```
+feat(auth): add Google login support
+
+fix(cart): prevent empty cart submission
+
+refactor: simplify user validation logic
+
+docs: update API authentication guide
+
+build: upgrade Angular to v18.2
+```
 
 ---
 

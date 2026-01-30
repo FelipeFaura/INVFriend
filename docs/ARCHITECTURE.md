@@ -44,54 +44,27 @@ The application follows the **Hexagonal Architecture (Ports & Adapters)** patter
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## 📁 Monorepo Structure
+## 📁 Project Structure
 
 ```
 INVFriend/
-├── frontend/                      # Angular Application
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── adapters/         # Angular Components, HTTP Services
-│   │   │   ├── domain/           # Domain models
-│   │   │   ├── application/      # Use Cases, Application Services
-│   │   │   ├── shared/           # Guards, Interceptors, Utils
-│   │   │   └── ports/            # Interfaces (Repositories, Services)
-│   │   ├── environments/
-│   │   ├── assets/
-│   │   ├── main.ts
-│   │   └── styles.scss
-│   ├── angular.json
-│   ├── package.json
-│   └── tsconfig.json
-│
-├── backend/                       # Node.js Backend
-│   ├── src/
-│   │   ├── adapters/             # Express Routes, Firebase Adapters
-│   │   ├── domain/               # Business Logic, Entities
-│   │   ├── application/          # Use Cases, Services
-│   │   ├── shared/               # Utils, Constants, Middlewares
-│   │   ├── ports/                # Interfaces (Repositories)
-│   │   ├── config/               # Firebase, Environment config
-│   │   └── index.ts              # Entry point
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── .env.example
-│
-├── shared/                        # Shared code (types, constants)
-│   ├── src/
-│   │   ├── models/
-│   │   ├── constants/
-│   │   └── utils/
-│   └── package.json
-│
-├── ARCHITECTURE.md                # This file
-├── GUIDELINES.md                  # Development guidelines
-├── README.md                      # Public documentation
-├── firebase.json
-├── .gitignore
-├── package.json (root)            # Monorepo config
-└── tsconfig.base.json
+├── frontend/         # Angular Application (UI layer)
+├── backend/          # Node.js Backend (API layer)
+├── shared/           # Shared types and constants
+└── docs/             # Project documentation
 ```
+
+### Layer Organization
+
+Each layer (frontend/backend) follows hexagonal architecture:
+
+- **adapters/** - External interfaces (UI components, HTTP, DB adapters)
+- **domain/** - Business entities and rules (pure logic, no dependencies)
+- **application/** - Use cases and application services
+- **ports/** - Interfaces defining contracts between layers
+- **shared/** - Utilities, constants, and helpers
+
+📖 **Detailed folder structure**: See [GUIDELINES.md](./GUIDELINES.md#folder-structure)
 
 ## 🗄️ Data Models
 

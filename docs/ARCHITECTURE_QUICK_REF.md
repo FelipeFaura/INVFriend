@@ -94,56 +94,17 @@
 
 ## 🔄 Main Flows
 
-### **1️⃣ Create Group**
+**📖 For detailed flow descriptions**, see [ARCHITECTURE.md](./ARCHITECTURE.md#main-flows)
 
 ```
-Angular Component
-    ↓ (user input)
-GroupApplicationService (Frontend)
-    ↓ (HTTP POST /api/groups call)
-GroupController (Backend)
-    ↓
-CreateGroupUseCase
-    ↓ (injects IGroupRepository)
-FirebaseGroupRepository
-    ↓ (Firebase SDK)
-Realtime Database
-    ↓ (returns created Group)
-```
+1️⃣ Create Group
+  Component → GroupAppService → HTTP → Controller → UseCase → Repository → DB
 
-### **2️⃣ Perform Raffle**
+2️⃣ Perform Raffle
+  Admin → RaffleController → UseCase → Validate → Generate → Save → Notify
 
-```
-Admin click "Start Raffle"
-    ↓
-RaffleController
-    ↓
-PerformRaffleUseCase
-    ├─ Validates ≥2 members
-    ├─ Generates random assignments
-    ├─ Saves to FirebaseAssignmentRepository
-    └─ Sends notifications
-    ↓
-Notification to each user
-    ↓
-Frontend receives and displays
-```
-
-### **3️⃣ View Secret Santa**
-
-```
-User enters group
-    ↓
-GetSecretSantaUseCase (Frontend)
-    ↓ (HTTP GET /api/groups/:id/secret-santa)
-GetSecretSantaController (Backend)
-    ↓ (validates raffle is completed)
-GetSecretSantaWishesUseCase
-    ├─ Gets user's assignment
-    ├─ Gets secret santa's wishes
-    ├─ Returns Anonymous (no name)
-    ↓
-Frontend displays secret santa's wishes
+3️⃣ View Secret Santa
+  User → GetSecretSantaUseCase → HTTP → Controller → GetAssignment → GetWishes → Display
 ```
 
 ---

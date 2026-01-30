@@ -6,10 +6,11 @@
 
 ## 🚀 Get Started Here
 
-| If you want...            | Read...                          | Time   |
-| ------------------------- | -------------------------------- | ------ |
-| **Understand what it is** | [README.md](./README.md)         | 10 min |
-| **Complete setup**        | README.md + backend/.env.example | 20 min |
+| If you want...            | Read...                                      | Time   |
+| ------------------------- | -------------------------------------------- | ------ |
+| **See current progress**  | [PROJECT_PROGRESS.md](./PROJECT_PROGRESS.md) | 5 min  |
+| **Understand what it is** | [README.md](./README.md)                     | 10 min |
+| **Complete setup**        | README.md + backend/.env.example             | 20 min |
 
 ---
 
@@ -20,15 +21,21 @@
 | [ARCHITECTURE.md](./ARCHITECTURE.md)                     | **Complete technical design** - Hexagonal layers, data models, flows | Developers, Architects | Before coding      |
 | [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md) | **Visual quick reference** - Diagrams, flows, examples               | Developers             | During development |
 | [GUIDELINES.md](./GUIDELINES.md)                         | **How to code here** - Conventions, standards, best practices        | Developers             | While coding       |
+| [GUIDELINES_DETAILED.md](./GUIDELINES_DETAILED.md)       | **Code examples & patterns** - Complete implementation examples      | Developers             | When implementing  |
 
 ---
 
 ## ✍️ Development
 
-| Document                                                                           | Purpose                                               | For whom                   |
-| ---------------------------------------------------------------------------------- | ----------------------------------------------------- | -------------------------- |
-| [GUIDELINES.md](./GUIDELINES.md#-control-de-scope-para-ia) - Scope Control Section | **Assign tasks to AI** without going out of scope     | Product Owners, Architects |
-| [TASK_TEMPLATE.md](./TASK_TEMPLATE.md)                                             | **Template for clear tasks** - Real examples included | Task assigners             |
+| Document                                                                           | Purpose                                                        | For whom                   |
+| ---------------------------------------------------------------------------------- | -------------------------------------------------------------- | -------------------------- |
+| [PROJECT_PROGRESS.md](./PROJECT_PROGRESS.md)                                       | **Live progress dashboard** - Sprint status, metrics, timeline | Everyone                   |
+| [SPRINT_PLANNING.md](./SPRINT_PLANNING.md)                                         | **Current sprint roadmap** - Active and upcoming sprints       | Product Owners, Architects |
+| [SPRINTS_ARCHIVE.md](./SPRINTS_ARCHIVE.md)                                         | **Completed sprints history** - Detailed past sprint records   | Developers, Reviewers      |
+| [TASKS_BACKEND/README.md](./TASKS_BACKEND/README.md)                               | **Backend task tracker** - Completed and pending tasks         | Backend Developers         |
+| [TASKS_FRONTEND/README.md](./TASKS_FRONTEND/README.md)                             | **Frontend task tracker** - Angular tasks and status           | Frontend Developers        |
+| [GUIDELINES.md](./GUIDELINES.md#-control-de-scope-para-ia) - Scope Control Section | **Assign tasks to AI** without going out of scope              | Product Owners, Architects |
+| [TASK_TEMPLATE.md](./TASK_TEMPLATE.md)                                             | **Template for clear tasks** - Real examples included          | Task assigners             |
 
 ---
 
@@ -48,6 +55,10 @@ Is it your first day?
 Is it clear and specific?
   ├─ YES → Go to GUIDELINES.md, follow the structure
   └─ NO → Use TASK_TEMPLATE.md to formalize it
+
+Need to see the big picture?
+  ├─ Check PROJECT_PROGRESS.md for current status
+  └─ Check SPRINT_PLANNING.md for context and dependencies
 
 Then:
   ├─ Read ARCHITECTURE.md relevant section
@@ -77,10 +88,12 @@ Follow this order:
 ### "I need to assign a task to AI"
 
 ```
-1. Read GUIDELINES.md section "🎯 Scope Control for AI"
-2. Use TASK_TEMPLATE.md as template
-3. Include: WHAT, WHERE, MODEL, LIMITS
-4. Be specific and concrete
+1. Check PROJECT_PROGRESS.md to see current sprint status
+2. Check SPRINT_PLANNING.md to understand task context
+3. Read GUIDELINES.md section "🎯 Scope Control for AI"
+4. Use TASK_TEMPLATE.md as template
+5. Include: WHAT, WHERE, MODEL, LIMITS
+6. Be specific and concrete
 ```
 
 ---
@@ -181,6 +194,12 @@ INVFriend/
 - [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md) (15 min)
 - [GUIDELINES.md](./GUIDELINES.md) (30 min)
 
+### 🎓 2+ hours (Deep Dive)
+
+- All of the above
+- [GUIDELINES_DETAILED.md](./GUIDELINES_DETAILED.md) (40 min)
+- [SPRINT_PLANNING.md](./SPRINT_PLANNING.md) (15 min)
+
 ---
 
 ## 🔍 Find Answers
@@ -237,8 +256,10 @@ INVFriend/
 
 **These are CRITICAL if you assign tasks:**
 
-1. ✅ [GUIDELINES.md](./GUIDELINES.md#-control-de-scope-para-ia) - Scope control
-2. ✅ [TASK_TEMPLATE.md](./TASK_TEMPLATE.md) - Task template
+1. ✅ [PROJECT_PROGRESS.md](./PROJECT_PROGRESS.md) - Current status
+2. ✅ [SPRINT_PLANNING.md](./SPRINT_PLANNING.md) - Project roadmap
+3. ✅ [GUIDELINES.md](./GUIDELINES.md#-control-de-scope-para-ia) - Scope control
+4. ✅ [TASK_TEMPLATE.md](./TASK_TEMPLATE.md) - Task template
 
 ---
 
@@ -284,8 +305,9 @@ Open a PR with changes. Please:
 | GUIDELINES.md             | ~500  | 30 min  | Conventions, practices    |
 | ARCHITECTURE_QUICK_REF.md | ~400  | 20 min  | Visual reference          |
 | TASK_TEMPLATE.md          | ~250  | 10 min  | Task template             |
+| SPRINT_PLANNING.md        | ~800  | 40 min  | Project roadmap, 32 tasks |
 
-**Total: ~2,080 lines of documentation**
+**Total: ~2,880 lines of documentation**
 
 ---
 
