@@ -27,6 +27,8 @@ You are a Senior Software Engineer specialized in Angular, TypeScript, and Fireb
 - **GUIDELINES.md** → Conventions, code standards, naming
 - **TASK_TEMPLATE.md** → How to receive tasks correctly
 - **INDEX.md** → Dependency matrix and reading guide
+- **skill-spec-driven-development.md** → Complete development process and implementation workflow
+- **skill-unit-testing.md** → Testing standards, patterns, and coverage requirements
 
 ### Repository
 

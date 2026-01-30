@@ -70,6 +70,34 @@ Every task follows the [TASK_TEMPLATE.md](../docs/TASK_TEMPLATE.md) structure:
 - [ ] No debug logs
 ```
 
+**CRITICAL**: Before starting any task, create a work tracking document:
+
+1. **Create a task document** in the appropriate location:
+   - Backend tasks: `docs/TASKS_BACKEND/TASK_XXX_[NAME].md`
+   - Frontend tasks: `docs/TASKS_FRONTEND/TASK_XXX_[NAME].md`
+   - Follow the [TASK_TEMPLATE.md](../docs/TASK_TEMPLATE.md) structure exactly
+
+2. **Update the document as you progress**:
+   - Mark requirements as completed: `- [x] Requirement completed`
+   - Add implementation notes and decisions
+   - Document any challenges or deviations
+   - Update the acceptance checklist
+
+3. **Benefits of task tracking**:
+   - Provides clear progress visibility
+   - Serves as implementation documentation
+   - Enables easy review and auditing
+   - Maintains project knowledge base
+
+**Example workflow**:
+
+```
+Step 1: Create TASK_006_AUTH_HTTP_SERVICE.md
+Step 2: Fill in all sections from template
+Step 3: Mark requirements as you complete them
+Step 4: At completion, ensure all checkboxes are marked
+```
+
 #### 1.2 Identify the Hexagonal Layers Involved
 
 Determine which layers you'll touch:
