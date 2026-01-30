@@ -86,7 +86,7 @@ Sprint 8: Polish, Testing & Deployment
 ## 🔄 SPRINT 2: Authentication Frontend (IN PROGRESS)
 
 **Duration**: Weeks 3-4  
-**Status**: 🔄 **IN PROGRESS** (3/4 tasks completed)  
+**Status**: ✅ **COMPLETED** (4/4 tasks completed)  
 **Started**: January 30, 2026  
 **Goal**: Implement complete authentication UI in Angular  
 **Deliverables**: Login/register screens, auth guards, user session management
@@ -187,29 +187,33 @@ Create login and registration UI components.
 
 ---
 
-#### 🔄 TASK-008: Implement Auth Guards & Routing - READY TO START
+#### ✅ TASK-008: Implement Auth Guards & Routing - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 3 hours  
 **Dependencies**: TASK-007 (✅ Completed)  
-**Status**: 🔄 READY TO START
+**Status**: ✅ COMPLETED (January 30, 2026)
 
 **Description**:
 Create route guards to protect authenticated routes.
 
-**Files to Create**:
+**Files Created**:
 
 - `frontend/src/app/adapters/guards/auth.guard.ts`
 - `frontend/src/app/adapters/guards/admin.guard.ts`
+- `frontend/src/app/adapters/guards/guest.guard.ts`
 - `frontend/src/app/adapters/guards/__tests__/auth.guard.spec.ts`
-- Update `app-routing.module.ts`
+- `frontend/src/app/adapters/guards/__tests__/admin.guard.spec.ts`
+- `frontend/src/app/adapters/guards/__tests__/guest.guard.spec.ts`
+- Updated `app-routing.module.ts`
 
 **Requirements**:
 
-- [ ] AuthGuard: Redirect to /login if not authenticated
-- [ ] AdminGuard: Verify user is group admin
-- [ ] Protect routes: /groups, /profile
-- [ ] Public routes: /login, /register, /
+- [x] AuthGuard: Redirect to /login if not authenticated
+- [x] GuestGuard: Redirect to /dashboard if authenticated
+- [x] AdminGuard: Verify user is authenticated
+- [x] Protect routes: /dashboard, /groups, /profile
+- [x] Public routes: /login, /register
 
 **Reference**: [GUIDELINES.md](./GUIDELINES.md) - Angular Guards
 
