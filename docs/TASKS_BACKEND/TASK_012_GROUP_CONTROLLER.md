@@ -38,21 +38,22 @@ Create REST API endpoints for group management. The controller handles HTTP requ
 
 ## API Endpoints
 
-| Method | Endpoint | Description | Auth | Access |
-|--------|----------|-------------|------|--------|
-| POST | `/groups` | Create new group | Required | Any user |
-| GET | `/groups` | List user's groups | Required | Any user |
-| GET | `/groups/:id` | Get group details | Required | Members only |
-| PUT | `/groups/:id` | Update group | Required | Admin only |
-| DELETE | `/groups/:id` | Delete group | Required | Admin only |
-| POST | `/groups/:id/members` | Add member | Required | Admin only |
-| DELETE | `/groups/:id/members/:userId` | Remove member | Required | Admin only |
+| Method | Endpoint                      | Description        | Auth     | Access       |
+| ------ | ----------------------------- | ------------------ | -------- | ------------ |
+| POST   | `/groups`                     | Create new group   | Required | Any user     |
+| GET    | `/groups`                     | List user's groups | Required | Any user     |
+| GET    | `/groups/:id`                 | Get group details  | Required | Members only |
+| PUT    | `/groups/:id`                 | Update group       | Required | Admin only   |
+| DELETE | `/groups/:id`                 | Delete group       | Required | Admin only   |
+| POST   | `/groups/:id/members`         | Add member         | Required | Admin only   |
+| DELETE | `/groups/:id/members/:userId` | Remove member      | Required | Admin only   |
 
 ---
 
 ## Request/Response Examples
 
 ### POST /groups
+
 ```json
 // Request
 {
@@ -78,17 +79,17 @@ Create REST API endpoints for group management. The controller handles HTTP requ
 
 ### Error Responses
 
-| Code | Error | When |
-|------|-------|------|
-| 400 | INVALID_GROUP_NAME | Name < 3 or > 100 chars |
-| 400 | INVALID_BUDGET_LIMIT | Budget <= 0 |
-| 400 | ALREADY_GROUP_MEMBER | User already in group |
-| 400 | CANNOT_REMOVE_ADMIN | Trying to remove admin |
-| 400 | CANNOT_DELETE_AFTER_RAFFLE | Raffle completed |
-| 401 | UNAUTHORIZED | Not authenticated |
-| 403 | NOT_GROUP_ADMIN | Not admin for operation |
-| 403 | NOT_GROUP_MEMBER | Not member (view details) |
-| 404 | GROUP_NOT_FOUND | Group doesn't exist |
+| Code | Error                      | When                      |
+| ---- | -------------------------- | ------------------------- |
+| 400  | INVALID_GROUP_NAME         | Name < 3 or > 100 chars   |
+| 400  | INVALID_BUDGET_LIMIT       | Budget <= 0               |
+| 400  | ALREADY_GROUP_MEMBER       | User already in group     |
+| 400  | CANNOT_REMOVE_ADMIN        | Trying to remove admin    |
+| 400  | CANNOT_DELETE_AFTER_RAFFLE | Raffle completed          |
+| 401  | UNAUTHORIZED               | Not authenticated         |
+| 403  | NOT_GROUP_ADMIN            | Not admin for operation   |
+| 403  | NOT_GROUP_MEMBER           | Not member (view details) |
+| 404  | GROUP_NOT_FOUND            | Group doesn't exist       |
 
 ---
 
@@ -168,4 +169,3 @@ Create REST API endpoints for group management. The controller handles HTTP requ
 - [ARCHITECTURE_QUICK_REF.md](../ARCHITECTURE_QUICK_REF.md) - Flow 1
 - [AuthController.ts](../../backend/src/adapters/http/controllers/AuthController.ts) - Pattern reference
 - [Group Use Cases](../../backend/src/application/use-cases/)
-

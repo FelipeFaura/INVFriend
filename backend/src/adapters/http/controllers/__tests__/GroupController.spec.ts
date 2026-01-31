@@ -2,9 +2,9 @@
  * Tests for GroupController
  * TDD approach - tests written first
  */
-import { Response } from 'express';
-import { GroupController } from '../GroupController';
-import { IGroupRepository } from '../../../../ports/IGroupRepository';
+import { Response } from "express";
+import { GroupController } from "../GroupController";
+import { IGroupRepository } from "../../../../ports/IGroupRepository";
 import {
   GroupNotFoundError,
   NotGroupAdminError,
@@ -14,11 +14,11 @@ import {
   CannotDeleteAfterRaffleError,
   InvalidGroupNameError,
   InvalidBudgetLimitError,
-} from '../../../../domain/errors/GroupErrors';
-import { AuthenticatedRequest } from '../../middleware/authMiddleware';
+} from "../../../../domain/errors/GroupErrors";
+import { AuthenticatedRequest } from "../../middleware/authMiddleware";
 
 // Mock all use cases
-jest.mock('../../../../application/use-cases', () => ({
+jest.mock("../../../../application/use-cases", () => ({
   CreateGroupUseCase: jest.fn().mockImplementation(() => ({
     execute: jest.fn(),
   })),
@@ -42,7 +42,7 @@ jest.mock('../../../../application/use-cases', () => ({
   })),
 }));
 
-describe('GroupController', () => {
+describe("GroupController", () => {
   let controller: GroupController;
   let mockRepository: jest.Mocked<IGroupRepository>;
   let mockRequest: Partial<AuthenticatedRequest>;
@@ -50,18 +50,18 @@ describe('GroupController', () => {
   let jsonData: unknown;
 
   const mockUser = {
-    uid: 'user-123',
-    email: 'test@example.com',
+    uid: "user-123",
+    email: "test@example.com",
   };
 
   const mockGroupResponse = {
-    id: 'group-123',
-    name: 'Secret Santa 2026',
-    description: 'Christmas exchange',
-    adminId: 'user-123',
-    members: ['user-123'],
+    id: "group-123",
+    name: "Secret Santa 2026",
+    description: "Christmas exchange",
+    adminId: "user-123",
+    members: ["user-123"],
     budgetLimit: 50,
-    raffleStatus: 'pending' as const,
+    raffleStatus: "pending" as const,
     raffleDate: null,
     createdAt: Date.now(),
     updatedAt: Date.now(),
@@ -98,15 +98,17 @@ describe('GroupController', () => {
     };
   });
 
-  describe('createGroup', () => {
-    it('should create a group successfully', async () => {
+  describe("createGroup", () => {
+    it("should create a group successfully", async () => {
       mockRequest.body = {
-        name: 'Secret Santa 2026',
+        name: "Secret Santa 2026",
         budgetLimit: 50,
-        description: 'Christmas exchange',
+        description: "Christmas exchange",
       };
 
-      const { CreateGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        CreateGroupUseCase,
+      } = require("../../../../application/use-cases");
       const mockExecute = jest.fn().mockResolvedValue(mockGroupResponse);
       CreateGroupUseCase.mockImplementation(() => ({ execute: mockExecute }));
 
@@ -121,7 +123,7 @@ describe('GroupController', () => {
       expect(jsonData).toEqual(mockGroupResponse);
     });
 
-    it('should return 401 when user is not authenticated', async () => {
+    it("should return 401 when user is not authenticated", async () => {
       mockRequest.user = undefined;
 
       await controller.createGroup(
@@ -130,13 +132,15 @@ describe('GroupController', () => {
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(401);
-      expect((jsonData as { code: string }).code).toBe('UNAUTHORIZED');
+      expect((jsonData as { code: string }).code).toBe("UNAUTHORIZED");
     });
 
-    it('should return 400 for invalid group name', async () => {
-      mockRequest.body = { name: 'AB', budgetLimit: 50 };
+    it("should return 400 for invalid group name", async () => {
+      mockRequest.body = { name: "AB", budgetLimit: 50 };
 
-      const { CreateGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        CreateGroupUseCase,
+      } = require("../../../../application/use-cases");
       CreateGroupUseCase.mockImplementation(() => ({
         execute: jest.fn().mockRejectedValue(new InvalidGroupNameError()),
       }));
@@ -149,13 +153,15 @@ describe('GroupController', () => {
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect((jsonData as { code: string }).code).toBe('INVALID_GROUP_NAME');
+      expect((jsonData as { code: string }).code).toBe("INVALID_GROUP_NAME");
     });
 
-    it('should return 400 for invalid budget', async () => {
-      mockRequest.body = { name: 'Valid Name', budgetLimit: 0 };
+    it("should return 400 for invalid budget", async () => {
+      mockRequest.body = { name: "Valid Name", budgetLimit: 0 };
 
-      const { CreateGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        CreateGroupUseCase,
+      } = require("../../../../application/use-cases");
       CreateGroupUseCase.mockImplementation(() => ({
         execute: jest.fn().mockRejectedValue(new InvalidBudgetLimitError()),
       }));
@@ -168,25 +174,27 @@ describe('GroupController', () => {
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect((jsonData as { code: string }).code).toBe('INVALID_BUDGET_LIMIT');
+      expect((jsonData as { code: string }).code).toBe("INVALID_BUDGET_LIMIT");
     });
   });
 
-  describe('getGroups', () => {
-    it('should return user groups successfully', async () => {
+  describe("getGroups", () => {
+    it("should return user groups successfully", async () => {
       const mockGroups = [
         {
-          id: 'group-1',
-          name: 'Group 1',
+          id: "group-1",
+          name: "Group 1",
           description: null,
           memberCount: 3,
           budgetLimit: 50,
-          raffleStatus: 'pending',
+          raffleStatus: "pending",
           isAdmin: true,
         },
       ];
 
-      const { GetUserGroupsUseCase } = require('../../../../application/use-cases');
+      const {
+        GetUserGroupsUseCase,
+      } = require("../../../../application/use-cases");
       GetUserGroupsUseCase.mockImplementation(() => ({
         execute: jest.fn().mockResolvedValue(mockGroups),
       }));
@@ -202,7 +210,7 @@ describe('GroupController', () => {
       expect(jsonData).toEqual({ groups: mockGroups });
     });
 
-    it('should return 401 when user is not authenticated', async () => {
+    it("should return 401 when user is not authenticated", async () => {
       mockRequest.user = undefined;
 
       await controller.getGroups(
@@ -214,11 +222,13 @@ describe('GroupController', () => {
     });
   });
 
-  describe('getGroupById', () => {
-    it('should return group details successfully', async () => {
-      mockRequest.params = { id: 'group-123' };
+  describe("getGroupById", () => {
+    it("should return group details successfully", async () => {
+      mockRequest.params = { id: "group-123" };
 
-      const { GetGroupDetailsUseCase } = require('../../../../application/use-cases');
+      const {
+        GetGroupDetailsUseCase,
+      } = require("../../../../application/use-cases");
       GetGroupDetailsUseCase.mockImplementation(() => ({
         execute: jest.fn().mockResolvedValue(mockGroupResponse),
       }));
@@ -234,12 +244,16 @@ describe('GroupController', () => {
       expect(jsonData).toEqual(mockGroupResponse);
     });
 
-    it('should return 404 when group not found', async () => {
-      mockRequest.params = { id: 'non-existent' };
+    it("should return 404 when group not found", async () => {
+      mockRequest.params = { id: "non-existent" };
 
-      const { GetGroupDetailsUseCase } = require('../../../../application/use-cases');
+      const {
+        GetGroupDetailsUseCase,
+      } = require("../../../../application/use-cases");
       GetGroupDetailsUseCase.mockImplementation(() => ({
-        execute: jest.fn().mockRejectedValue(new GroupNotFoundError('non-existent')),
+        execute: jest
+          .fn()
+          .mockRejectedValue(new GroupNotFoundError("non-existent")),
       }));
 
       controller = new GroupController(mockRepository);
@@ -250,17 +264,23 @@ describe('GroupController', () => {
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(404);
-      expect((jsonData as { code: string }).code).toBe('GROUP_NOT_FOUND');
+      expect((jsonData as { code: string }).code).toBe("GROUP_NOT_FOUND");
     });
 
-    it('should return 403 when user is not a member', async () => {
-      mockRequest.params = { id: 'group-123' };
+    it("should return 403 when user is not a member", async () => {
+      mockRequest.params = { id: "group-123" };
 
-      const { GetGroupDetailsUseCase } = require('../../../../application/use-cases');
+      const {
+        GetGroupDetailsUseCase,
+      } = require("../../../../application/use-cases");
       GetGroupDetailsUseCase.mockImplementation(() => ({
-        execute: jest.fn().mockRejectedValue(
-          new NotGroupMemberError('You must be a member to view group details'),
-        ),
+        execute: jest
+          .fn()
+          .mockRejectedValue(
+            new NotGroupMemberError(
+              "You must be a member to view group details",
+            ),
+          ),
       }));
 
       controller = new GroupController(mockRepository);
@@ -271,18 +291,20 @@ describe('GroupController', () => {
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(403);
-      expect((jsonData as { code: string }).code).toBe('NOT_GROUP_MEMBER');
+      expect((jsonData as { code: string }).code).toBe("NOT_GROUP_MEMBER");
     });
   });
 
-  describe('updateGroup', () => {
-    it('should update group successfully', async () => {
-      mockRequest.params = { id: 'group-123' };
-      mockRequest.body = { name: 'Updated Name' };
+  describe("updateGroup", () => {
+    it("should update group successfully", async () => {
+      mockRequest.params = { id: "group-123" };
+      mockRequest.body = { name: "Updated Name" };
 
-      const updatedGroup = { ...mockGroupResponse, name: 'Updated Name' };
+      const updatedGroup = { ...mockGroupResponse, name: "Updated Name" };
 
-      const { UpdateGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        UpdateGroupUseCase,
+      } = require("../../../../application/use-cases");
       UpdateGroupUseCase.mockImplementation(() => ({
         execute: jest.fn().mockResolvedValue(updatedGroup),
       }));
@@ -295,14 +317,16 @@ describe('GroupController', () => {
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
-      expect((jsonData as typeof mockGroupResponse).name).toBe('Updated Name');
+      expect((jsonData as typeof mockGroupResponse).name).toBe("Updated Name");
     });
 
-    it('should return 403 when user is not admin', async () => {
-      mockRequest.params = { id: 'group-123' };
-      mockRequest.body = { name: 'Updated Name' };
+    it("should return 403 when user is not admin", async () => {
+      mockRequest.params = { id: "group-123" };
+      mockRequest.body = { name: "Updated Name" };
 
-      const { UpdateGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        UpdateGroupUseCase,
+      } = require("../../../../application/use-cases");
       UpdateGroupUseCase.mockImplementation(() => ({
         execute: jest.fn().mockRejectedValue(new NotGroupAdminError()),
       }));
@@ -315,16 +339,20 @@ describe('GroupController', () => {
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(403);
-      expect((jsonData as { code: string }).code).toBe('NOT_GROUP_ADMIN');
+      expect((jsonData as { code: string }).code).toBe("NOT_GROUP_ADMIN");
     });
 
-    it('should return 404 when group not found', async () => {
-      mockRequest.params = { id: 'non-existent' };
-      mockRequest.body = { name: 'Updated' };
+    it("should return 404 when group not found", async () => {
+      mockRequest.params = { id: "non-existent" };
+      mockRequest.body = { name: "Updated" };
 
-      const { UpdateGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        UpdateGroupUseCase,
+      } = require("../../../../application/use-cases");
       UpdateGroupUseCase.mockImplementation(() => ({
-        execute: jest.fn().mockRejectedValue(new GroupNotFoundError('non-existent')),
+        execute: jest
+          .fn()
+          .mockRejectedValue(new GroupNotFoundError("non-existent")),
       }));
 
       controller = new GroupController(mockRepository);
@@ -338,11 +366,13 @@ describe('GroupController', () => {
     });
   });
 
-  describe('deleteGroup', () => {
-    it('should delete group successfully', async () => {
-      mockRequest.params = { id: 'group-123' };
+  describe("deleteGroup", () => {
+    it("should delete group successfully", async () => {
+      mockRequest.params = { id: "group-123" };
 
-      const { DeleteGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        DeleteGroupUseCase,
+      } = require("../../../../application/use-cases");
       DeleteGroupUseCase.mockImplementation(() => ({
         execute: jest.fn().mockResolvedValue(undefined),
       }));
@@ -358,10 +388,12 @@ describe('GroupController', () => {
       expect((jsonData as { success: boolean }).success).toBe(true);
     });
 
-    it('should return 403 when user is not admin', async () => {
-      mockRequest.params = { id: 'group-123' };
+    it("should return 403 when user is not admin", async () => {
+      mockRequest.params = { id: "group-123" };
 
-      const { DeleteGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        DeleteGroupUseCase,
+      } = require("../../../../application/use-cases");
       DeleteGroupUseCase.mockImplementation(() => ({
         execute: jest.fn().mockRejectedValue(new NotGroupAdminError()),
       }));
@@ -376,12 +408,16 @@ describe('GroupController', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(403);
     });
 
-    it('should return 400 when raffle already completed', async () => {
-      mockRequest.params = { id: 'group-123' };
+    it("should return 400 when raffle already completed", async () => {
+      mockRequest.params = { id: "group-123" };
 
-      const { DeleteGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        DeleteGroupUseCase,
+      } = require("../../../../application/use-cases");
       DeleteGroupUseCase.mockImplementation(() => ({
-        execute: jest.fn().mockRejectedValue(new CannotDeleteAfterRaffleError()),
+        execute: jest
+          .fn()
+          .mockRejectedValue(new CannotDeleteAfterRaffleError()),
       }));
 
       controller = new GroupController(mockRepository);
@@ -392,21 +428,25 @@ describe('GroupController', () => {
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect((jsonData as { code: string }).code).toBe('CANNOT_DELETE_AFTER_RAFFLE');
+      expect((jsonData as { code: string }).code).toBe(
+        "CANNOT_DELETE_AFTER_RAFFLE",
+      );
     });
   });
 
-  describe('addMember', () => {
-    it('should add member successfully', async () => {
-      mockRequest.params = { id: 'group-123' };
-      mockRequest.body = { userId: 'new-member' };
+  describe("addMember", () => {
+    it("should add member successfully", async () => {
+      mockRequest.params = { id: "group-123" };
+      mockRequest.body = { userId: "new-member" };
 
       const updatedGroup = {
         ...mockGroupResponse,
-        members: ['user-123', 'new-member'],
+        members: ["user-123", "new-member"],
       };
 
-      const { AddMemberToGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        AddMemberToGroupUseCase,
+      } = require("../../../../application/use-cases");
       AddMemberToGroupUseCase.mockImplementation(() => ({
         execute: jest.fn().mockResolvedValue(updatedGroup),
       }));
@@ -419,14 +459,18 @@ describe('GroupController', () => {
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(200);
-      expect((jsonData as typeof mockGroupResponse).members).toContain('new-member');
+      expect((jsonData as typeof mockGroupResponse).members).toContain(
+        "new-member",
+      );
     });
 
-    it('should return 403 when user is not admin', async () => {
-      mockRequest.params = { id: 'group-123' };
-      mockRequest.body = { userId: 'new-member' };
+    it("should return 403 when user is not admin", async () => {
+      mockRequest.params = { id: "group-123" };
+      mockRequest.body = { userId: "new-member" };
 
-      const { AddMemberToGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        AddMemberToGroupUseCase,
+      } = require("../../../../application/use-cases");
       AddMemberToGroupUseCase.mockImplementation(() => ({
         execute: jest.fn().mockRejectedValue(new NotGroupAdminError()),
       }));
@@ -441,11 +485,13 @@ describe('GroupController', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(403);
     });
 
-    it('should return 400 when user is already a member', async () => {
-      mockRequest.params = { id: 'group-123' };
-      mockRequest.body = { userId: 'user-123' };
+    it("should return 400 when user is already a member", async () => {
+      mockRequest.params = { id: "group-123" };
+      mockRequest.body = { userId: "user-123" };
 
-      const { AddMemberToGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        AddMemberToGroupUseCase,
+      } = require("../../../../application/use-cases");
       AddMemberToGroupUseCase.mockImplementation(() => ({
         execute: jest.fn().mockRejectedValue(new AlreadyGroupMemberError()),
       }));
@@ -458,17 +504,19 @@ describe('GroupController', () => {
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect((jsonData as { code: string }).code).toBe('ALREADY_GROUP_MEMBER');
+      expect((jsonData as { code: string }).code).toBe("ALREADY_GROUP_MEMBER");
     });
   });
 
-  describe('removeMember', () => {
-    it('should remove member successfully', async () => {
-      mockRequest.params = { id: 'group-123', userId: 'member-456' };
+  describe("removeMember", () => {
+    it("should remove member successfully", async () => {
+      mockRequest.params = { id: "group-123", userId: "member-456" };
 
-      const updatedGroup = { ...mockGroupResponse, members: ['user-123'] };
+      const updatedGroup = { ...mockGroupResponse, members: ["user-123"] };
 
-      const { RemoveMemberFromGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        RemoveMemberFromGroupUseCase,
+      } = require("../../../../application/use-cases");
       RemoveMemberFromGroupUseCase.mockImplementation(() => ({
         execute: jest.fn().mockResolvedValue(updatedGroup),
       }));
@@ -483,10 +531,12 @@ describe('GroupController', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(200);
     });
 
-    it('should return 403 when user is not admin', async () => {
-      mockRequest.params = { id: 'group-123', userId: 'member-456' };
+    it("should return 403 when user is not admin", async () => {
+      mockRequest.params = { id: "group-123", userId: "member-456" };
 
-      const { RemoveMemberFromGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        RemoveMemberFromGroupUseCase,
+      } = require("../../../../application/use-cases");
       RemoveMemberFromGroupUseCase.mockImplementation(() => ({
         execute: jest.fn().mockRejectedValue(new NotGroupAdminError()),
       }));
@@ -501,10 +551,12 @@ describe('GroupController', () => {
       expect(mockResponse.status).toHaveBeenCalledWith(403);
     });
 
-    it('should return 400 when trying to remove admin', async () => {
-      mockRequest.params = { id: 'group-123', userId: 'user-123' };
+    it("should return 400 when trying to remove admin", async () => {
+      mockRequest.params = { id: "group-123", userId: "user-123" };
 
-      const { RemoveMemberFromGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        RemoveMemberFromGroupUseCase,
+      } = require("../../../../application/use-cases");
       RemoveMemberFromGroupUseCase.mockImplementation(() => ({
         execute: jest.fn().mockRejectedValue(new CannotRemoveAdminError()),
       }));
@@ -517,13 +569,15 @@ describe('GroupController', () => {
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect((jsonData as { code: string }).code).toBe('CANNOT_REMOVE_ADMIN');
+      expect((jsonData as { code: string }).code).toBe("CANNOT_REMOVE_ADMIN");
     });
 
-    it('should return 400 when user is not a member', async () => {
-      mockRequest.params = { id: 'group-123', userId: 'unknown' };
+    it("should return 400 when user is not a member", async () => {
+      mockRequest.params = { id: "group-123", userId: "unknown" };
 
-      const { RemoveMemberFromGroupUseCase } = require('../../../../application/use-cases');
+      const {
+        RemoveMemberFromGroupUseCase,
+      } = require("../../../../application/use-cases");
       RemoveMemberFromGroupUseCase.mockImplementation(() => ({
         execute: jest.fn().mockRejectedValue(new NotGroupMemberError()),
       }));
@@ -536,7 +590,7 @@ describe('GroupController', () => {
       );
 
       expect(mockResponse.status).toHaveBeenCalledWith(400);
-      expect((jsonData as { code: string }).code).toBe('NOT_GROUP_MEMBER');
+      expect((jsonData as { code: string }).code).toBe("NOT_GROUP_MEMBER");
     });
   });
 });

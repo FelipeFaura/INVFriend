@@ -2,8 +2,8 @@
  * Group Controller
  * Handles HTTP requests for group management operations
  */
-import { Response } from 'express';
-import { IGroupRepository } from '../../../ports/IGroupRepository';
+import { Response } from "express";
+import { IGroupRepository } from "../../../ports/IGroupRepository";
 import {
   CreateGroupUseCase,
   GetGroupDetailsUseCase,
@@ -12,7 +12,7 @@ import {
   AddMemberToGroupUseCase,
   RemoveMemberFromGroupUseCase,
   DeleteGroupUseCase,
-} from '../../../application/use-cases';
+} from "../../../application/use-cases";
 import {
   GroupNotFoundError,
   NotGroupAdminError,
@@ -24,8 +24,8 @@ import {
   InvalidBudgetLimitError,
   RaffleAlreadyCompletedError,
   GroupError,
-} from '../../../domain/errors/GroupErrors';
-import { AuthenticatedRequest } from '../middleware/authMiddleware';
+} from "../../../domain/errors/GroupErrors";
+import { AuthenticatedRequest } from "../middleware/authMiddleware";
 
 export class GroupController {
   private createGroupUseCase: CreateGroupUseCase;
@@ -42,7 +42,9 @@ export class GroupController {
     this.getUserGroupsUseCase = new GetUserGroupsUseCase(groupRepository);
     this.updateGroupUseCase = new UpdateGroupUseCase(groupRepository);
     this.addMemberToGroupUseCase = new AddMemberToGroupUseCase(groupRepository);
-    this.removeMemberFromGroupUseCase = new RemoveMemberFromGroupUseCase(groupRepository);
+    this.removeMemberFromGroupUseCase = new RemoveMemberFromGroupUseCase(
+      groupRepository,
+    );
     this.deleteGroupUseCase = new DeleteGroupUseCase(groupRepository);
   }
 
@@ -54,9 +56,9 @@ export class GroupController {
     try {
       if (!req.user) {
         res.status(401).json({
-          error: 'Unauthorized',
-          code: 'UNAUTHORIZED',
-          message: 'Authentication required',
+          error: "Unauthorized",
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
         });
         return;
       }
@@ -84,9 +86,9 @@ export class GroupController {
     try {
       if (!req.user) {
         res.status(401).json({
-          error: 'Unauthorized',
-          code: 'UNAUTHORIZED',
-          message: 'Authentication required',
+          error: "Unauthorized",
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
         });
         return;
       }
@@ -107,16 +109,19 @@ export class GroupController {
     try {
       if (!req.user) {
         res.status(401).json({
-          error: 'Unauthorized',
-          code: 'UNAUTHORIZED',
-          message: 'Authentication required',
+          error: "Unauthorized",
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
         });
         return;
       }
 
       const { id } = req.params;
 
-      const result = await this.getGroupDetailsUseCase.execute(id, req.user.uid);
+      const result = await this.getGroupDetailsUseCase.execute(
+        id,
+        req.user.uid,
+      );
 
       res.status(200).json(result);
     } catch (error) {
@@ -132,9 +137,9 @@ export class GroupController {
     try {
       if (!req.user) {
         res.status(401).json({
-          error: 'Unauthorized',
-          code: 'UNAUTHORIZED',
-          message: 'Authentication required',
+          error: "Unauthorized",
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
         });
         return;
       }
@@ -162,9 +167,9 @@ export class GroupController {
     try {
       if (!req.user) {
         res.status(401).json({
-          error: 'Unauthorized',
-          code: 'UNAUTHORIZED',
-          message: 'Authentication required',
+          error: "Unauthorized",
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
         });
         return;
       }
@@ -175,7 +180,7 @@ export class GroupController {
 
       res.status(200).json({
         success: true,
-        message: 'Group deleted successfully',
+        message: "Group deleted successfully",
       });
     } catch (error) {
       this.handleGroupError(error, res);
@@ -190,9 +195,9 @@ export class GroupController {
     try {
       if (!req.user) {
         res.status(401).json({
-          error: 'Unauthorized',
-          code: 'UNAUTHORIZED',
-          message: 'Authentication required',
+          error: "Unauthorized",
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
         });
         return;
       }
@@ -220,9 +225,9 @@ export class GroupController {
     try {
       if (!req.user) {
         res.status(401).json({
-          error: 'Unauthorized',
-          code: 'UNAUTHORIZED',
-          message: 'Authentication required',
+          error: "Unauthorized",
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
         });
         return;
       }
@@ -248,7 +253,7 @@ export class GroupController {
     // Validation errors (400)
     if (error instanceof InvalidGroupNameError) {
       res.status(400).json({
-        error: 'Bad Request',
+        error: "Bad Request",
         code: error.code,
         message: error.message,
       });
@@ -257,7 +262,7 @@ export class GroupController {
 
     if (error instanceof InvalidBudgetLimitError) {
       res.status(400).json({
-        error: 'Bad Request',
+        error: "Bad Request",
         code: error.code,
         message: error.message,
       });
@@ -266,7 +271,7 @@ export class GroupController {
 
     if (error instanceof AlreadyGroupMemberError) {
       res.status(400).json({
-        error: 'Bad Request',
+        error: "Bad Request",
         code: error.code,
         message: error.message,
       });
@@ -275,7 +280,7 @@ export class GroupController {
 
     if (error instanceof CannotRemoveAdminError) {
       res.status(400).json({
-        error: 'Bad Request',
+        error: "Bad Request",
         code: error.code,
         message: error.message,
       });
@@ -284,7 +289,7 @@ export class GroupController {
 
     if (error instanceof CannotDeleteAfterRaffleError) {
       res.status(400).json({
-        error: 'Bad Request',
+        error: "Bad Request",
         code: error.code,
         message: error.message,
       });
@@ -293,7 +298,7 @@ export class GroupController {
 
     if (error instanceof RaffleAlreadyCompletedError) {
       res.status(400).json({
-        error: 'Bad Request',
+        error: "Bad Request",
         code: error.code,
         message: error.message,
       });
@@ -303,7 +308,7 @@ export class GroupController {
     // Authorization errors (403)
     if (error instanceof NotGroupAdminError) {
       res.status(403).json({
-        error: 'Forbidden',
+        error: "Forbidden",
         code: error.code,
         message: error.message,
       });
@@ -315,9 +320,9 @@ export class GroupController {
     // - In removeMember: target user not found (400) - uses default message
     if (error instanceof NotGroupMemberError) {
       // Default message means trying to remove someone not in group
-      if (error.message === 'User is not a member of this group') {
+      if (error.message === "User is not a member of this group") {
         res.status(400).json({
-          error: 'Bad Request',
+          error: "Bad Request",
           code: error.code,
           message: error.message,
         });
@@ -325,7 +330,7 @@ export class GroupController {
       }
       // Custom message means authorization failure
       res.status(403).json({
-        error: 'Forbidden',
+        error: "Forbidden",
         code: error.code,
         message: error.message,
       });
@@ -335,7 +340,7 @@ export class GroupController {
     // Not found errors (404)
     if (error instanceof GroupNotFoundError) {
       res.status(404).json({
-        error: 'Not Found',
+        error: "Not Found",
         code: error.code,
         message: error.message,
       });
@@ -345,7 +350,7 @@ export class GroupController {
     // Generic GroupError
     if (error instanceof GroupError) {
       res.status(400).json({
-        error: 'Bad Request',
+        error: "Bad Request",
         code: error.code,
         message: error.message,
       });
@@ -353,11 +358,11 @@ export class GroupController {
     }
 
     // Unknown errors (500)
-    console.error('Unexpected error in GroupController:', error);
+    console.error("Unexpected error in GroupController:", error);
     res.status(500).json({
-      error: 'Internal Server Error',
-      code: 'INTERNAL_ERROR',
-      message: 'An unexpected error occurred',
+      error: "Internal Server Error",
+      code: "INTERNAL_ERROR",
+      message: "An unexpected error occurred",
     });
   }
 }
