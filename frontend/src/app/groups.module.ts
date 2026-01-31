@@ -11,6 +11,7 @@ import { GroupListComponent } from "./adapters/components/group-list/group-list.
 import { GroupCreateComponent } from "./adapters/components/group-create/group-create.component";
 import { GroupDetailComponent } from "./adapters/components/group-detail/group-detail.component";
 import { RaffleTriggerComponent } from "./adapters/components/raffle-trigger/raffle-trigger.component";
+import { SecretSantaRevealComponent } from "./adapters/components/secret-santa-reveal/secret-santa-reveal.component";
 import { AuthGuard } from "./adapters/guards/auth.guard";
 
 const routes: Routes = [
@@ -31,6 +32,7 @@ const routes: Routes = [
     GroupCreateComponent,
     GroupDetailComponent,
     RaffleTriggerComponent,
+    SecretSantaRevealComponent,
   ],
   imports: [
     CommonModule,
@@ -43,6 +45,7 @@ const routes: Routes = [
     GroupCreateComponent,
     GroupDetailComponent,
     RaffleTriggerComponent,
+    SecretSantaRevealComponent,
   ],
 })
 export class GroupsModule {}
