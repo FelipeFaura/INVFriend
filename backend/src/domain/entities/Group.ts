@@ -6,12 +6,12 @@ import {
   CannotRemoveAdminError,
   NotEnoughMembersError,
   RaffleAlreadyCompletedError,
-} from '../errors/GroupErrors';
+} from "../errors/GroupErrors";
 
 /**
  * Raffle status type
  */
-export type RaffleStatus = 'pending' | 'completed';
+export type RaffleStatus = "pending" | "completed";
 
 /**
  * Group entity - Represents a Secret Santa group
@@ -58,7 +58,10 @@ export class Group {
   ): Group {
     // Validate name
     const trimmedName = name.trim();
-    if (trimmedName.length < Group.MIN_NAME_LENGTH || trimmedName.length > Group.MAX_NAME_LENGTH) {
+    if (
+      trimmedName.length < Group.MIN_NAME_LENGTH ||
+      trimmedName.length > Group.MAX_NAME_LENGTH
+    ) {
       throw new InvalidGroupNameError(
         `Group name must be between ${Group.MIN_NAME_LENGTH} and ${Group.MAX_NAME_LENGTH} characters`,
       );
@@ -66,7 +69,7 @@ export class Group {
 
     // Validate budget
     if (budgetLimit <= 0) {
-      throw new InvalidBudgetLimitError('Budget limit must be greater than 0');
+      throw new InvalidBudgetLimitError("Budget limit must be greater than 0");
     }
 
     const now = Date.now();
@@ -77,7 +80,7 @@ export class Group {
       adminId,
       [adminId], // Admin is automatically added as first member
       budgetLimit,
-      'pending',
+      "pending",
       null,
       now,
       now,
@@ -122,11 +125,18 @@ export class Group {
    * @throws InvalidGroupNameError if name is invalid
    * @throws InvalidBudgetLimitError if budget is invalid
    */
-  update(name?: string, description?: string | null, budgetLimit?: number): Group {
+  update(
+    name?: string,
+    description?: string | null,
+    budgetLimit?: number,
+  ): Group {
     let newName = this.name;
     if (name !== undefined) {
       const trimmedName = name.trim();
-      if (trimmedName.length < Group.MIN_NAME_LENGTH || trimmedName.length > Group.MAX_NAME_LENGTH) {
+      if (
+        trimmedName.length < Group.MIN_NAME_LENGTH ||
+        trimmedName.length > Group.MAX_NAME_LENGTH
+      ) {
         throw new InvalidGroupNameError();
       }
       newName = trimmedName;
@@ -140,7 +150,10 @@ export class Group {
       newBudget = budgetLimit;
     }
 
-    const newDescription = description !== undefined ? description?.trim() || null : this.description;
+    const newDescription =
+      description !== undefined
+        ? description?.trim() || null
+        : this.description;
 
     return new Group(
       this.id,
@@ -164,8 +177,10 @@ export class Group {
    * @throws RaffleAlreadyCompletedError if raffle has been completed
    */
   addMember(userId: string): Group {
-    if (this.raffleStatus === 'completed') {
-      throw new RaffleAlreadyCompletedError('Cannot add members after raffle has been completed');
+    if (this.raffleStatus === "completed") {
+      throw new RaffleAlreadyCompletedError(
+        "Cannot add members after raffle has been completed",
+      );
     }
 
     if (this.members.includes(userId)) {
@@ -195,8 +210,10 @@ export class Group {
    * @throws RaffleAlreadyCompletedError if raffle has been completed
    */
   removeMember(userId: string): Group {
-    if (this.raffleStatus === 'completed') {
-      throw new RaffleAlreadyCompletedError('Cannot remove members after raffle has been completed');
+    if (this.raffleStatus === "completed") {
+      throw new RaffleAlreadyCompletedError(
+        "Cannot remove members after raffle has been completed",
+      );
     }
 
     if (userId === this.adminId) {
@@ -228,7 +245,7 @@ export class Group {
    * @throws RaffleAlreadyCompletedError if raffle was already completed
    */
   completeRaffle(): Group {
-    if (this.raffleStatus === 'completed') {
+    if (this.raffleStatus === "completed") {
       throw new RaffleAlreadyCompletedError();
     }
 
@@ -243,7 +260,7 @@ export class Group {
       this.adminId,
       this.members,
       this.budgetLimit,
-      'completed',
+      "completed",
       Date.now(),
       this.createdAt,
       Date.now(),
@@ -273,7 +290,10 @@ export class Group {
    * @returns true if raffle can be performed
    */
   canPerformRaffle(): boolean {
-    return this.raffleStatus === 'pending' && this.members.length >= Group.MIN_MEMBERS_FOR_RAFFLE;
+    return (
+      this.raffleStatus === "pending" &&
+      this.members.length >= Group.MIN_MEMBERS_FOR_RAFFLE
+    );
   }
 
   /**

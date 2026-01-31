@@ -1,4 +1,4 @@
-import { Group } from '../Group';
+import { Group } from "../Group";
 import {
   InvalidGroupNameError,
   InvalidBudgetLimitError,
@@ -7,19 +7,19 @@ import {
   CannotRemoveAdminError,
   NotEnoughMembersError,
   RaffleAlreadyCompletedError,
-} from '../../errors/GroupErrors';
+} from "../../errors/GroupErrors";
 
-describe('Group Entity', () => {
+describe("Group Entity", () => {
   const validGroupData = {
-    id: 'group-123',
-    name: 'Secret Santa 2026',
-    adminId: 'admin-user-123',
+    id: "group-123",
+    name: "Secret Santa 2026",
+    adminId: "admin-user-123",
     budgetLimit: 50,
-    description: 'Christmas gift exchange',
+    description: "Christmas gift exchange",
   };
 
-  describe('create', () => {
-    it('should create a group with valid data', () => {
+  describe("create", () => {
+    it("should create a group with valid data", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -33,13 +33,13 @@ describe('Group Entity', () => {
       expect(group.adminId).toBe(validGroupData.adminId);
       expect(group.budgetLimit).toBe(validGroupData.budgetLimit);
       expect(group.description).toBe(validGroupData.description);
-      expect(group.raffleStatus).toBe('pending');
+      expect(group.raffleStatus).toBe("pending");
       expect(group.raffleDate).toBeNull();
       expect(group.createdAt).toBeDefined();
       expect(group.updatedAt).toBeDefined();
     });
 
-    it('should automatically add admin as first member', () => {
+    it("should automatically add admin as first member", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -51,7 +51,7 @@ describe('Group Entity', () => {
       expect(group.members.length).toBe(1);
     });
 
-    it('should create group without description', () => {
+    it("should create group without description", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -62,51 +62,71 @@ describe('Group Entity', () => {
       expect(group.description).toBeNull();
     });
 
-    it('should trim group name', () => {
+    it("should trim group name", () => {
       const group = Group.create(
         validGroupData.id,
-        '  Secret Santa  ',
+        "  Secret Santa  ",
         validGroupData.adminId,
         validGroupData.budgetLimit,
       );
 
-      expect(group.name).toBe('Secret Santa');
+      expect(group.name).toBe("Secret Santa");
     });
 
-    it('should throw InvalidGroupNameError for name shorter than 3 characters', () => {
+    it("should throw InvalidGroupNameError for name shorter than 3 characters", () => {
       expect(() =>
-        Group.create(validGroupData.id, 'AB', validGroupData.adminId, validGroupData.budgetLimit),
+        Group.create(
+          validGroupData.id,
+          "AB",
+          validGroupData.adminId,
+          validGroupData.budgetLimit,
+        ),
       ).toThrow(InvalidGroupNameError);
     });
 
-    it('should throw InvalidGroupNameError for name longer than 100 characters', () => {
-      const longName = 'A'.repeat(101);
+    it("should throw InvalidGroupNameError for name longer than 100 characters", () => {
+      const longName = "A".repeat(101);
       expect(() =>
-        Group.create(validGroupData.id, longName, validGroupData.adminId, validGroupData.budgetLimit),
+        Group.create(
+          validGroupData.id,
+          longName,
+          validGroupData.adminId,
+          validGroupData.budgetLimit,
+        ),
       ).toThrow(InvalidGroupNameError);
     });
 
-    it('should throw InvalidBudgetLimitError for budget <= 0', () => {
+    it("should throw InvalidBudgetLimitError for budget <= 0", () => {
       expect(() =>
-        Group.create(validGroupData.id, validGroupData.name, validGroupData.adminId, 0),
+        Group.create(
+          validGroupData.id,
+          validGroupData.name,
+          validGroupData.adminId,
+          0,
+        ),
       ).toThrow(InvalidBudgetLimitError);
 
       expect(() =>
-        Group.create(validGroupData.id, validGroupData.name, validGroupData.adminId, -10),
+        Group.create(
+          validGroupData.id,
+          validGroupData.name,
+          validGroupData.adminId,
+          -10,
+        ),
       ).toThrow(InvalidBudgetLimitError);
     });
   });
 
-  describe('fromDatabase', () => {
-    it('should create group from database data', () => {
+  describe("fromDatabase", () => {
+    it("should create group from database data", () => {
       const dbData = {
-        id: 'group-123',
-        name: 'Test Group',
-        description: 'Test',
-        adminId: 'admin-123',
-        members: ['admin-123', 'user-456'],
+        id: "group-123",
+        name: "Test Group",
+        description: "Test",
+        adminId: "admin-123",
+        members: ["admin-123", "user-456"],
         budgetLimit: 100,
-        raffleStatus: 'pending' as const,
+        raffleStatus: "pending" as const,
         raffleDate: null,
         createdAt: 1704067200000,
         updatedAt: 1704067200000,
@@ -132,8 +152,8 @@ describe('Group Entity', () => {
     });
   });
 
-  describe('update', () => {
-    it('should update group name', () => {
+  describe("update", () => {
+    it("should update group name", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -141,13 +161,13 @@ describe('Group Entity', () => {
         validGroupData.budgetLimit,
       );
 
-      const updated = group.update('New Name');
+      const updated = group.update("New Name");
 
-      expect(updated.name).toBe('New Name');
+      expect(updated.name).toBe("New Name");
       expect(updated.id).toBe(group.id);
     });
 
-    it('should update group description', () => {
+    it("should update group description", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -155,12 +175,12 @@ describe('Group Entity', () => {
         validGroupData.budgetLimit,
       );
 
-      const updated = group.update(undefined, 'New description');
+      const updated = group.update(undefined, "New description");
 
-      expect(updated.description).toBe('New description');
+      expect(updated.description).toBe("New description");
     });
 
-    it('should update budget limit', () => {
+    it("should update budget limit", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -173,7 +193,7 @@ describe('Group Entity', () => {
       expect(updated.budgetLimit).toBe(100);
     });
 
-    it('should throw InvalidGroupNameError on invalid name update', () => {
+    it("should throw InvalidGroupNameError on invalid name update", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -181,10 +201,10 @@ describe('Group Entity', () => {
         validGroupData.budgetLimit,
       );
 
-      expect(() => group.update('AB')).toThrow(InvalidGroupNameError);
+      expect(() => group.update("AB")).toThrow(InvalidGroupNameError);
     });
 
-    it('should throw InvalidBudgetLimitError on invalid budget update', () => {
+    it("should throw InvalidBudgetLimitError on invalid budget update", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -192,12 +212,14 @@ describe('Group Entity', () => {
         validGroupData.budgetLimit,
       );
 
-      expect(() => group.update(undefined, undefined, 0)).toThrow(InvalidBudgetLimitError);
+      expect(() => group.update(undefined, undefined, 0)).toThrow(
+        InvalidBudgetLimitError,
+      );
     });
   });
 
-  describe('addMember', () => {
-    it('should add a new member', () => {
+  describe("addMember", () => {
+    it("should add a new member", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -205,13 +227,13 @@ describe('Group Entity', () => {
         validGroupData.budgetLimit,
       );
 
-      const updated = group.addMember('new-user-123');
+      const updated = group.addMember("new-user-123");
 
-      expect(updated.members).toContain('new-user-123');
+      expect(updated.members).toContain("new-user-123");
       expect(updated.members.length).toBe(2);
     });
 
-    it('should throw AlreadyGroupMemberError if user is already a member', () => {
+    it("should throw AlreadyGroupMemberError if user is already a member", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -219,40 +241,44 @@ describe('Group Entity', () => {
         validGroupData.budgetLimit,
       );
 
-      expect(() => group.addMember(validGroupData.adminId)).toThrow(AlreadyGroupMemberError);
+      expect(() => group.addMember(validGroupData.adminId)).toThrow(
+        AlreadyGroupMemberError,
+      );
     });
 
-    it('should throw RaffleAlreadyCompletedError if raffle is completed', () => {
+    it("should throw RaffleAlreadyCompletedError if raffle is completed", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
         validGroupData.adminId,
         validGroupData.budgetLimit,
       );
-      const withMember = group.addMember('user-2');
+      const withMember = group.addMember("user-2");
       const completed = withMember.completeRaffle();
 
-      expect(() => completed.addMember('user-3')).toThrow(RaffleAlreadyCompletedError);
+      expect(() => completed.addMember("user-3")).toThrow(
+        RaffleAlreadyCompletedError,
+      );
     });
   });
 
-  describe('removeMember', () => {
-    it('should remove a member', () => {
+  describe("removeMember", () => {
+    it("should remove a member", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
         validGroupData.adminId,
         validGroupData.budgetLimit,
       );
-      const withMember = group.addMember('user-to-remove');
+      const withMember = group.addMember("user-to-remove");
 
-      const updated = withMember.removeMember('user-to-remove');
+      const updated = withMember.removeMember("user-to-remove");
 
-      expect(updated.members).not.toContain('user-to-remove');
+      expect(updated.members).not.toContain("user-to-remove");
       expect(updated.members.length).toBe(1);
     });
 
-    it('should throw CannotRemoveAdminError when trying to remove admin', () => {
+    it("should throw CannotRemoveAdminError when trying to remove admin", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -260,10 +286,12 @@ describe('Group Entity', () => {
         validGroupData.budgetLimit,
       );
 
-      expect(() => group.removeMember(validGroupData.adminId)).toThrow(CannotRemoveAdminError);
+      expect(() => group.removeMember(validGroupData.adminId)).toThrow(
+        CannotRemoveAdminError,
+      );
     });
 
-    it('should throw NotGroupMemberError if user is not a member', () => {
+    it("should throw NotGroupMemberError if user is not a member", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -271,41 +299,45 @@ describe('Group Entity', () => {
         validGroupData.budgetLimit,
       );
 
-      expect(() => group.removeMember('non-existent-user')).toThrow(NotGroupMemberError);
+      expect(() => group.removeMember("non-existent-user")).toThrow(
+        NotGroupMemberError,
+      );
     });
 
-    it('should throw RaffleAlreadyCompletedError if raffle is completed', () => {
+    it("should throw RaffleAlreadyCompletedError if raffle is completed", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
         validGroupData.adminId,
         validGroupData.budgetLimit,
       );
-      const withMembers = group.addMember('user-2');
+      const withMembers = group.addMember("user-2");
       const completed = withMembers.completeRaffle();
 
-      expect(() => completed.removeMember('user-2')).toThrow(RaffleAlreadyCompletedError);
+      expect(() => completed.removeMember("user-2")).toThrow(
+        RaffleAlreadyCompletedError,
+      );
     });
   });
 
-  describe('completeRaffle', () => {
-    it('should complete raffle with enough members', () => {
+  describe("completeRaffle", () => {
+    it("should complete raffle with enough members", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
         validGroupData.adminId,
         validGroupData.budgetLimit,
       );
-      const withMember = group.addMember('user-2');
+      const withMember = group.addMember("user-2");
 
       const completed = withMember.completeRaffle();
 
-      expect(completed.raffleStatus).toBe('completed');
+      expect(completed.raffleStatus).toBe("completed");
       expect(completed.raffleDate).toBeDefined();
       expect(completed.raffleDate).not.toBeNull();
     });
 
-    it('should throw NotEnoughMembersError with less than 2 members', () => {
+    it("should throw NotEnoughMembersError with less than 2 members", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -316,22 +348,24 @@ describe('Group Entity', () => {
       expect(() => group.completeRaffle()).toThrow(NotEnoughMembersError);
     });
 
-    it('should throw RaffleAlreadyCompletedError if already completed', () => {
+    it("should throw RaffleAlreadyCompletedError if already completed", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
         validGroupData.adminId,
         validGroupData.budgetLimit,
       );
-      const withMember = group.addMember('user-2');
+      const withMember = group.addMember("user-2");
       const completed = withMember.completeRaffle();
 
-      expect(() => completed.completeRaffle()).toThrow(RaffleAlreadyCompletedError);
+      expect(() => completed.completeRaffle()).toThrow(
+        RaffleAlreadyCompletedError,
+      );
     });
   });
 
-  describe('isMember', () => {
-    it('should return true for a member', () => {
+  describe("isMember", () => {
+    it("should return true for a member", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -342,7 +376,7 @@ describe('Group Entity', () => {
       expect(group.isMember(validGroupData.adminId)).toBe(true);
     });
 
-    it('should return false for non-member', () => {
+    it("should return false for non-member", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -350,12 +384,12 @@ describe('Group Entity', () => {
         validGroupData.budgetLimit,
       );
 
-      expect(group.isMember('non-member')).toBe(false);
+      expect(group.isMember("non-member")).toBe(false);
     });
   });
 
-  describe('isAdmin', () => {
-    it('should return true for admin', () => {
+  describe("isAdmin", () => {
+    it("should return true for admin", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -366,7 +400,7 @@ describe('Group Entity', () => {
       expect(group.isAdmin(validGroupData.adminId)).toBe(true);
     });
 
-    it('should return false for non-admin', () => {
+    it("should return false for non-admin", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -374,24 +408,24 @@ describe('Group Entity', () => {
         validGroupData.budgetLimit,
       );
 
-      expect(group.isAdmin('other-user')).toBe(false);
+      expect(group.isAdmin("other-user")).toBe(false);
     });
   });
 
-  describe('canPerformRaffle', () => {
-    it('should return true when pending and has enough members', () => {
+  describe("canPerformRaffle", () => {
+    it("should return true when pending and has enough members", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
         validGroupData.adminId,
         validGroupData.budgetLimit,
       );
-      const withMember = group.addMember('user-2');
+      const withMember = group.addMember("user-2");
 
       expect(withMember.canPerformRaffle()).toBe(true);
     });
 
-    it('should return false when not enough members', () => {
+    it("should return false when not enough members", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -402,22 +436,22 @@ describe('Group Entity', () => {
       expect(group.canPerformRaffle()).toBe(false);
     });
 
-    it('should return false when raffle completed', () => {
+    it("should return false when raffle completed", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
         validGroupData.adminId,
         validGroupData.budgetLimit,
       );
-      const withMember = group.addMember('user-2');
+      const withMember = group.addMember("user-2");
       const completed = withMember.completeRaffle();
 
       expect(completed.canPerformRaffle()).toBe(false);
     });
   });
 
-  describe('toJSON', () => {
-    it('should return plain object representation', () => {
+  describe("toJSON", () => {
+    it("should return plain object representation", () => {
       const group = Group.create(
         validGroupData.id,
         validGroupData.name,
@@ -434,7 +468,7 @@ describe('Group Entity', () => {
       expect(json.budgetLimit).toBe(validGroupData.budgetLimit);
       expect(json.description).toBe(validGroupData.description);
       expect(json.members).toEqual([validGroupData.adminId]);
-      expect(json.raffleStatus).toBe('pending');
+      expect(json.raffleStatus).toBe("pending");
     });
   });
 });

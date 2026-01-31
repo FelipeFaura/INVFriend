@@ -33,6 +33,7 @@ Create Group domain entity with business rules following domain-driven design pr
 ## 🚫 Scope / Limits
 
 ❌ Do NOT include:
+
 - Repository implementation (TASK-010)
 - Use cases (TASK-011)
 - API endpoints (TASK-012)
@@ -47,9 +48,11 @@ Create Group domain entity with business rules following domain-driven design pr
 ## 📁 Files Created
 
 ### Entity
+
 - `backend/src/domain/entities/Group.ts` - Group entity with business logic
 
 ### Errors
+
 - `backend/src/domain/errors/GroupErrors.ts` - Domain-specific error classes:
   - `GroupError` (base class)
   - `InvalidGroupNameError`
@@ -64,6 +67,7 @@ Create Group domain entity with business rules following domain-driven design pr
   - `RaffleAlreadyCompletedError`
 
 ### Tests
+
 - `backend/src/domain/entities/__tests__/Group.spec.ts`
 
 ## 🧪 Test Results
@@ -87,13 +91,13 @@ class Group {
   // Factory methods
   static create(id, name, adminId, budgetLimit, description?): Group
   static fromDatabase(...): Group
-  
+
   // Mutations (return new instance)
   update(name?, description?, budgetLimit?): Group
   addMember(userId): Group
   removeMember(userId): Group
   completeRaffle(): Group
-  
+
   // Queries
   isMember(userId): boolean
   isAdmin(userId): boolean
