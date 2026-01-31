@@ -1,0 +1,379 @@
+<div class="wish-list-container">
+  <!-- My Wishes Section -->
+  <section class="wishes-section my-wishes">
+    <div class="section-header">
+      <h3>My Wish List</h3>
+      <button 
+        class="btn btn-primary btn-sm"
+        (click)="openAddWishModal()"
+        data-testid="add-wish-btn">
+        + Add Wish
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container" data-testid="loading-spinner">
+      <div class="spinner"></div>
+      <p>Loading wishes...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !isLoading" class="error-container" data-testid="error-message">
+      <p class="error-text">{{ error }}</p>
+      <button class="btn btn-secondary btn-sm" (click)="loadMyWishes()">Retry</button>
+    </div>
+
+    <!-- Empty State -->
+    <div 
+      *ngIf="!isLoading && !error && myWishes.length === 0" 
+      class="empty-state"
+      data-testid="empty-state">
+      <p>You haven't added any wishes yet.</p>
+      <p class="hint">Add items you'd like to receive as gifts!</p>
+    </div>
+
+    <!-- Wishes List -->
+    <div 
+      *ngIf="!isLoading && !error && myWishes.length > 0" 
+      class="wishes-list"
+      data-testid="my-wishes-list">
+      <div 
+        *ngFor="let wish of myWishes" 
+        class="wish-card"
+        [attr.data-testid]="'wish-' + wish.id">
+        <div class="wish-header">
+          <h4 class="wish-title">{{ wish.title }}</h4>
+          <div class="wish-actions">
+            <button 
+              class="btn-icon" 
+              (click)="openEditWishModal(wish)"
+              title="Edit"
+              data-testid="edit-wish-btn">
+              ✏️
+            </button>
+            <button 
+              class="btn-icon btn-danger" 
+              (click)="confirmDeleteWish(wish)"
+              title="Delete"
+              data-testid="delete-wish-btn">
+              🗑️
+            </button>
+          </div>
+        </div>
+        
+        <div class="wish-details">
+          <p *ngIf="wish.description" class="wish-description">{{ wish.description }}</p>
+          
+          <div class="wish-meta">
+            <span *ngIf="wish.priority" class="priority" [title]="'Priority: ' + wish.priority">
+              {{ getPriorityLabel(wish.priority) }}
+            </span>
+            <span *ngIf="wish.estimatedPrice" class="price">
+              {{ formatPrice(wish.estimatedPrice) }}
+            </span>
+            <a 
+              *ngIf="isValidUrl(wish.url)" 
+              [href]="wish.url" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="link">
+              🔗 View Link
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Assigned Wishes Section (only shown after raffle) -->
+  <section *ngIf="isRaffleCompleted" class="wishes-section assigned-wishes">
+    <div class="section-header">
+      <h3>🎅 Your Recipient's Wish List</h3>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoadingAssigned" class="loading-container" data-testid="assigned-loading">
+      <div class="spinner"></div>
+      <p>Loading assigned wishes...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="assignedError && !isLoadingAssigned" class="error-container" data-testid="assigned-error">
+      <p class="error-text">{{ assignedError }}</p>
+      <button class="btn btn-secondary btn-sm" (click)="loadAssignedWishes()">Retry</button>
+    </div>
+
+    <!-- Empty State -->
+    <div 
+      *ngIf="!isLoadingAssigned && !assignedError && assignedWishes.length === 0" 
+      class="empty-state"
+      data-testid="assigned-empty-state">
+      <p>Your recipient hasn't added any wishes yet.</p>
+      <p class="hint">Check back later or get creative with your gift! 🎁</p>
+    </div>
+
+    <!-- Assigned Wishes List -->
+    <div 
+      *ngIf="!isLoadingAssigned && !assignedError && assignedWishes.length > 0" 
+      class="wishes-list"
+      data-testid="assigned-wishes-list">
+      <div 
+        *ngFor="let wish of assignedWishes" 
+        class="wish-card assigned"
+        [attr.data-testid]="'assigned-wish-' + wish.id">
+        <div class="wish-header">
+          <h4 class="wish-title">{{ wish.title }}</h4>
+        </div>
+        
+        <div class="wish-details">
+          <p *ngIf="wish.description" class="wish-description">{{ wish.description }}</p>
+          
+          <div class="wish-meta">
+            <span *ngIf="wish.priority" class="priority" [title]="'Priority: ' + wish.priority">
+              {{ getPriorityLabel(wish.priority) }}
+            </span>
+            <span *ngIf="wish.estimatedPrice" class="price">
+              {{ formatPrice(wish.estimatedPrice) }}
+            </span>
+            <a 
+              *ngIf="isValidUrl(wish.url)" 
+              [href]="wish.url" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="link">
+              🔗 View Link
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Add Wish Modal -->
+  <div *ngIf="showAddWishModal" class="modal-overlay" data-testid="add-wish-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add New Wish</h3>
+        <button class="btn-close" (click)="closeAddWishModal()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <div *ngIf="actionError" class="error-banner" data-testid="modal-error">
+          {{ actionError }}
+        </div>
+        
+        <div class="form-group">
+          <label for="add-title">Title *</label>
+          <input 
+            id="add-title"
+            type="text" 
+            [(ngModel)]="wishForm.title" 
+            placeholder="What do you want?"
+            maxlength="200"
+            data-testid="add-title-input"
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="add-description">Description</label>
+          <textarea 
+            id="add-description"
+            [(ngModel)]="wishForm.description" 
+            placeholder="Add more details..."
+            rows="3"
+            maxlength="1000"
+            data-testid="add-description-input"
+          ></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="add-url">Link (URL)</label>
+          <input 
+            id="add-url"
+            type="url" 
+            [(ngModel)]="wishForm.url" 
+            placeholder="https://example.com/item"
+            data-testid="add-url-input"
+          />
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="add-price">Estimated Price</label>
+            <input 
+              id="add-price"
+              type="number" 
+              [(ngModel)]="wishForm.estimatedPrice" 
+              placeholder="0.00"
+              min="0"
+              step="0.01"
+              data-testid="add-price-input"
+            />
+          </div>
+          
+          <div class="form-group half">
+            <label for="add-priority">Priority</label>
+            <select 
+              id="add-priority"
+              [(ngModel)]="wishForm.priority"
+              data-testid="add-priority-input">
+              <option [ngValue]="undefined">Select...</option>
+              <option [ngValue]="1">1 - Highest</option>
+              <option [ngValue]="2">2 - High</option>
+              <option [ngValue]="3">3 - Medium</option>
+              <option [ngValue]="4">4 - Low</option>
+              <option [ngValue]="5">5 - Lowest</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button 
+          class="btn btn-secondary" 
+          (click)="closeAddWishModal()"
+          [disabled]="isProcessing">
+          Cancel
+        </button>
+        <button 
+          class="btn btn-primary" 
+          (click)="createWish()"
+          [disabled]="isProcessing || !wishForm.title?.trim()"
+          data-testid="submit-add-wish-btn">
+          {{ isProcessing ? 'Adding...' : 'Add Wish' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Wish Modal -->
+  <div *ngIf="showEditWishModal" class="modal-overlay" data-testid="edit-wish-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Edit Wish</h3>
+        <button class="btn-close" (click)="closeEditWishModal()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <div *ngIf="actionError" class="error-banner" data-testid="edit-modal-error">
+          {{ actionError }}
+        </div>
+        
+        <div class="form-group">
+          <label for="edit-title">Title *</label>
+          <input 
+            id="edit-title"
+            type="text" 
+            [(ngModel)]="wishForm.title" 
+            placeholder="What do you want?"
+            maxlength="200"
+            data-testid="edit-title-input"
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="edit-description">Description</label>
+          <textarea 
+            id="edit-description"
+            [(ngModel)]="wishForm.description" 
+            placeholder="Add more details..."
+            rows="3"
+            maxlength="1000"
+            data-testid="edit-description-input"
+          ></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="edit-url">Link (URL)</label>
+          <input 
+            id="edit-url"
+            type="url" 
+            [(ngModel)]="wishForm.url" 
+            placeholder="https://example.com/item"
+            data-testid="edit-url-input"
+          />
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="edit-price">Estimated Price</label>
+            <input 
+              id="edit-price"
+              type="number" 
+              [(ngModel)]="wishForm.estimatedPrice" 
+              placeholder="0.00"
+              min="0"
+              step="0.01"
+              data-testid="edit-price-input"
+            />
+          </div>
+          
+          <div class="form-group half">
+            <label for="edit-priority">Priority</label>
+            <select 
+              id="edit-priority"
+              [(ngModel)]="wishForm.priority"
+              data-testid="edit-priority-input">
+              <option [ngValue]="undefined">Select...</option>
+              <option [ngValue]="1">1 - Highest</option>
+              <option [ngValue]="2">2 - High</option>
+              <option [ngValue]="3">3 - Medium</option>
+              <option [ngValue]="4">4 - Low</option>
+              <option [ngValue]="5">5 - Lowest</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button 
+          class="btn btn-secondary" 
+          (click)="closeEditWishModal()"
+          [disabled]="isProcessing">
+          Cancel
+        </button>
+        <button 
+          class="btn btn-primary" 
+          (click)="updateWish()"
+          [disabled]="isProcessing || !wishForm.title?.trim()"
+          data-testid="submit-edit-wish-btn">
+          {{ isProcessing ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div *ngIf="showDeleteConfirm" class="modal-overlay" data-testid="delete-wish-modal">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>Delete Wish</h3>
+        <button class="btn-close" (click)="cancelDelete()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <div *ngIf="actionError" class="error-banner" data-testid="delete-modal-error">
+          {{ actionError }}
+        </div>
+        <p>Are you sure you want to delete "<strong>{{ deletingWish?.title }}</strong>"?</p>
+        <p class="warning">This action cannot be undone.</p>
+      </div>
+      
+      <div class="modal-footer">
+        <button 
+          class="btn btn-secondary" 
+          (click)="cancelDelete()"
+          [disabled]="isProcessing">
+          Cancel
+        </button>
+        <button 
+          class="btn btn-danger" 
+          (click)="deleteWish()"
+          [disabled]="isProcessing"
+          data-testid="confirm-delete-wish-btn">
+          {{ isProcessing ? 'Deleting...' : 'Delete' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

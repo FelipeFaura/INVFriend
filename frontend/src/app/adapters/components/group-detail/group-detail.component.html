@@ -67,6 +67,9 @@
       (raffleCompleted)="onRaffleCompleted()">
     </app-raffle-trigger>
 
+    <!-- Wish List -->
+    <app-wish-list [group]="group"></app-wish-list>
+
     <!-- Description -->
     <div *ngIf="group.description" class="description-section">
       <h3>Description</h3>
