@@ -58,7 +58,7 @@ Sprint 8: Polish, Testing & Deployment
 | Sprint 1 | Project Setup & Auth Backend | 4             | 0              | 4           | ✅ COMPLETED |
 | Sprint 2 | Auth Frontend & Guards       | 0             | 4              | 4           | ✅ COMPLETED |
 | Sprint 3 | Group Management Backend     | 4             | 0              | 4           | ✅ COMPLETED |
-| Sprint 4 | Group Management Frontend    | 0             | 4              | 4           | ⏸️ PENDING   |
+| Sprint 4 | Group Management Frontend    | 0             | 4              | 4           | ✅ COMPLETED |
 | Sprint 5 | Raffle System Backend        | 4             | 0              | 4           | ⏸️ PENDING   |
 | Sprint 6 | Raffle System Frontend       | 0             | 4              | 4           | ⏸️ PENDING   |
 | Sprint 7 | Wishes & Notifications       | 2             | 2              | 4           | ⏸️ PENDING   |
@@ -368,64 +368,75 @@ DELETE /groups/:id/members/:userId - Remove member (authenticated, admin only)
 ## 🎨 SPRINT 4: Group Management Frontend
 
 **Duration**: Weeks 7-8  
+**Status**: ✅ **COMPLETED** (4/4 tasks completed)  
 **Goal**: Implement complete group management UI  
 **Deliverables**: Group creation, list, details, member management
 
 ### SPRINT 4 - Task Breakdown
 
-#### TASK-013: Implement Group Models & HTTP Service
+#### ✅ TASK-013: Implement Group Models & HTTP Service - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 3 hours  
 **Dependencies**: TASK-012
+**Status**: ✅ COMPLETED (January 31, 2026)
 
 **Description**:
 Create domain models and HTTP service for groups.
 
-**Files to Create**:
+**Files Created**:
 
 - `frontend/src/app/domain/models/group.model.ts`
+- `frontend/src/app/domain/errors/group-errors.ts`
+- `frontend/src/app/application/dto/group.dto.ts`
 - `frontend/src/app/adapters/services/group-http.service.ts`
 - `frontend/src/app/adapters/services/__tests__/group-http.service.spec.ts`
+
+**Test Results**: 16 tests passing
 
 **Reference**: [GUIDELINES.md](./GUIDELINES.md) - Angular Services
 
 ---
 
-#### TASK-014: Implement Group List Component
+#### ✅ TASK-014: Implement Group List Component - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 5 hours  
 **Dependencies**: TASK-013
+**Status**: ✅ COMPLETED (January 31, 2026)
 
 **Description**:
 Display list of user's groups with search/filter.
 
-**Files to Create**:
+**Files Created**:
 
 - `frontend/src/app/adapters/components/group-list/group-list.component.ts`
 - `frontend/src/app/adapters/components/group-list/group-list.component.html`
 - `frontend/src/app/adapters/components/group-list/group-list.component.scss`
-- Component tests
+- `frontend/src/app/adapters/components/group-list/group-list.component.spec.ts`
+- `frontend/src/app/groups.module.ts`
 
 **Features**:
 
-- [ ] Display all user groups (admin + member)
-- [ ] Search by group name
-- [ ] Filter by status (pending/completed)
-- [ ] Click to view details
-- [ ] "Create New Group" button
-- [ ] Empty state when no groups
+- [x] Display all user groups (admin + member)
+- [x] Search by group name (debounced)
+- [x] Status indicators (pending/completed)
+- [x] Click to view details
+- [x] "Create New Group" button
+- [x] Empty state when no groups
+
+**Test Results**: 21 tests passing
 
 **Reference**: [GUIDELINES.md](./GUIDELINES.md) - RxJS
 
 ---
 
-#### TASK-015: Implement Create Group Component
+#### ✅ TASK-015: Implement Create Group Component - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 4 hours  
 **Dependencies**: TASK-013
+**Status**: ✅ COMPLETED (January 31, 2026)
 
 **Description**:
 Form to create new groups.
@@ -441,37 +452,42 @@ Form to create new groups.
 
 - [ ] Reactive form with validators
 - [ ] Fields: name, description (optional), budget limit
-- [ ] Real-time validation feedback
-- [ ] Success message on creation
-- [ ] Redirect to group details after creation
+- [x] Real-time validation feedback
+- [x] Success message on creation
+- [x] Redirect to group details after creation
+
+**Test Results**: 24 tests passing
 
 **Reference**: [GUIDELINES.md](./GUIDELINES.md) - Angular Components
 
 ---
 
-#### TASK-016: Implement Group Detail Component
+#### ✅ TASK-016: Implement Group Detail Component - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 6 hours  
 **Dependencies**: TASK-014
+**Status**: ✅ COMPLETED (January 31, 2026)
 
 **Description**:
 Display group details and manage members.
 
-**Files to Create**:
+**Files Created**:
 
 - `frontend/src/app/adapters/components/group-detail/group-detail.component.ts`
 - `frontend/src/app/adapters/components/group-detail/group-detail.component.html`
 - `frontend/src/app/adapters/components/group-detail/group-detail.component.scss`
-- Component tests
+- `frontend/src/app/adapters/components/group-detail/group-detail.component.spec.ts`
 
 **Features**:
 
-- [ ] Display group info (name, budget, admin, status)
-- [ ] Member list with roles
-- [ ] Admin controls: Add/remove members, delete group
-- [ ] Conditional UI based on user role (admin vs member)
-- [ ] Confirmation dialogs for destructive actions
+- [x] Display group info (name, budget, admin, status)
+- [x] Member list with roles
+- [x] Admin controls: Add/remove members, delete group
+- [x] Conditional UI based on user role (admin vs member)
+- [x] Confirmation dialogs for destructive actions
+
+**Test Results**: 32 tests passing
 
 **Reference**: [GUIDELINES.md](./GUIDELINES.md) - Change Detection
 
@@ -480,6 +496,7 @@ Display group details and manage members.
 ## 🎲 SPRINT 5: Raffle System Backend
 
 **Duration**: Weeks 9-10  
+**Status**: ⏸️ **PENDING**  
 **Goal**: Implement Secret Santa raffle algorithm and assignments  
 **Deliverables**: Fair raffle logic, assignment storage, result retrieval
 

@@ -1,0 +1,184 @@
+<div class="group-detail-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container" data-testid="loading-spinner">
+    <div class="spinner"></div>
+    <p>Loading group...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container" data-testid="error-message">
+    <p class="error-text">{{ error }}</p>
+    <button class="btn btn-secondary" (click)="goBack()">Back to Groups</button>
+  </div>
+
+  <!-- Group Content -->
+  <div *ngIf="group && !isLoading && !error" class="group-content">
+    <!-- Header -->
+    <div class="header">
+      <button class="btn-back" (click)="goBack()" data-testid="back-btn">
+        ← Back
+      </button>
+      <h1 class="group-title">{{ group.name }}</h1>
+      <div *ngIf="isAdmin" class="admin-actions">
+        <button 
+          class="btn-icon" 
+          (click)="editGroup()" 
+          title="Edit group"
+          data-testid="edit-btn">
+          ✏️
+        </button>
+        <button 
+          class="btn-icon btn-danger" 
+          (click)="confirmDelete()" 
+          title="Delete group"
+          data-testid="delete-btn">
+          🗑️
+        </button>
+      </div>
+    </div>
+
+    <!-- Action Error -->
+    <div *ngIf="actionError" class="error-banner" data-testid="action-error">
+      {{ actionError }}
+    </div>
+
+    <!-- Group Info -->
+    <div class="info-section">
+      <div class="info-row">
+        <span class="info-label">Status:</span>
+        <span [class]="'status-' + group.raffleStatus">
+          {{ getStatusLabel(group.raffleStatus) }}
+        </span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Budget:</span>
+        <span class="info-value">${{ group.budgetLimit }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Created:</span>
+        <span class="info-value">{{ formatDate(group.createdAt) }}</span>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div *ngIf="group.description" class="description-section">
+      <h3>Description</h3>
+      <p>{{ group.description }}</p>
+    </div>
+
+    <!-- Members -->
+    <div class="members-section">
+      <div class="members-header">
+        <h3>Members ({{ group.members.length }})</h3>
+        <button 
+          *ngIf="isAdmin" 
+          class="btn btn-primary btn-sm"
+          (click)="openAddMemberModal()"
+          data-testid="add-member-btn">
+          + Add Member
+        </button>
+      </div>
+
+      <div class="members-list" data-testid="members-list">
+        <div 
+          *ngFor="let memberId of group.members" 
+          class="member-item"
+          [attr.data-testid]="'member-' + memberId">
+          <div class="member-info">
+            <span *ngIf="isMemberAdmin(memberId)" class="admin-badge">👑</span>
+            <span class="member-id">{{ memberId }}</span>
+            <span *ngIf="isMemberAdmin(memberId)" class="admin-label">(Admin)</span>
+          </div>
+          <button 
+            *ngIf="isAdmin && !isMemberAdmin(memberId)"
+            class="btn-remove"
+            (click)="confirmRemoveMember(memberId)"
+            [attr.data-testid]="'remove-' + memberId">
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div *ngIf="showDeleteConfirm" class="modal-overlay" data-testid="delete-modal">
+    <div class="modal">
+      <h3>Delete Group</h3>
+      <p>Are you sure you want to delete "{{ group?.name }}"? This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button 
+          class="btn btn-secondary" 
+          (click)="cancelDelete()"
+          [disabled]="isProcessing"
+          data-testid="cancel-delete-btn">
+          Cancel
+        </button>
+        <button 
+          class="btn btn-danger" 
+          (click)="deleteGroup()"
+          [disabled]="isProcessing"
+          data-testid="confirm-delete-btn">
+          {{ isProcessing ? 'Deleting...' : 'Delete' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Member Modal -->
+  <div *ngIf="showAddMemberModal" class="modal-overlay" data-testid="add-member-modal">
+    <div class="modal">
+      <h3>Add Member</h3>
+      <div *ngIf="actionError" class="error-text modal-error">{{ actionError }}</div>
+      <div class="form-group">
+        <label for="memberId">User ID</label>
+        <input 
+          type="text" 
+          id="memberId"
+          [(ngModel)]="newMemberId"
+          placeholder="Enter user ID"
+          class="form-input"
+          data-testid="member-id-input"
+        />
+      </div>
+      <div class="modal-actions">
+        <button 
+          class="btn btn-secondary" 
+          (click)="closeAddMemberModal()"
+          [disabled]="isProcessing">
+          Cancel
+        </button>
+        <button 
+          class="btn btn-primary" 
+          (click)="addMember()"
+          [disabled]="isProcessing || !newMemberId.trim()"
+          data-testid="confirm-add-btn">
+          {{ isProcessing ? 'Adding...' : 'Add Member' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Remove Member Confirmation Modal -->
+  <div *ngIf="showRemoveMemberConfirm" class="modal-overlay" data-testid="remove-member-modal">
+    <div class="modal">
+      <h3>Remove Member</h3>
+      <p>Are you sure you want to remove this member from the group?</p>
+      <div class="modal-actions">
+        <button 
+          class="btn btn-secondary" 
+          (click)="cancelRemoveMember()"
+          [disabled]="isProcessing">
+          Cancel
+        </button>
+        <button 
+          class="btn btn-danger" 
+          (click)="removeMember()"
+          [disabled]="isProcessing"
+          data-testid="confirm-remove-btn">
+          {{ isProcessing ? 'Removing...' : 'Remove' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

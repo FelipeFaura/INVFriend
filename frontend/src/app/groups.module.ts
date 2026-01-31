@@ -9,6 +9,7 @@ import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 
 import { GroupListComponent } from "./adapters/components/group-list/group-list.component";
 import { GroupCreateComponent } from "./adapters/components/group-create/group-create.component";
+import { GroupDetailComponent } from "./adapters/components/group-detail/group-detail.component";
 import { AuthGuard } from "./adapters/guards/auth.guard";
 
 const routes: Routes = [
@@ -18,20 +19,23 @@ const routes: Routes = [
     children: [
       { path: "", component: GroupListComponent },
       { path: "create", component: GroupCreateComponent },
-      // Future routes:
-      // { path: ':id', component: GroupDetailComponent },
+      { path: ":id", component: GroupDetailComponent },
     ],
   },
 ];
 
 @NgModule({
-  declarations: [GroupListComponent, GroupCreateComponent],
+  declarations: [
+    GroupListComponent,
+    GroupCreateComponent,
+    GroupDetailComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes),
   ],
-  exports: [GroupListComponent, GroupCreateComponent],
+  exports: [GroupListComponent, GroupCreateComponent, GroupDetailComponent],
 })
 export class GroupsModule {}
