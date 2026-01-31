@@ -59,7 +59,7 @@ Sprint 8: Polish, Testing & Deployment
 | Sprint 2 | Auth Frontend & Guards       | 0             | 4              | 4           | ✅ COMPLETED |
 | Sprint 3 | Group Management Backend     | 4             | 0              | 4           | ✅ COMPLETED |
 | Sprint 4 | Group Management Frontend    | 0             | 4              | 4           | ✅ COMPLETED |
-| Sprint 5 | Raffle System Backend        | 4             | 0              | 4           | ⏸️ PENDING   |
+| Sprint 5 | Raffle System Backend        | 4             | 0              | 4           | ✅ COMPLETED |
 | Sprint 6 | Raffle System Frontend       | 0             | 4              | 4           | ⏸️ PENDING   |
 | Sprint 7 | Wishes & Notifications       | 2             | 2              | 4           | ⏸️ PENDING   |
 | Sprint 8 | Integration, Polish & Deploy | 2             | 2              | 4           | ⏸️ PENDING   |
