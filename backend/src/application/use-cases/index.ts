@@ -10,3 +10,18 @@ export { UpdateGroupUseCase } from "./UpdateGroupUseCase";
 export { AddMemberToGroupUseCase } from "./AddMemberToGroupUseCase";
 export { RemoveMemberFromGroupUseCase } from "./RemoveMemberFromGroupUseCase";
 export { DeleteGroupUseCase } from "./DeleteGroupUseCase";
+
+// Raffle Use Cases
+export {
+  PerformRaffleUseCase,
+  PerformRaffleDTO,
+  RaffleResultDTO,
+  RaffleFailedError,
+} from "./PerformRaffleUseCase";
+export {
+  GetMyAssignmentUseCase,
+  GetMyAssignmentDTO,
+  AssignmentResultDTO,
+  RaffleNotCompletedError,
+  AssignmentNotFoundError,
+} from "./GetMyAssignmentUseCase";
