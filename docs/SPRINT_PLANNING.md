@@ -1,6 +1,6 @@
 # 📅 INVFriend - Sprint Planning & Task Roadmap
 
-![Progress](<https://img.shields.io/badge/Progress-31.25%25%20(10%2F32)-blue>)
+![Progress](<https://img.shields.io/badge/Progress-34.4%25%20(11%2F32)-blue>)
 ![Sprint](https://img.shields.io/badge/Sprint-3%20In%20Progress-yellow)
 ![Completed](https://img.shields.io/badge/Sprint%201%20%26%202-Completed-success)
 
@@ -11,9 +11,9 @@ This document organizes the **INVFriend MVP** development into structured sprint
 **Project Duration**: 8 Sprints (~16 weeks / 4 months)  
 **Sprint Length**: 2 weeks  
 **Total Tasks**: 32 tasks  
-**Completed**: 10 tasks (TASK-001 to TASK-010) ✅  
+**Completed**: 11 tasks (TASK-001 to TASK-011) ✅  
 **Current Sprint**: Sprint 3 (Group Management Backend)  
-**Last Updated**: January 30, 2026
+**Last Updated**: January 31, 2026
 
 ---
 
@@ -24,8 +24,8 @@ This document organizes the **INVFriend MVP** development into structured sprint
 **Quick Status:**
 
 - Current Sprint: Sprint 3 (Group Management Backend)
-- Overall Progress: 31.25% (10/32 tasks)
-- Next Task: TASK-011 (Group Use Cases)
+- Overall Progress: 34.4% (11/32 tasks)
+- Next Task: TASK-012 (Group Controller & Routes)
 
 ---
 
@@ -222,7 +222,7 @@ Create route guards to protect authenticated routes.
 ## 🏢 SPRINT 3: Group Management Backend
 
 **Duration**: Weeks 5-6  
-**Status**: 🔄 **IN PROGRESS** (2/4 tasks completed)  
+**Status**: 🔄 **IN PROGRESS** (3/4 tasks completed)  
 **Goal**: Implement complete group CRUD operations backend  
 **Deliverables**: Group creation, members management, admin controls
 
@@ -301,27 +301,31 @@ interface IGroupRepository {
 
 **Priority**: HIGH  
 **Estimated Effort**: 6 hours  
-**Dependencies**: TASK-010
+**Dependencies**: TASK-010  
+**Status**: ✅ COMPLETED (January 31, 2026)
 
 **Description**:
 Implement business logic for group operations.
 
-**Files to Create**:
+**Files Created**:
 
+- `backend/src/application/dto/GroupDTOs.ts`
 - `backend/src/application/use-cases/CreateGroupUseCase.ts`
 - `backend/src/application/use-cases/GetGroupDetailsUseCase.ts`
+- `backend/src/application/use-cases/GetUserGroupsUseCase.ts`
+- `backend/src/application/use-cases/UpdateGroupUseCase.ts`
 - `backend/src/application/use-cases/AddMemberToGroupUseCase.ts`
 - `backend/src/application/use-cases/RemoveMemberFromGroupUseCase.ts`
 - `backend/src/application/use-cases/DeleteGroupUseCase.ts`
-- `backend/src/application/dto/GroupDTOs.ts`
-- Tests for all use cases
+- `backend/src/application/use-cases/index.ts`
+- Tests for all use cases (36 tests)
 
 **Validations**:
 
-- [ ] Only admin can delete group
-- [ ] Only admin can remove members
-- [ ] Cannot remove admin from group
-- [ ] Cannot delete group after raffle completed
+- [x] Only admin can delete group
+- [x] Only admin can remove members
+- [x] Cannot remove admin from group
+- [x] Cannot delete group after raffle completed
 
 **Reference**: [GUIDELINES.md](./GUIDELINES.md) - Use Cases
 
