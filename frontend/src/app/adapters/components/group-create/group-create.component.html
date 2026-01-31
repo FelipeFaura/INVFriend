@@ -1,0 +1,111 @@
+<div class="group-create-container">
+  <!-- Header -->
+  <div class="header">
+    <button 
+      class="btn-back" 
+      (click)="onCancel()"
+      data-testid="back-btn">
+      ← Back
+    </button>
+    <h1>Create New Group</h1>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-banner" data-testid="error-message">
+    {{ error }}
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="create-form">
+    <!-- Group Name -->
+    <div class="form-group">
+      <label for="name" class="form-label">
+        Group Name <span class="required">*</span>
+      </label>
+      <input
+        type="text"
+        id="name"
+        formControlName="name"
+        class="form-input"
+        [class.invalid]="isInvalid('name')"
+        placeholder="e.g., Family Secret Santa"
+        data-testid="name-input"
+      />
+      <div *ngIf="hasError('name', 'required')" class="error-text" data-testid="name-required-error">
+        Group name is required
+      </div>
+      <div *ngIf="hasError('name', 'minlength')" class="error-text" data-testid="name-minlength-error">
+        Name must be at least 3 characters
+      </div>
+      <div *ngIf="hasError('name', 'maxlength')" class="error-text" data-testid="name-maxlength-error">
+        Name cannot exceed 100 characters
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="form-group">
+      <label for="description" class="form-label">
+        Description <span class="optional">(optional)</span>
+      </label>
+      <textarea
+        id="description"
+        formControlName="description"
+        class="form-input form-textarea"
+        [class.invalid]="isInvalid('description')"
+        placeholder="Add a description for your group..."
+        rows="3"
+        data-testid="description-input"
+      ></textarea>
+      <div *ngIf="hasError('description', 'maxlength')" class="error-text">
+        Description cannot exceed 500 characters
+      </div>
+      <div class="char-count">
+        {{ form.get('description')?.value?.length || 0 }}/500
+      </div>
+    </div>
+
+    <!-- Budget Limit -->
+    <div class="form-group">
+      <label for="budgetLimit" class="form-label">
+        Budget Limit ($) <span class="required">*</span>
+      </label>
+      <input
+        type="number"
+        id="budgetLimit"
+        formControlName="budgetLimit"
+        class="form-input"
+        [class.invalid]="isInvalid('budgetLimit')"
+        placeholder="50"
+        min="0.01"
+        step="0.01"
+        data-testid="budget-input"
+      />
+      <div *ngIf="hasError('budgetLimit', 'required')" class="error-text" data-testid="budget-required-error">
+        Budget limit is required
+      </div>
+      <div *ngIf="hasError('budgetLimit', 'min')" class="error-text" data-testid="budget-min-error">
+        Budget must be greater than 0
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-actions">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="onCancel()"
+        [disabled]="isSubmitting"
+        data-testid="cancel-btn">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="form.invalid || isSubmitting"
+        data-testid="submit-btn">
+        <span *ngIf="!isSubmitting">Create Group</span>
+        <span *ngIf="isSubmitting">Creating...</span>
+      </button>
+    </div>
+  </form>
+</div>
