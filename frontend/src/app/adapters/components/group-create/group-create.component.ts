@@ -2,19 +2,19 @@
  * Group Create Component
  * Form to create new Secret Santa groups
  */
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
-import { GroupHttpService } from '../../services/group-http.service';
-import { CreateGroupDTO } from '../../../application/dto/group.dto';
+import { GroupHttpService } from "../../services/group-http.service";
+import { CreateGroupDTO } from "../../../application/dto/group.dto";
 
 @Component({
-  selector: 'app-group-create',
-  templateUrl: './group-create.component.html',
-  styleUrls: ['./group-create.component.scss'],
+  selector: "app-group-create",
+  templateUrl: "./group-create.component.html",
+  styleUrls: ["./group-create.component.scss"],
 })
 export class GroupCreateComponent implements OnInit, OnDestroy {
   form!: FormGroup;
@@ -26,7 +26,7 @@ export class GroupCreateComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private groupHttpService: GroupHttpService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -43,8 +43,15 @@ export class GroupCreateComponent implements OnInit, OnDestroy {
    */
   private initForm(): void {
     this.form = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-      description: ['', [Validators.maxLength(500)]],
+      name: [
+        "",
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(100),
+        ],
+      ],
+      description: ["", [Validators.maxLength(500)]],
       budgetLimit: [null, [Validators.required, Validators.min(0.01)]],
     });
   }
@@ -88,10 +95,10 @@ export class GroupCreateComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (group) => {
-          this.router.navigate(['/groups', group.id]);
+          this.router.navigate(["/groups", group.id]);
         },
         error: (err) => {
-          this.error = err.message || 'Failed to create group';
+          this.error = err.message || "Failed to create group";
           this.isSubmitting = false;
         },
       });
@@ -101,7 +108,7 @@ export class GroupCreateComponent implements OnInit, OnDestroy {
    * Navigate back to group list
    */
   onCancel(): void {
-    this.router.navigate(['/groups']);
+    this.router.navigate(["/groups"]);
   }
 
   /**

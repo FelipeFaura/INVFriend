@@ -27,11 +27,11 @@ Create an Angular component with a reactive form to create new Secret Santa grou
 
 ## Form Fields
 
-| Field | Type | Required | Validation |
-|-------|------|----------|------------|
-| name | text | Yes | 3-100 characters |
-| description | textarea | No | Max 500 characters |
-| budgetLimit | number | Yes | > 0 |
+| Field       | Type     | Required | Validation         |
+| ----------- | -------- | -------- | ------------------ |
+| name        | text     | Yes      | 3-100 characters   |
+| description | textarea | No       | Max 500 characters |
+| budgetLimit | number   | Yes      | > 0                |
 
 ---
 
