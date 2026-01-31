@@ -10,6 +10,7 @@ import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { GroupListComponent } from "./adapters/components/group-list/group-list.component";
 import { GroupCreateComponent } from "./adapters/components/group-create/group-create.component";
 import { GroupDetailComponent } from "./adapters/components/group-detail/group-detail.component";
+import { RaffleTriggerComponent } from "./adapters/components/raffle-trigger/raffle-trigger.component";
 import { AuthGuard } from "./adapters/guards/auth.guard";
 
 const routes: Routes = [
@@ -29,6 +30,7 @@ const routes: Routes = [
     GroupListComponent,
     GroupCreateComponent,
     GroupDetailComponent,
+    RaffleTriggerComponent,
   ],
   imports: [
     CommonModule,
@@ -36,6 +38,11 @@ const routes: Routes = [
     ReactiveFormsModule,
     RouterModule.forChild(routes),
   ],
-  exports: [GroupListComponent, GroupCreateComponent, GroupDetailComponent],
+  exports: [
+    GroupListComponent,
+    GroupCreateComponent,
+    GroupDetailComponent,
+    RaffleTriggerComponent,
+  ],
 })
 export class GroupsModule {}

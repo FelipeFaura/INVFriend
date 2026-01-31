@@ -1,0 +1,92 @@
+<div class="raffle-trigger" *ngIf="isAdmin">
+  <!-- Member Count Info -->
+  <div class="member-info">
+    <span class="member-count">
+      <strong>{{ memberCount }}</strong> members in group
+    </span>
+    <span class="min-requirement" *ngIf="!hasEnoughMembers">
+      ({{ MIN_MEMBERS }} required)
+    </span>
+  </div>
+
+  <!-- Raffle Already Completed -->
+  <div class="raffle-completed" *ngIf="isRaffleCompleted && state === 'idle'">
+    <span class="completed-badge">✓ Raffle Completed</span>
+    <span class="completed-info">Assignments have been made</span>
+  </div>
+
+  <!-- Idle State - Show Trigger Button -->
+  <ng-container *ngIf="state === 'idle' && !isRaffleCompleted">
+    <button
+      class="btn btn-primary raffle-btn"
+      [disabled]="isButtonDisabled"
+      (click)="showConfirmation()"
+      data-testid="raffle-trigger-btn"
+    >
+      🎲 Perform Raffle
+    </button>
+
+    <p class="warning-text" *ngIf="!hasEnoughMembers">
+      Add more members to perform the raffle
+    </p>
+  </ng-container>
+
+  <!-- Confirmation Dialog -->
+  <div class="confirmation-dialog" *ngIf="state === 'confirm'">
+    <div class="dialog-content">
+      <h4>⚠️ Confirm Raffle</h4>
+      <p>
+        You are about to perform the Secret Santa raffle for
+        <strong>{{ memberCount }}</strong> members.
+      </p>
+      <p class="warning">This action cannot be undone!</p>
+      <div class="dialog-actions">
+        <button
+          class="btn btn-secondary"
+          (click)="cancelRaffle()"
+          data-testid="cancel-raffle-btn"
+        >
+          Cancel
+        </button>
+        <button
+          class="btn btn-danger"
+          (click)="confirmRaffle()"
+          data-testid="confirm-raffle-btn"
+        >
+          Yes, Perform Raffle
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing State -->
+  <div class="processing" *ngIf="state === 'processing'">
+    <div class="spinner"></div>
+    <span>Performing raffle...</span>
+  </div>
+
+  <!-- Success State -->
+  <div class="success-message" *ngIf="state === 'success'">
+    <span class="success-icon">🎉</span>
+    <h4>Raffle Complete!</h4>
+    <p>
+      {{ raffleResult?.assignmentCount }} assignments have been made.
+    </p>
+    <p class="success-info">
+      Each member can now see who they need to give a gift to!
+    </p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-message" *ngIf="state === 'error'">
+    <span class="error-icon">❌</span>
+    <p>{{ errorMessage }}</p>
+    <button
+      class="btn btn-secondary"
+      (click)="resetState()"
+      data-testid="retry-btn"
+    >
+      Try Again
+    </button>
+  </div>
+</div>
