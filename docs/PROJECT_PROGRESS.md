@@ -7,11 +7,11 @@
 ## 🎯 Overall Progress
 
 ```
-████████████░░░░░░░░░░░░░░░░░░░░░░░░ 25% Complete (8/32 tasks)
+█████████████░░░░░░░░░░░░░░░░░░░░░░░ 28.13% Complete (9/32 tasks)
 ```
 
 **Sprint Completion**: 2/8 Sprints (25%)  
-**Current Sprint**: Sprint 2 (Auth Frontend) - COMPLETED  
+**Current Sprint**: Sprint 3 (Group Management Backend)  
 **Estimated Completion**: May 2026
 
 ---
@@ -45,6 +45,21 @@
 - ✅ TASK-008: Auth Guards
 
 **Status**: Sprint 2 COMPLETED
+
+---
+
+### 🔄 Sprint 3: Group Management Backend (IN PROGRESS)
+
+```
+█████░░░░░░░░░░░░░░░ 25% (1/4 tasks)
+```
+
+- ✅ TASK-009: Group Entity
+- ⏸️ TASK-010: Group Repository (READY TO START)
+- ⏸️ TASK-011: Group Use Cases
+- ⏸️ TASK-012: Group Controllers
+
+**Status**: TASK-009 completed, TASK-010 ready to start
 
 ---
 

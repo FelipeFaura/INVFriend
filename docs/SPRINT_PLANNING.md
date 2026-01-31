@@ -222,21 +222,23 @@ Create route guards to protect authenticated routes.
 ## 🏢 SPRINT 3: Group Management Backend
 
 **Duration**: Weeks 5-6  
+**Status**: 🔄 **IN PROGRESS** (1/4 tasks completed)  
 **Goal**: Implement complete group CRUD operations backend  
 **Deliverables**: Group creation, members management, admin controls
 
 ### SPRINT 3 - Task Breakdown
 
-#### TASK-009: Implement Group Entity & Domain Logic
+#### ✅ TASK-009: Implement Group Entity & Domain Logic - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 4 hours  
-**Dependencies**: TASK-002
+**Dependencies**: TASK-002  
+**Status**: ✅ COMPLETED (January 30, 2026)
 
 **Description**:
 Create Group domain entity with business rules.
 
-**Files to Create**:
+**Files Created**:
 
 - `backend/src/domain/entities/Group.ts`
 - `backend/src/domain/entities/__tests__/Group.spec.ts`
@@ -244,20 +246,21 @@ Create Group domain entity with business rules.
 
 **Business Rules**:
 
-- [ ] Group name: 3-100 characters
-- [ ] Budget limit: > 0
-- [ ] Admin automatically added as member
-- [ ] Minimum 2 members for raffle
-- [ ] RaffleStatus: 'pending' | 'completed'
+- [x] Group name: 3-100 characters
+- [x] Budget limit: > 0
+- [x] Admin automatically added as member
+- [x] Minimum 2 members for raffle
+- [x] RaffleStatus: 'pending' | 'completed'
 
 **Reference**: [ARCHITECTURE.md](./ARCHITECTURE.md) - Group Model
 
 ---
 
-#### TASK-010: Implement Group Repository & Port
+#### 🔄 TASK-010: Implement Group Repository & Port - READY TO START
 
 **Priority**: HIGH  
 **Estimated Effort**: 4 hours  
+**Dependencies**: TASK-009 (✅ Completed)  
 **Dependencies**: TASK-009
 
 **Description**:
