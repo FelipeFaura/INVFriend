@@ -1,1 +1,0 @@
-{"version":3,"file":"groupRoutes.d.ts","sourceRoot":"","sources":["../../../../src/adapters/http/routes/groupRoutes.ts"],"names":[],"mappings":"AAAA;;;GAGG;AACH,OAAO,EAAE,MAAM,EAAE,MAAM,SAAS,CAAC;AAIjC,OAAO,EAAE,gBAAgB,EAAE,MAAM,iCAAiC,CAAC;AACnE,OAAO,EAAE,qBAAqB,EAAE,MAAM,sCAAsC,CAAC;AAE7E,wBAAgB,iBAAiB,CAC/B,eAAe,EAAE,gBAAgB,EACjC,oBAAoB,EAAE,qBAAqB,GAC1C,MAAM,CAmCR"}

@@ -39,8 +39,12 @@ app.use(
 // Export for Firebase Functions
 export const api = functions.https.onRequest(app);
 
-// Local development server
-if (process.env.NODE_ENV !== "production") {
+// Local development server - only start when running directly (not when imported by Firebase)
+const isMainModule = require.main === module;
+const isLocalDev =
+  process.env.NODE_ENV !== "production" && !process.env.FUNCTIONS_EMULATOR;
+
+if (isMainModule && isLocalDev) {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);

@@ -37,6 +37,10 @@ yarn-error.log*
 .firebaserc
 firebase-debug.log*
 .runtimeconfig.json
+.firebase/
+
+# Backend compiled output
+backend/dist/
 
 # Testing
 /coverage/

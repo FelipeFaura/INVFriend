@@ -17,13 +17,25 @@
       }
     ]
   },
-  "functions": {
-    "source": "backend",
-    "runtime": "nodejs20",
-    "predeploy": [
-      "npm --prefix \"$RESOURCE_DIR\" run build"
-    ]
-  },
+  "functions": [
+    {
+      "codebase": "default",
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ],
+      "source": "backend",
+      "runtime": "nodejs20",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local",
+        "src/**/*.spec.ts",
+        "**/__tests__/**"
+      ]
+    }
+  ],
   "emulators": {
     "auth": {
       "port": 9099
@@ -40,5 +52,11 @@
     "ui": {
       "enabled": true
     }
+  },
+  "firestore": {
+    "database": "(default)",
+    "location": "eur3",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   }
 }
