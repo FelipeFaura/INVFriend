@@ -57,7 +57,7 @@ Sprint 8: Polish, Testing & Deployment
 | -------- | ---------------------------- | ------------- | -------------- | ----------- | -------------- |
 | Sprint 1 | Project Setup & Auth Backend | 4             | 0              | 4           | ✅ COMPLETED   |
 | Sprint 2 | Auth Frontend & Guards       | 0             | 4              | 4           | ✅ COMPLETED   |
-| Sprint 3 | Group Management Backend     | 4             | 0              | 4           | 🔄 IN PROGRESS |
+| Sprint 3 | Group Management Backend     | 4             | 0              | 4           | ✅ COMPLETED   |
 | Sprint 4 | Group Management Frontend    | 0             | 4              | 4           | ⏸️ PENDING     |
 | Sprint 5 | Raffle System Backend        | 4             | 0              | 4           | ⏸️ PENDING     |
 | Sprint 6 | Raffle System Frontend       | 0             | 4              | 4           | ⏸️ PENDING     |
@@ -222,7 +222,7 @@ Create route guards to protect authenticated routes.
 ## 🏢 SPRINT 3: Group Management Backend
 
 **Duration**: Weeks 5-6  
-**Status**: 🔄 **IN PROGRESS** (3/4 tasks completed)  
+**Status**: ✅ **COMPLETED** (4/4 tasks completed)  
 **Goal**: Implement complete group CRUD operations backend  
 **Deliverables**: Group creation, members management, admin controls
 
@@ -336,14 +336,16 @@ Implement business logic for group operations.
 **Priority**: HIGH  
 **Estimated Effort**: 5 hours  
 **Dependencies**: TASK-011
+**Status**: ✅ COMPLETED (January 31, 2026)
 
 **Description**:
 Create REST API endpoints for group management.
 
-**Files to Create**:
+**Files Created**:
 
 - `backend/src/adapters/http/controllers/GroupController.ts`
 - `backend/src/adapters/http/controllers/__tests__/GroupController.spec.ts`
+- `backend/src/adapters/http/routes/groupRoutes.ts`
 
 **Endpoints**:
 
@@ -356,6 +358,8 @@ DELETE /groups/:id             - Delete group (authenticated, admin only)
 POST   /groups/:id/members     - Add member (authenticated, admin only)
 DELETE /groups/:id/members/:userId - Remove member (authenticated, admin only)
 ```
+
+**Test Results**: 22 tests passing
 
 **Reference**: [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md) - Flow 1
 
