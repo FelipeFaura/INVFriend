@@ -1,8 +1,8 @@
 # 📅 INVFriend - Sprint Planning & Task Roadmap
 
-![Progress](<https://img.shields.io/badge/Progress-12.5%25%20(4%2F32)-blue>)
-![Sprint](https://img.shields.io/badge/Sprint-2%20In%20Progress-yellow)
-![Completed](https://img.shields.io/badge/Sprint%201-Completed-success)
+![Progress](<https://img.shields.io/badge/Progress-31.25%25%20(10%2F32)-blue>)
+![Sprint](https://img.shields.io/badge/Sprint-3%20In%20Progress-yellow)
+![Completed](https://img.shields.io/badge/Sprint%201%20%26%202-Completed-success)
 
 ## 📋 Overview
 
@@ -11,8 +11,8 @@ This document organizes the **INVFriend MVP** development into structured sprint
 **Project Duration**: 8 Sprints (~16 weeks / 4 months)  
 **Sprint Length**: 2 weeks  
 **Total Tasks**: 32 tasks  
-**Completed**: 4 tasks (TASK-001 to TASK-004) ✅  
-**Current Sprint**: Sprint 2 (Auth Frontend)  
+**Completed**: 10 tasks (TASK-001 to TASK-010) ✅  
+**Current Sprint**: Sprint 3 (Group Management Backend)  
 **Last Updated**: January 30, 2026
 
 ---
@@ -23,9 +23,9 @@ This document organizes the **INVFriend MVP** development into structured sprint
 
 **Quick Status:**
 
-- Current Sprint: Sprint 2 (Auth Frontend)
-- Overall Progress: 12.5% (4/32 tasks)
-- Next Task: TASK-005 (Auth Domain Models)
+- Current Sprint: Sprint 3 (Group Management Backend)
+- Overall Progress: 31.25% (10/32 tasks)
+- Next Task: TASK-011 (Group Use Cases)
 
 ---
 
@@ -56,8 +56,8 @@ Sprint 8: Polish, Testing & Deployment
 | Sprint   | Focus Area                   | Backend Tasks | Frontend Tasks | Total Tasks | Status         |
 | -------- | ---------------------------- | ------------- | -------------- | ----------- | -------------- |
 | Sprint 1 | Project Setup & Auth Backend | 4             | 0              | 4           | ✅ COMPLETED   |
-| Sprint 2 | Auth Frontend & Guards       | 0             | 4              | 4           | 🔄 IN PROGRESS |
-| Sprint 3 | Group Management Backend     | 4             | 0              | 4           | ⏸️ PENDING     |
+| Sprint 2 | Auth Frontend & Guards       | 0             | 4              | 4           | ✅ COMPLETED   |
+| Sprint 3 | Group Management Backend     | 4             | 0              | 4           | 🔄 IN PROGRESS |
 | Sprint 4 | Group Management Frontend    | 0             | 4              | 4           | ⏸️ PENDING     |
 | Sprint 5 | Raffle System Backend        | 4             | 0              | 4           | ⏸️ PENDING     |
 | Sprint 6 | Raffle System Frontend       | 0             | 4              | 4           | ⏸️ PENDING     |
@@ -222,7 +222,7 @@ Create route guards to protect authenticated routes.
 ## 🏢 SPRINT 3: Group Management Backend
 
 **Duration**: Weeks 5-6  
-**Status**: 🔄 **IN PROGRESS** (1/4 tasks completed)  
+**Status**: 🔄 **IN PROGRESS** (2/4 tasks completed)  
 **Goal**: Implement complete group CRUD operations backend  
 **Deliverables**: Group creation, members management, admin controls
 
@@ -256,17 +256,17 @@ Create Group domain entity with business rules.
 
 ---
 
-#### 🔄 TASK-010: Implement Group Repository & Port - READY TO START
+#### ✅ TASK-010: Implement Group Repository & Port - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 4 hours  
 **Dependencies**: TASK-009 (✅ Completed)  
-**Dependencies**: TASK-009
+**Status**: ✅ COMPLETED (January 30, 2026)
 
 **Description**:
 Create repository interface and Firebase implementation for groups.
 
-**Files to Create**:
+**Files Created**:
 
 - `backend/src/ports/IGroupRepository.ts`
 - `backend/src/adapters/persistence/FirebaseGroupRepository.ts`
@@ -279,10 +279,19 @@ interface IGroupRepository {
   create(group: Group): Promise<Group>;
   findById(id: string): Promise<Group | null>;
   findByMemberId(userId: string): Promise<Group[]>;
+  findByAdminId(adminId: string): Promise<Group[]>;
   update(group: Group): Promise<void>;
   delete(id: string): Promise<void>;
+  generateId(): string;
 }
 ```
+
+**Requirements**:
+
+- [x] IGroupRepository port interface
+- [x] FirebaseGroupRepository implementation
+- [x] Domain entity ↔ Document mapping
+- [x] 11 unit tests passing
 
 **Reference**: [GUIDELINES.md](./GUIDELINES.md) - Dependency Injection
 
