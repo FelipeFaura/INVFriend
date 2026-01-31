@@ -1,0 +1,23 @@
+<div class="notification-container" data-testid="notification-container">
+  <div 
+    *ngFor="let notification of notifications; trackBy: trackById" 
+    class="notification"
+    [ngClass]="'notification-' + notification.type"
+    [attr.data-testid]="'notification-' + notification.id"
+    [@slideIn]>
+    <span class="notification-icon">{{ getIcon(notification.type) }}</span>
+    <div class="notification-content">
+      <strong *ngIf="notification.title" class="notification-title">
+        {{ notification.title }}
+      </strong>
+      <p class="notification-message">{{ notification.message }}</p>
+    </div>
+    <button 
+      class="notification-close" 
+      (click)="dismiss(notification.id)"
+      aria-label="Close notification"
+      data-testid="dismiss-btn">
+      ×
+    </button>
+  </div>
+</div>

@@ -8,9 +8,10 @@ import { AppComponent } from "./app.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { AuthInterceptor } from "./adapters/http/auth.interceptor";
 import { GroupsModule } from "./groups.module";
+import { NotificationComponent } from "./adapters/components/notification/notification.component";
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, NotificationComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
