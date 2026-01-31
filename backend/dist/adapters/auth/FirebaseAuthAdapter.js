@@ -76,7 +76,10 @@ class FirebaseAuthAdapter {
             });
             // Create user profile in Firestore
             const user = User_1.User.create(firebaseUser.uid, normalizedEmail, name, firebaseUser.photoURL || null);
-            await this.db.collection("users").doc(firebaseUser.uid).set(user.toJSON());
+            await this.db
+                .collection("users")
+                .doc(firebaseUser.uid)
+                .set(user.toJSON());
             // Generate tokens
             const accessToken = await this.auth.createCustomToken(firebaseUser.uid);
             return {
@@ -86,7 +89,8 @@ class FirebaseAuthAdapter {
             };
         }
         catch (error) {
-            if (error instanceof AuthErrors_1.ValidationError || error instanceof AuthErrors_1.UserAlreadyExistsError) {
+            if (error instanceof AuthErrors_1.ValidationError ||
+                error instanceof AuthErrors_1.UserAlreadyExistsError) {
                 throw error;
             }
             if (error.code === "auth/email-already-exists") {
