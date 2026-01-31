@@ -85,9 +85,7 @@ export class NotificationService {
    */
   dismiss(id: string): void {
     const currentNotifications = this.notifications$.value;
-    this.notifications$.next(
-      currentNotifications.filter((n) => n.id !== id),
-    );
+    this.notifications$.next(currentNotifications.filter((n) => n.id !== id));
   }
 
   /**

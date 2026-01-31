@@ -3,12 +3,7 @@
  * Displays toast notifications
  */
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import {
-  trigger,
-  transition,
-  style,
-  animate,
-} from "@angular/animations";
+import { trigger, transition, style, animate } from "@angular/animations";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
