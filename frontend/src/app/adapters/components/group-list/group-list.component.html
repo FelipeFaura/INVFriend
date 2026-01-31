@@ -1,0 +1,87 @@
+<div class="group-list-container">
+  <!-- Header -->
+  <div class="header">
+    <h1>My Groups</h1>
+    <button 
+      class="btn btn-primary" 
+      (click)="navigateToCreate()"
+      data-testid="create-group-btn">
+      + Create Group
+    </button>
+  </div>
+
+  <!-- Search -->
+  <div class="search-container">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search groups..."
+      [value]="searchTerm"
+      (input)="onSearchChange($any($event.target).value)"
+      data-testid="search-input"
+    />
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container" data-testid="loading-spinner">
+    <div class="spinner"></div>
+    <p>Loading groups...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container" data-testid="error-message">
+    <p class="error-text">{{ error }}</p>
+    <button class="btn btn-secondary" (click)="loadGroups()">Try Again</button>
+  </div>
+
+  <!-- Empty State -->
+  <div 
+    *ngIf="!isLoading && !error && groups.length === 0" 
+    class="empty-state"
+    data-testid="empty-state">
+    <div class="empty-icon">📋</div>
+    <h2>No Groups Yet</h2>
+    <p>Create your first Secret Santa group to get started!</p>
+    <button class="btn btn-primary" (click)="navigateToCreate()">
+      Create Your First Group
+    </button>
+  </div>
+
+  <!-- No Results State -->
+  <div 
+    *ngIf="!isLoading && !error && groups.length > 0 && filteredGroups.length === 0" 
+    class="no-results"
+    data-testid="no-results">
+    <p>No groups match "{{ searchTerm }}"</p>
+  </div>
+
+  <!-- Group List -->
+  <div 
+    *ngIf="!isLoading && !error && filteredGroups.length > 0" 
+    class="groups-grid"
+    data-testid="groups-list">
+    <div
+      *ngFor="let group of filteredGroups"
+      class="group-card"
+      (click)="navigateToGroup(group.id)"
+      [attr.data-testid]="'group-card-' + group.id">
+      
+      <div class="group-header">
+        <span *ngIf="group.isAdmin" class="admin-badge" title="You are the admin">
+          👑
+        </span>
+        <h3 class="group-name">{{ group.name }}</h3>
+      </div>
+      
+      <div class="group-info">
+        <span class="member-count">
+          {{ group.memberCount }} {{ group.memberCount === 1 ? 'member' : 'members' }}
+        </span>
+        <span class="separator">•</span>
+        <span [class]="getStatusClass(group.raffleStatus)">
+          {{ getStatusLabel(group.raffleStatus) }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
