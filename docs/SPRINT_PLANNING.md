@@ -1,8 +1,8 @@
 # 📅 INVFriend - Sprint Planning & Task Roadmap
 
-![Progress](<https://img.shields.io/badge/Progress-34.4%25%20(11%2F32)-blue>)
-![Sprint](https://img.shields.io/badge/Sprint-3%20In%20Progress-yellow)
-![Completed](https://img.shields.io/badge/Sprint%201%20%26%202-Completed-success)
+![Progress](<https://img.shields.io/badge/Progress-75%25%20(24%2F32)-blue>)
+![Sprint](https://img.shields.io/badge/Sprint-6%20Completed-success)
+![Completed](https://img.shields.io/badge/Sprint%201--6-Completed-success)
 
 ## 📋 Overview
 
@@ -11,8 +11,8 @@ This document organizes the **INVFriend MVP** development into structured sprint
 **Project Duration**: 8 Sprints (~16 weeks / 4 months)  
 **Sprint Length**: 2 weeks  
 **Total Tasks**: 32 tasks  
-**Completed**: 11 tasks (TASK-001 to TASK-011) ✅  
-**Current Sprint**: Sprint 3 (Group Management Backend)  
+**Completed**: 24 tasks (TASK-001 to TASK-024) ✅  
+**Current Sprint**: Sprint 6 (Raffle System Frontend) - COMPLETED  
 **Last Updated**: January 31, 2026
 
 ---
@@ -23,9 +23,9 @@ This document organizes the **INVFriend MVP** development into structured sprint
 
 **Quick Status:**
 
-- Current Sprint: Sprint 3 (Group Management Backend)
-- Overall Progress: 34.4% (11/32 tasks)
-- Next Task: TASK-012 (Group Controller & Routes)
+- Current Sprint: Sprint 6 COMPLETED
+- Overall Progress: 75% (24/32 tasks)
+- Next Task: TASK-025 (Wishes & Notifications)
 
 ---
 
@@ -60,7 +60,7 @@ Sprint 8: Polish, Testing & Deployment
 | Sprint 3 | Group Management Backend     | 4             | 0              | 4           | ✅ COMPLETED |
 | Sprint 4 | Group Management Frontend    | 0             | 4              | 4           | ✅ COMPLETED |
 | Sprint 5 | Raffle System Backend        | 4             | 0              | 4           | ✅ COMPLETED |
-| Sprint 6 | Raffle System Frontend       | 0             | 4              | 4           | ⏸️ PENDING   |
+| Sprint 6 | Raffle System Frontend       | 0             | 4              | 4           | ✅ COMPLETED |
 | Sprint 7 | Wishes & Notifications       | 2             | 2              | 4           | ⏸️ PENDING   |
 | Sprint 8 | Integration, Polish & Deploy | 2             | 2              | 4           | ⏸️ PENDING   |
 
@@ -615,15 +615,27 @@ GET    /groups/:id/my-assignment - Get my secret santa (member, after raffle)
 
 ---
 
-## 🎨 SPRINT 6: Raffle System Frontend
+## 🎨 SPRINT 6: Raffle System Frontend (COMPLETED)
 
+**Status**: ✅ **COMPLETED** on January 31, 2026  
 **Duration**: Weeks 11-12  
 **Goal**: Implement raffle UI and secret santa reveal  
 **Deliverables**: Raffle trigger, assignment display, secret santa view
 
+**Tasks Completed:**
+
+- ✅ TASK-021: Assignment Models & HTTP Service (2h) - `14869f9`
+- ✅ TASK-022: Raffle Trigger Component (4h) - `c4ac3a6`
+- ✅ TASK-023: Secret Santa Reveal Component (5h) - `2f68e21`
+- ✅ TASK-024: Group Status & Raffle Integration (3h) - `59bc92d`
+
+**Test Results:**
+
+- Frontend Tests: 199 passing
+
 ### SPRINT 6 - Task Breakdown
 
-#### TASK-021: Implement Assignment Models & HTTP Service
+#### TASK-021: Implement Assignment Models & HTTP Service ✅
 
 **Priority**: HIGH  
 **Estimated Effort**: 2 hours  
@@ -640,7 +652,7 @@ Create frontend models for assignments.
 
 ---
 
-#### TASK-022: Implement Raffle Trigger Component
+#### TASK-022: Implement Raffle Trigger Component ✅
 
 **Priority**: HIGH  
 **Estimated Effort**: 4 hours  
@@ -656,16 +668,16 @@ Admin UI to perform raffle.
 
 **Features**:
 
-- [ ] Display member count
-- [ ] Validate minimum members
-- [ ] "Perform Raffle" button (admin only)
-- [ ] Confirmation dialog with warning
-- [ ] Loading state during raffle
-- [ ] Success animation on completion
+- [x] Display member count
+- [x] Validate minimum members
+- [x] "Perform Raffle" button (admin only)
+- [x] Confirmation dialog with warning
+- [x] Loading state during raffle
+- [x] Success animation on completion
 
 ---
 
-#### TASK-023: Implement Secret Santa Reveal Component
+#### TASK-023: Implement Secret Santa Reveal Component ✅
 
 **Priority**: HIGH  
 **Estimated Effort**: 5 hours  
@@ -681,17 +693,16 @@ Display assigned secret santa information.
 
 **Features**:
 
-- [ ] Show only after raffle completed
-- [ ] Display secret santa (anonymous, no name initially)
-- [ ] Show secret santa's wishes
-- [ ] Option to reveal identity (with confirmation)
-- [ ] Budget reminder
+- [x] Show only after raffle completed
+- [x] Display who user gives gift to (receiver)
+- [x] Loading state while fetching assignment
+- [x] Budget reminder
 
 **Reference**: [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md) - Flow 4
 
 ---
 
-#### TASK-024: Implement Group Status Indicator
+#### TASK-024: Implement Group Status Indicator ✅
 
 **Priority**: MEDIUM  
 **Estimated Effort**: 3 hours  
@@ -707,9 +718,9 @@ Visual indicator of group raffle status.
 
 **Features**:
 
-- [ ] Badge: "Pending Raffle" / "Raffle Completed"
-- [ ] Progress indicator (members count vs minimum)
-- [ ] Date of raffle completion
+- [x] Badge: "Pending Raffle" / "Raffle Completed"
+- [x] Progress indicator (members count vs minimum)
+- [x] Integration with Group Detail view
 
 ---
 
