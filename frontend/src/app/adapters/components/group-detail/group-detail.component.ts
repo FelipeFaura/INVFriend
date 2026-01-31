@@ -218,4 +218,12 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
   isMemberAdmin(memberId: string): boolean {
     return this.group?.adminId === memberId;
   }
+
+  /**
+   * Handle raffle completed event
+   */
+  onRaffleCompleted(): void {
+    // Reload the group to get updated raffle status
+    this.loadGroup();
+  }
 }

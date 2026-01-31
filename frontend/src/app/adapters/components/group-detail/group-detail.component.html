@@ -45,12 +45,6 @@
     <!-- Group Info -->
     <div class="info-section">
       <div class="info-row">
-        <span class="info-label">Status:</span>
-        <span [class]="'status-' + group.raffleStatus">
-          {{ getStatusLabel(group.raffleStatus) }}
-        </span>
-      </div>
-      <div class="info-row">
         <span class="info-label">Budget:</span>
         <span class="info-value">${{ group.budgetLimit }}</span>
       </div>
@@ -59,6 +53,19 @@
         <span class="info-value">{{ formatDate(group.createdAt) }}</span>
       </div>
     </div>
+
+    <!-- Group Status -->
+    <app-group-status [group]="group"></app-group-status>
+
+    <!-- Secret Santa Reveal (shown to all members when raffle completed) -->
+    <app-secret-santa-reveal [group]="group"></app-secret-santa-reveal>
+
+    <!-- Raffle Trigger (admin only) -->
+    <app-raffle-trigger 
+      [group]="group" 
+      [isAdmin]="isAdmin"
+      (raffleCompleted)="onRaffleCompleted()">
+    </app-raffle-trigger>
 
     <!-- Description -->
     <div *ngIf="group.description" class="description-section">

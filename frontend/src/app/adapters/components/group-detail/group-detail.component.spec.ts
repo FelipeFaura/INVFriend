@@ -10,6 +10,7 @@ import {
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { of, throwError, Subject } from "rxjs";
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 
 import { GroupDetailComponent } from "./group-detail.component";
 import { GroupHttpService } from "../../services/group-http.service";
@@ -55,6 +56,7 @@ describe("GroupDetailComponent", () => {
           useValue: { params: paramsSubject.asObservable() },
         },
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     // Set current user as admin by default
@@ -105,7 +107,6 @@ describe("GroupDetailComponent", () => {
     it("should display group info", () => {
       const infoSection = fixture.nativeElement.querySelector(".info-section");
       expect(infoSection.textContent).toContain("$50");
-      expect(infoSection.textContent).toContain("Pending");
     });
 
     it("should display description", () => {
