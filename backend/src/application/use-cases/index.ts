@@ -25,3 +25,10 @@ export {
   RaffleNotCompletedError,
   AssignmentNotFoundError,
 } from "./GetMyAssignmentUseCase";
+
+// Wish Use Cases
+export { AddWishUseCase } from "./AddWishUseCase";
+export { UpdateWishUseCase } from "./UpdateWishUseCase";
+export { DeleteWishUseCase } from "./DeleteWishUseCase";
+export { GetMyWishesUseCase } from "./GetMyWishesUseCase";
+export { GetSecretSantaWishesUseCase } from "./GetSecretSantaWishesUseCase";
