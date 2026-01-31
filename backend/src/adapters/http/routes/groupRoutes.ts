@@ -4,12 +4,21 @@
  */
 import { Router } from "express";
 import { GroupController } from "../controllers/GroupController";
+import { RaffleController } from "../controllers/RaffleController";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { IGroupRepository } from "../../../ports/IGroupRepository";
+import { IAssignmentRepository } from "../../../ports/IAssignmentRepository";
 
-export function createGroupRoutes(groupRepository: IGroupRepository): Router {
+export function createGroupRoutes(
+  groupRepository: IGroupRepository,
+  assignmentRepository: IAssignmentRepository,
+): Router {
   const router = Router();
   const groupController = new GroupController(groupRepository);
+  const raffleController = new RaffleController(
+    groupRepository,
+    assignmentRepository,
+  );
 
   // All group routes require authentication
   router.use(authMiddleware);
@@ -27,6 +36,14 @@ export function createGroupRoutes(groupRepository: IGroupRepository): Router {
   );
   router.delete("/:id/members/:userId", (req, res) =>
     groupController.removeMember(req, res),
+  );
+
+  // Raffle operations
+  router.post("/:id/raffle", (req, res) =>
+    raffleController.performRaffle(req, res),
+  );
+  router.get("/:id/my-assignment", (req, res) =>
+    raffleController.getMyAssignment(req, res),
   );
 
   return router;
