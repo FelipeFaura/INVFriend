@@ -2,10 +2,10 @@
 
 ## Pre-requisites
 
-- [ ] Firebase project created and configured
-- [ ] Firebase Authentication enabled (Email/Password)
-- [ ] Firestore database enabled
-- [ ] Environment variables configured
+- [x] Firebase project created and configured
+- [x] Firebase Authentication enabled (Email/Password)
+- [x] Firestore database enabled
+- [x] Environment variables configured
 
 ---
 
@@ -13,26 +13,26 @@
 
 ### 1.1 Registration
 
-- [ ] User can access registration page
-- [ ] Form validates email format
-- [ ] Form validates password requirements
-- [ ] User can register with valid credentials
-- [ ] User receives confirmation/feedback after registration
-- [ ] Registration errors are displayed clearly
+- [x] User can access registration page
+- [x] Form validates email format
+- [x] Form validates password requirements
+- [x] User can register with valid credentials
+- [x] User receives confirmation/feedback after registration
+- [x] Registration errors are displayed clearly
 
 ### 1.2 Login
 
-- [ ] User can access login page
-- [ ] User can login with valid credentials
-- [ ] Invalid credentials show error message
-- [ ] User is redirected to home/groups after login
-- [ ] Auth token is stored properly
+- [x] User can access login page
+- [x] User can login with valid credentials
+- [x] Invalid credentials show error message
+- [x] User is redirected to home/groups after login
+- [x] Auth token is stored properly
 
 ### 1.3 Logout
 
-- [ ] User can logout from any authenticated page
-- [ ] Session is cleared after logout
-- [ ] User is redirected to login page
+- [x] User can logout from any authenticated page
+- [x] Session is cleared after logout
+- [x] User is redirected to login page
 
 ---
 
@@ -40,25 +40,25 @@
 
 ### 2.1 Create Group
 
-- [ ] Admin can create a new group
-- [ ] Form requires: name, budget limit
-- [ ] Optional: description
-- [ ] Group is created with admin as first member
-- [ ] Admin is redirected to group detail after creation
+- [x] Admin can create a new group
+- [x] Form requires: name, budget limit
+- [x] Optional: description
+- [x] Group is created with admin as first member
+- [x] Admin is redirected to group detail after creation
 
 ### 2.2 View Groups
 
-- [ ] User can see list of their groups
-- [ ] Shows group name, member count, raffle status
-- [ ] Distinguishes between admin and member roles
+- [x] User can see list of their groups
+- [x] Shows group name, member count, raffle status
+- [x] Distinguishes between admin and member roles
 - [ ] Empty state shown when no groups exist
 
 ### 2.3 View Group Details
 
-- [ ] Members can see group details
-- [ ] Shows: name, description, budget, members list
-- [ ] Shows raffle status (pending/completed)
-- [ ] Admin sees additional management options
+- [x] Members can see group details
+- [x] Shows: name, description, budget, members list
+- [x] Shows raffle status (pending/completed)
+- [x] Admin sees additional management options
 
 ### 2.4 Add Members (Admin only)
 
@@ -93,27 +93,27 @@
 
 ### 3.1 Add Wish
 
-- [ ] Member can add wish to their wishlist
-- [ ] Form requires: title, priority
-- [ ] Optional: description, URL
-- [ ] Wish appears in user's list
+- [x] Member can add wish to their wishlist
+- [x] Form requires: title, priority
+- [x] Optional: description, URL
+- [x] Wish appears in user's list
 
 ### 3.2 View My Wishes
 
-- [ ] User can see their own wishes for a group
-- [ ] Wishes shown with title, description, priority
-- [ ] Can edit own wishes
-- [ ] Can delete own wishes
+- [x] User can see their own wishes for a group
+- [x] Wishes shown with title, description, priority
+- [x] Can edit own wishes
+- [x] Can delete own wishes
 
 ### 3.3 Update Wish
 
-- [ ] User can edit their own wish
-- [ ] Changes are saved and reflected
+- [x] User can edit their own wish
+- [x] Changes are saved and reflected
 - [ ] Cannot edit other users' wishes
 
 ### 3.4 Delete Wish
 
-- [ ] User can delete their own wish
+- [x] User can delete their own wish (confirmation modal shown)
 - [ ] Wish is removed from list
 - [ ] Cannot delete other users' wishes
 
@@ -224,8 +224,7 @@
 
 | Tester | Date | Status | Notes |
 | ------ | ---- | ------ | ----- |
-|        |      |        |       |
-|        |      |        |       |
+| Claude + Chrome DevTools MCP | Feb 1, 2026 | Partial Pass | Core flows working. Raffle needs 3+ members to test. |
 
 ---
 
@@ -234,3 +233,16 @@
 - All test cases should be executed on production build
 - Document any bugs found with steps to reproduce
 - Record screenshots/videos for failed test cases
+
+### UAT Session Notes - Feb 1, 2026
+
+**Environment:** https://invfriend.web.app
+
+**Fixes Applied During UAT:**
+1. Added Firestore composite index for groups query (members + createdAt)
+2. Auth service rewritten to use Firebase Auth SDK directly
+
+**Known Issues:**
+- User ID shown instead of display name in members list (bB7pcbnteHU7SU0I0by06dYTOXl1)
+- Raffle system untested (requires 3+ members)
+- Add/Remove members functionality untested
