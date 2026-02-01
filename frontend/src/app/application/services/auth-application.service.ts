@@ -1,66 +1,74 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, of, throwError } from "rxjs";
-import { tap, catchError, switchMap } from "rxjs/operators";
+import { BehaviorSubject, Observable, of, throwError, from } from "rxjs";
+import { tap, catchError, switchMap, map } from "rxjs/operators";
+import { AngularFireAuth } from "@angular/fire/compat/auth";
+import firebase from "firebase/compat/app";
 
-import { environment } from "../../../environments/environment";
 import { User } from "../../domain/models/user.model";
 import {
-  AuthResponseDTO,
-  LoginRequestDTO,
   RegisterRequestDTO,
-  GoogleLoginRequestDTO,
+  LoginRequestDTO,
   StoredAuthState,
   INITIAL_AUTH_STATE,
 } from "../../application/dto/auth.dto";
-import { AuthHttpService } from "../../adapters/services/auth-http.service";
-import { InvalidTokenError } from "../../domain/errors/auth-errors";
-
-/** Local storage keys for auth data */
-const STORAGE_KEYS = {
-  ACCESS_TOKEN: "invfriend_access_token",
-  REFRESH_TOKEN: "invfriend_refresh_token",
-  USER: "invfriend_user",
-  EXPIRES_AT: "invfriend_expires_at",
-} as const;
+import {
+  AuthError,
+  InvalidCredentialsError,
+  UserAlreadyExistsError,
+  NetworkError,
+  InvalidTokenError,
+  AUTH_ERROR_CODES,
+} from "../../domain/errors/auth-errors";
 
 /**
  * Application service for authentication state management
- * Manages user session, tokens, and authentication state
+ * Uses Firebase Auth SDK directly for authentication
  */
 @Injectable({
   providedIn: "root",
 })
 export class AuthApplicationService {
+  private readonly googleProvider = new firebase.auth.GoogleAuthProvider();
   private readonly authStateSubject = new BehaviorSubject<StoredAuthState>(
-    this.loadStoredState(),
+    INITIAL_AUTH_STATE,
   );
 
   /** Observable of the current authentication state */
   readonly authState$ = this.authStateSubject.asObservable();
 
   /** Observable of the current user (null if not authenticated) */
-  readonly currentUser$: Observable<User | null> =
-    new BehaviorSubject<User | null>(this.authStateSubject.value.user);
+  readonly currentUser$: Observable<User | null>;
 
-  constructor(private readonly authHttpService: AuthHttpService) {
-    // Sync currentUser$ with authState$
-    this.authState$.subscribe((state) => {
-      (this.currentUser$ as BehaviorSubject<User | null>).next(state.user);
+  constructor(private readonly afAuth: AngularFireAuth) {
+    // Initialize currentUser$ observable
+    this.currentUser$ = this.authState$.pipe(map((state) => state.user));
+
+    // Listen to Firebase auth state changes
+    this.afAuth.authState.subscribe(async (firebaseUser) => {
+      if (firebaseUser) {
+        const token = await firebaseUser.getIdToken();
+        const user = this.mapFirebaseUser(firebaseUser);
+        this.updateAuthState({
+          user,
+          accessToken: token,
+          refreshToken: firebaseUser.refreshToken,
+          expiresAt: Date.now() + 3600 * 1000, // 1 hour
+        });
+      } else {
+        this.updateAuthState(INITIAL_AUTH_STATE);
+      }
     });
   }
 
   /**
    * Check if user is currently authenticated
-   * @returns true if user has valid token
    */
   get isAuthenticated(): boolean {
-    const state = this.authStateSubject.value;
-    return !!state.accessToken && !this.isTokenExpired();
+    return !!this.authStateSubject.value.accessToken;
   }
 
   /**
    * Get current access token
-   * @returns Access token or null
    */
   get accessToken(): string | null {
     return this.authStateSubject.value.accessToken;
@@ -68,7 +76,6 @@ export class AuthApplicationService {
 
   /**
    * Get current user
-   * @returns User or null
    */
   get currentUser(): User | null {
     return this.authStateSubject.value.user;
@@ -76,50 +83,65 @@ export class AuthApplicationService {
 
   /**
    * Register a new user
-   * @param data - Registration data
-   * @returns Observable with authenticated user
    */
   register(data: RegisterRequestDTO): Observable<User> {
-    return this.authHttpService.register(data).pipe(
-      tap((response) => this.handleAuthResponse(response)),
-      switchMap(() => of(this.currentUser!)),
+    return from(
+      this.afAuth.createUserWithEmailAndPassword(data.email, data.password),
+    ).pipe(
+      switchMap(async (credential) => {
+        if (credential.user) {
+          // Update display name
+          await credential.user.updateProfile({ displayName: data.name });
+          // Force refresh to get updated profile
+          await credential.user.reload();
+          return this.mapFirebaseUser(credential.user);
+        }
+        throw new Error("No user returned");
+      }),
+      catchError((error) => this.handleFirebaseError(error)),
     );
   }
 
   /**
    * Login with email and password
-   * @param data - Login credentials
-   * @returns Observable with authenticated user
    */
   login(data: LoginRequestDTO): Observable<User> {
-    return this.authHttpService.login(data).pipe(
-      tap((response) => this.handleAuthResponse(response)),
-      switchMap(() => of(this.currentUser!)),
+    return from(
+      this.afAuth.signInWithEmailAndPassword(data.email, data.password),
+    ).pipe(
+      map((credential) => {
+        if (credential.user) {
+          return this.mapFirebaseUser(credential.user);
+        }
+        throw new Error("No user returned");
+      }),
+      catchError((error) => this.handleFirebaseError(error)),
     );
   }
 
   /**
    * Login with Google OAuth
-   * @param googleToken - Google ID token
-   * @returns Observable with authenticated user
    */
-  loginWithGoogle(googleToken: string): Observable<User> {
-    return this.authHttpService.loginWithGoogle({ googleToken }).pipe(
-      tap((response) => this.handleAuthResponse(response)),
-      switchMap(() => of(this.currentUser!)),
+  loginWithGoogle(_googleToken?: string): Observable<User> {
+    return from(this.afAuth.signInWithPopup(this.googleProvider)).pipe(
+      map((credential) => {
+        if (credential.user) {
+          return this.mapFirebaseUser(credential.user);
+        }
+        throw new Error("No user returned");
+      }),
+      catchError((error) => this.handleFirebaseError(error)),
     );
   }
 
   /**
-   * Logout current user and clear session
-   * @returns Observable that completes on success
+   * Logout current user
    */
   logout(): Observable<void> {
-    return this.authHttpService.logout().pipe(
-      tap(() => this.clearAuthState()),
+    return from(this.afAuth.signOut()).pipe(
+      tap(() => this.updateAuthState(INITIAL_AUTH_STATE)),
       catchError(() => {
-        // Clear local state even if server call fails
-        this.clearAuthState();
+        this.updateAuthState(INITIAL_AUTH_STATE);
         return of(undefined);
       }),
     );
@@ -127,152 +149,106 @@ export class AuthApplicationService {
 
   /**
    * Refresh the access token if needed
-   * @returns Observable with new token or error
    */
   refreshTokenIfNeeded(): Observable<string> {
-    const state = this.authStateSubject.value;
-
-    if (!state.refreshToken) {
-      return throwError(
-        () => new InvalidTokenError("No refresh token available"),
-      );
-    }
-
-    if (!this.shouldRefreshToken()) {
-      return of(state.accessToken!);
-    }
-
-    return this.authHttpService
-      .refreshToken({ refreshToken: state.refreshToken })
-      .pipe(
-        tap((response) => {
-          const expiresAt = response.expiresIn
-            ? Date.now() + response.expiresIn * 1000
-            : null;
-
-          const newState: StoredAuthState = {
-            ...state,
-            accessToken: response.accessToken,
-            expiresAt,
-          };
-
-          this.updateAuthState(newState);
-        }),
-        switchMap((response) => of(response.accessToken)),
-      );
+    return from(this.afAuth.currentUser).pipe(
+      switchMap((user) => {
+        if (!user) {
+          return throwError(
+            () => new InvalidTokenError("No user authenticated"),
+          );
+        }
+        return from(user.getIdToken(true));
+      }),
+      tap((token) => {
+        const state = this.authStateSubject.value;
+        this.updateAuthState({
+          ...state,
+          accessToken: token,
+          expiresAt: Date.now() + 3600 * 1000,
+        });
+      }),
+    );
   }
 
   /**
-   * Initialize auth state from storage on app startup
+   * Initialize auth state (called on app startup)
    */
   initializeFromStorage(): void {
-    const state = this.loadStoredState();
-    this.authStateSubject.next(state);
+    // Firebase handles persistence automatically
   }
 
   /**
-   * Check if token is expired
+   * Map Firebase user to domain User model
    */
-  private isTokenExpired(): boolean {
-    const expiresAt = this.authStateSubject.value.expiresAt;
-    if (!expiresAt) return false;
-    return Date.now() >= expiresAt;
-  }
-
-  /**
-   * Check if token should be refreshed (within threshold)
-   */
-  private shouldRefreshToken(): boolean {
-    const expiresAt = this.authStateSubject.value.expiresAt;
-    if (!expiresAt) return false;
-    const threshold = environment.tokenRefreshThreshold * 1000;
-    return Date.now() >= expiresAt - threshold;
-  }
-
-  /**
-   * Handle successful auth response
-   */
-  private handleAuthResponse(response: AuthResponseDTO): void {
-    const expiresAt = response.expiresIn
-      ? Date.now() + response.expiresIn * 1000
-      : null;
-
-    const state: StoredAuthState = {
-      user: response.user,
-      accessToken: response.accessToken,
-      refreshToken: response.refreshToken || null,
-      expiresAt,
+  private mapFirebaseUser(firebaseUser: firebase.User): User {
+    const createdAt = firebaseUser.metadata.creationTime
+      ? new Date(firebaseUser.metadata.creationTime).getTime()
+      : Date.now();
+    return {
+      id: firebaseUser.uid,
+      email: firebaseUser.email || "",
+      name: firebaseUser.displayName || "User",
+      photoUrl: firebaseUser.photoURL || null,
+      createdAt,
+      updatedAt: createdAt,
     };
-
-    this.updateAuthState(state);
   }
 
   /**
-   * Update auth state and persist to storage
+   * Update auth state
    */
   private updateAuthState(state: StoredAuthState): void {
     this.authStateSubject.next(state);
-    this.persistState(state);
   }
 
   /**
-   * Clear auth state and storage
+   * Handle Firebase Auth errors
    */
-  private clearAuthState(): void {
-    this.authStateSubject.next(INITIAL_AUTH_STATE);
-    this.clearStorage();
-  }
+  private handleFirebaseError(error: unknown): Observable<never> {
+    const firebaseError = error as { code?: string; message?: string };
 
-  /**
-   * Load auth state from localStorage
-   */
-  private loadStoredState(): StoredAuthState {
-    try {
-      const accessToken = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
-      const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
-      const userJson = localStorage.getItem(STORAGE_KEYS.USER);
-      const expiresAtStr = localStorage.getItem(STORAGE_KEYS.EXPIRES_AT);
-
-      if (!accessToken) {
-        return INITIAL_AUTH_STATE;
-      }
-
-      return {
-        accessToken,
-        refreshToken,
-        user: userJson ? JSON.parse(userJson) : null,
-        expiresAt: expiresAtStr ? parseInt(expiresAtStr, 10) : null,
-      };
-    } catch {
-      return INITIAL_AUTH_STATE;
+    switch (firebaseError.code) {
+      case "auth/user-not-found":
+      case "auth/wrong-password":
+      case "auth/invalid-credential":
+        return throwError(
+          () => new InvalidCredentialsError("Invalid email or password"),
+        );
+      case "auth/email-already-in-use":
+        return throwError(
+          () => new UserAlreadyExistsError(firebaseError.message || "Email"),
+        );
+      case "auth/weak-password":
+        return throwError(
+          () =>
+            new AuthError(
+              "Password should be at least 6 characters",
+              AUTH_ERROR_CODES.WEAK_PASSWORD,
+            ),
+        );
+      case "auth/invalid-email":
+        return throwError(
+          () =>
+            new AuthError(
+              "Invalid email format",
+              AUTH_ERROR_CODES.INVALID_EMAIL,
+            ),
+        );
+      case "auth/network-request-failed":
+        return throwError(() => new NetworkError("Network error occurred"));
+      case "auth/popup-closed-by-user":
+        return throwError(
+          () => new AuthError("Sign-in cancelled", "POPUP_CLOSED"),
+        );
+      default:
+        return throwError(
+          () =>
+            new AuthError(
+              firebaseError.message || "Authentication failed",
+              "UNKNOWN_ERROR",
+            ),
+        );
     }
-  }
-
-  /**
-   * Persist auth state to localStorage
-   */
-  private persistState(state: StoredAuthState): void {
-    if (state.accessToken) {
-      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, state.accessToken);
-    }
-    if (state.refreshToken) {
-      localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, state.refreshToken);
-    }
-    if (state.user) {
-      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(state.user));
-    }
-    if (state.expiresAt) {
-      localStorage.setItem(STORAGE_KEYS.EXPIRES_AT, state.expiresAt.toString());
-    }
-  }
-
-  /**
-   * Clear all auth data from localStorage
-   */
-  private clearStorage(): void {
-    localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
-    localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
-    localStorage.removeItem(STORAGE_KEYS.USER);
-    localStorage.removeItem(STORAGE_KEYS.EXPIRES_AT);
   }
 }

@@ -42,10 +42,7 @@ const routes: Routes = [
     path: "groups",
     canActivate: [AuthGuard],
     title: "Groups - INVFriend",
-    loadChildren: () =>
-      import("./adapters/components/groups/groups.module").then(
-        (m) => m.GroupsModule,
-      ),
+    loadChildren: () => import("./groups.module").then((m) => m.GroupsModule),
   },
   {
     path: "profile",

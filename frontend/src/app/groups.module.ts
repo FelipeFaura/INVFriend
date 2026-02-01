@@ -14,18 +14,11 @@ import { RaffleTriggerComponent } from "./adapters/components/raffle-trigger/raf
 import { SecretSantaRevealComponent } from "./adapters/components/secret-santa-reveal/secret-santa-reveal.component";
 import { GroupStatusComponent } from "./adapters/components/group-status/group-status.component";
 import { WishListComponent } from "./adapters/components/wish-list/wish-list.component";
-import { AuthGuard } from "./adapters/guards/auth.guard";
 
 const routes: Routes = [
-  {
-    path: "groups",
-    canActivate: [AuthGuard],
-    children: [
-      { path: "", component: GroupListComponent },
-      { path: "create", component: GroupCreateComponent },
-      { path: ":id", component: GroupDetailComponent },
-    ],
-  },
+  { path: "", component: GroupListComponent },
+  { path: "create", component: GroupCreateComponent },
+  { path: ":id", component: GroupDetailComponent },
 ];
 
 @NgModule({
