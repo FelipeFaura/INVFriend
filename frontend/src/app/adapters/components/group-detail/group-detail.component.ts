@@ -6,9 +6,11 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { takeUntil, switchMap } from "rxjs/operators";
+import { AngularFirestore } from "@angular/fire/compat/firestore";
 
 import { GroupHttpService } from "../../services/group-http.service";
 import { Group } from "../../../domain/models/group.model";
+import { AuthApplicationService } from "../../../application/services/auth-application.service";
 
 @Component({
   selector: "app-group-detail",
@@ -20,6 +22,9 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
   currentUserId: string | null = null;
   isLoading = false;
   error: string | null = null;
+
+  // Member names map (userId -> displayName)
+  memberNames: Map<string, string> = new Map();
 
   // Modal states
   showDeleteConfirm = false;
@@ -36,11 +41,13 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private groupHttpService: GroupHttpService,
+    private authService: AuthApplicationService,
+    private firestore: AngularFirestore,
   ) {}
 
   ngOnInit(): void {
-    // Get current user ID from localStorage (set by auth service)
-    this.currentUserId = localStorage.getItem("userId");
+    // Get current user ID from auth service
+    this.currentUserId = this.authService.currentUser?.id || null;
     this.loadGroup();
   }
 
@@ -65,12 +72,58 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
         next: (group) => {
           this.group = group;
           this.isLoading = false;
+          // Load member names after group is loaded
+          this.loadMemberNames(group.members);
         },
         error: (err) => {
           this.error = err.message || "Failed to load group";
           this.isLoading = false;
         },
       });
+  }
+
+  /**
+   * Load display names for all members from Firestore
+   */
+  private loadMemberNames(memberIds: string[]): void {
+    memberIds.forEach((memberId) => {
+      this.firestore
+        .collection("users")
+        .doc(memberId)
+        .get()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (doc) => {
+            if (doc.exists) {
+              const data = doc.data() as { name?: string; email?: string };
+              this.memberNames.set(
+                memberId,
+                data?.name || data?.email || this.truncateId(memberId),
+              );
+            } else {
+              this.memberNames.set(memberId, this.truncateId(memberId));
+            }
+          },
+          error: () => {
+            this.memberNames.set(memberId, this.truncateId(memberId));
+          },
+        });
+    });
+  }
+
+  /**
+   * Get display name for a member
+   */
+  getMemberDisplayName(memberId: string): string {
+    return this.memberNames.get(memberId) || this.truncateId(memberId);
+  }
+
+  /**
+   * Truncate long IDs for display
+   */
+  private truncateId(id: string): string {
+    if (id.length <= 12) return id;
+    return `${id.substring(0, 6)}...${id.substring(id.length - 4)}`;
   }
 
   /**

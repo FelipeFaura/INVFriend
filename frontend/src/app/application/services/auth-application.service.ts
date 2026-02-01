@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, of, throwError, from } from "rxjs";
 import { tap, catchError, switchMap, map } from "rxjs/operators";
 import { AngularFireAuth } from "@angular/fire/compat/auth";
+import { AngularFirestore } from "@angular/fire/compat/firestore";
 import firebase from "firebase/compat/app";
 
 import { User } from "../../domain/models/user.model";
@@ -39,7 +40,10 @@ export class AuthApplicationService {
   /** Observable of the current user (null if not authenticated) */
   readonly currentUser$: Observable<User | null>;
 
-  constructor(private readonly afAuth: AngularFireAuth) {
+  constructor(
+    private readonly afAuth: AngularFireAuth,
+    private readonly firestore: AngularFirestore,
+  ) {
     // Initialize currentUser$ observable
     this.currentUser$ = this.authState$.pipe(map((state) => state.user));
 
@@ -94,6 +98,19 @@ export class AuthApplicationService {
           await credential.user.updateProfile({ displayName: data.name });
           // Force refresh to get updated profile
           await credential.user.reload();
+
+          // Save user profile to Firestore for name lookup
+          await this.firestore.collection("users").doc(credential.user.uid).set(
+            {
+              id: credential.user.uid,
+              email: data.email,
+              name: data.name,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            },
+            { merge: true },
+          );
+
           return this.mapFirebaseUser(credential.user);
         }
         throw new Error("No user returned");
@@ -109,8 +126,10 @@ export class AuthApplicationService {
     return from(
       this.afAuth.signInWithEmailAndPassword(data.email, data.password),
     ).pipe(
-      map((credential) => {
+      switchMap(async (credential) => {
         if (credential.user) {
+          // Ensure user exists in Firestore (for existing users)
+          await this.ensureUserInFirestore(credential.user);
           return this.mapFirebaseUser(credential.user);
         }
         throw new Error("No user returned");
@@ -124,14 +143,43 @@ export class AuthApplicationService {
    */
   loginWithGoogle(_googleToken?: string): Observable<User> {
     return from(this.afAuth.signInWithPopup(this.googleProvider)).pipe(
-      map((credential) => {
+      switchMap(async (credential) => {
         if (credential.user) {
+          // Ensure user exists in Firestore
+          await this.ensureUserInFirestore(credential.user);
           return this.mapFirebaseUser(credential.user);
         }
         throw new Error("No user returned");
       }),
       catchError((error) => this.handleFirebaseError(error)),
     );
+  }
+
+  /**
+   * Ensure user profile exists in Firestore
+   */
+  private async ensureUserInFirestore(user: firebase.User): Promise<void> {
+    const userDoc = await this.firestore
+      .collection("users")
+      .doc(user.uid)
+      .get()
+      .toPromise();
+
+    if (!userDoc?.exists) {
+      await this.firestore
+        .collection("users")
+        .doc(user.uid)
+        .set(
+          {
+            id: user.uid,
+            email: user.email,
+            name: user.displayName || user.email?.split("@")[0] || "User",
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          { merge: true },
+        );
+    }
   }
 
   /**

@@ -96,7 +96,7 @@
           [attr.data-testid]="'member-' + memberId">
           <div class="member-info">
             <span *ngIf="isMemberAdmin(memberId)" class="admin-badge">👑</span>
-            <span class="member-id">{{ memberId }}</span>
+            <span class="member-name">{{ getMemberDisplayName(memberId) }}</span>
             <span *ngIf="isMemberAdmin(memberId)" class="admin-label">(Admin)</span>
           </div>
           <button 
