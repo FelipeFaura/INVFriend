@@ -222,8 +222,8 @@
 
 ## Sign-off
 
-| Tester | Date | Status | Notes |
-| ------ | ---- | ------ | ----- |
+| Tester                       | Date        | Status       | Notes                                                |
+| ---------------------------- | ----------- | ------------ | ---------------------------------------------------- |
 | Claude + Chrome DevTools MCP | Feb 1, 2026 | Partial Pass | Core flows working. Raffle needs 3+ members to test. |
 
 ---
@@ -239,10 +239,12 @@
 **Environment:** https://invfriend.web.app
 
 **Fixes Applied During UAT:**
+
 1. Added Firestore composite index for groups query (members + createdAt)
 2. Auth service rewritten to use Firebase Auth SDK directly
 
 **Known Issues:**
+
 - User ID shown instead of display name in members list (bB7pcbnteHU7SU0I0by06dYTOXl1)
 - Raffle system untested (requires 3+ members)
 - Add/Remove members functionality untested
