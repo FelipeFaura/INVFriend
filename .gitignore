@@ -57,3 +57,6 @@ logs/
 # Temporary files
 *.tmp
 *.temp
+
+# Sensitive data exports
+users.json
