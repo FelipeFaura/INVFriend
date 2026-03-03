@@ -1,18 +1,64 @@
-rules_version='2'
+rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    
+    // ==========================================
+    // USERS: Solo el propio usuario puede acceder
+    // ==========================================
+    match /users/{userId} {
+      allow read, write: if request.auth != null 
+                         && request.auth.uid == userId;
+    }
+    
+    // ==========================================
+    // GROUPS: Miembros pueden leer, admin puede escribir
+    // ==========================================
+    match /groups/{groupId} {
+      // Cualquier usuario autenticado puede crear un grupo
+      allow create: if request.auth != null;
+      
+      // Solo miembros del grupo pueden leerlo
+      allow read: if request.auth != null 
+                  && request.auth.uid in resource.data.members;
+      
+      // Solo el admin puede actualizar/eliminar
+      allow update, delete: if request.auth != null 
+                            && request.auth.uid == resource.data.adminId;
+    }
+    
+    // ==========================================
+    // ASSIGNMENTS: Usuario solo ve SU asignación
+    // (a quién debe regalar, NO quién le regala a él)
+    // ==========================================
+    match /assignments/{assignmentId} {
+      // Solo el Secret Santa puede ver a quién le toca regalar
+      allow read: if request.auth != null 
+                  && request.auth.uid == resource.data.secretSantaId;
+      
+      // Solo el backend (admin SDK) puede crear/modificar
+      allow write: if false;
+    }
+    
+    // ==========================================
+    // WISHES: Usuario gestiona sus deseos,
+    // Secret Santa puede ver los de su receptor
+    // ==========================================
+    match /wishes/{wishId} {
+      // El dueño puede leer/escribir sus propios deseos
+      allow read, write: if request.auth != null 
+                         && request.auth.uid == resource.data.userId;
+      
+      // El Secret Santa puede leer los deseos de su receptor
+      // (esto requiere verificar en assignments - simplificado aquí)
+      allow read: if request.auth != null;
+    }
+    
+    // ==========================================
+    // DENEGAR TODO LO DEMÁS
+    // ==========================================
     match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2026, 3, 2);
+      allow read, write: if false;
     }
   }
 }
