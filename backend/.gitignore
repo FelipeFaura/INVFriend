@@ -1,2 +1,5 @@
 node_modules/
 *.local
+
+# Firebase Service Account (NEVER commit this!)
+serviceAccountKey.json

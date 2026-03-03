@@ -111,7 +111,17 @@ export class AuthApplicationService {
             { merge: true },
           );
 
-          return this.mapFirebaseUser(credential.user);
+          // Update auth state immediately to avoid race condition with navigation
+          const token = await credential.user.getIdToken();
+          const user = this.mapFirebaseUser(credential.user);
+          this.updateAuthState({
+            user,
+            accessToken: token,
+            refreshToken: credential.user.refreshToken,
+            expiresAt: Date.now() + 3600 * 1000, // 1 hour
+          });
+
+          return user;
         }
         throw new Error("No user returned");
       }),
@@ -130,7 +140,18 @@ export class AuthApplicationService {
         if (credential.user) {
           // Ensure user exists in Firestore (for existing users)
           await this.ensureUserInFirestore(credential.user);
-          return this.mapFirebaseUser(credential.user);
+
+          // Update auth state immediately to avoid race condition with navigation
+          const token = await credential.user.getIdToken();
+          const user = this.mapFirebaseUser(credential.user);
+          this.updateAuthState({
+            user,
+            accessToken: token,
+            refreshToken: credential.user.refreshToken,
+            expiresAt: Date.now() + 3600 * 1000, // 1 hour
+          });
+
+          return user;
         }
         throw new Error("No user returned");
       }),
@@ -147,7 +168,18 @@ export class AuthApplicationService {
         if (credential.user) {
           // Ensure user exists in Firestore
           await this.ensureUserInFirestore(credential.user);
-          return this.mapFirebaseUser(credential.user);
+
+          // Update auth state immediately to avoid race condition with navigation
+          const token = await credential.user.getIdToken();
+          const user = this.mapFirebaseUser(credential.user);
+          this.updateAuthState({
+            user,
+            accessToken: token,
+            refreshToken: credential.user.refreshToken,
+            expiresAt: Date.now() + 3600 * 1000, // 1 hour
+          });
+
+          return user;
         }
         throw new Error("No user returned");
       }),
