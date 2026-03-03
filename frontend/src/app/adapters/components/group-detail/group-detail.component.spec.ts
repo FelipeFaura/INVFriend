@@ -15,12 +15,16 @@ import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { GroupDetailComponent } from "./group-detail.component";
 import { GroupHttpService } from "../../services/group-http.service";
 import { Group } from "../../../domain/models/group.model";
+import { AuthApplicationService } from "../../../application/services/auth-application.service";
+import { AngularFirestore } from "@angular/fire/compat/firestore";
 
 describe("GroupDetailComponent", () => {
   let component: GroupDetailComponent;
   let fixture: ComponentFixture<GroupDetailComponent>;
   let mockGroupService: jasmine.SpyObj<GroupHttpService>;
   let mockRouter: jasmine.SpyObj<Router>;
+  let mockAuthService: { currentUser: { id: string; email: string; displayName: string } | null };
+  let mockFirestore: jasmine.SpyObj<AngularFirestore>;
   let paramsSubject: Subject<{ id: string }>;
 
   const mockGroup: Group = {
@@ -43,6 +47,23 @@ describe("GroupDetailComponent", () => {
       "removeMember",
     ]);
     mockRouter = jasmine.createSpyObj("Router", ["navigate"]);
+    
+    // Create a simple object mock for AuthApplicationService (allows changing currentUser)
+    mockAuthService = {
+      currentUser: { id: "admin-user", email: "admin@test.com", displayName: "Admin User" },
+    };
+    
+    // Create a proper mock for AngularFirestore that includes get() method
+    const mockDocRef = {
+      get: jasmine.createSpy().and.returnValue(of({ exists: true, data: () => ({ name: "Test User", email: "test@test.com" }) })),
+      valueChanges: jasmine.createSpy().and.returnValue(of({})),
+    };
+    const mockCollectionRef = {
+      doc: jasmine.createSpy().and.returnValue(mockDocRef),
+    };
+    mockFirestore = jasmine.createSpyObj("AngularFirestore", ["collection"]);
+    (mockFirestore.collection as jasmine.Spy).and.returnValue(mockCollectionRef as any);
+    
     paramsSubject = new Subject();
 
     await TestBed.configureTestingModule({
@@ -51,6 +72,8 @@ describe("GroupDetailComponent", () => {
       providers: [
         { provide: GroupHttpService, useValue: mockGroupService },
         { provide: Router, useValue: mockRouter },
+        { provide: AuthApplicationService, useValue: mockAuthService },
+        { provide: AngularFirestore, useValue: mockFirestore },
         {
           provide: ActivatedRoute,
           useValue: { params: paramsSubject.asObservable() },
@@ -181,9 +204,9 @@ describe("GroupDetailComponent", () => {
 
   describe("Non-Admin View", () => {
     beforeEach(fakeAsync(() => {
-      // Override localStorage mock for non-admin
-      (localStorage.getItem as jasmine.Spy).and.returnValue("member-1");
-
+      // Change mock to simulate non-admin user BEFORE creating fixture
+      mockAuthService.currentUser = { id: "member-1", email: "member@test.com", displayName: "Member User" };
+      
       fixture = TestBed.createComponent(GroupDetailComponent);
       component = fixture.componentInstance;
       fixture.detectChanges();

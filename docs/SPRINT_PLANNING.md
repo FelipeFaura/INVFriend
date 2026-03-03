@@ -1,8 +1,8 @@
 # 📅 INVFriend - Sprint Planning & Task Roadmap
 
-![Progress](<https://img.shields.io/badge/Progress-75%25%20(24%2F32)-blue>)
-![Sprint](https://img.shields.io/badge/Sprint-6%20Completed-success)
-![Completed](https://img.shields.io/badge/Sprint%201--6-Completed-success)
+![Progress](<https://img.shields.io/badge/Progress-87.5%25%20(28%2F32)-blue>)
+![Sprint](https://img.shields.io/badge/Sprint-7%20Completed-success)
+![Completed](https://img.shields.io/badge/Sprint%201--7-Completed-success)
 
 ## 📋 Overview
 
@@ -11,9 +11,9 @@ This document organizes the **INVFriend MVP** development into structured sprint
 **Project Duration**: 8 Sprints (~16 weeks / 4 months)  
 **Sprint Length**: 2 weeks  
 **Total Tasks**: 32 tasks  
-**Completed**: 24 tasks (TASK-001 to TASK-024) ✅  
-**Current Sprint**: Sprint 6 (Raffle System Frontend) - COMPLETED  
-**Last Updated**: January 31, 2026
+**Completed**: 28 tasks (TASK-001 to TASK-028) ✅  
+**Current Sprint**: Sprint 8 (Launch) - IN PROGRESS  
+**Last Updated**: March 3, 2026
 
 ---
 
@@ -23,9 +23,9 @@ This document organizes the **INVFriend MVP** development into structured sprint
 
 **Quick Status:**
 
-- Current Sprint: Sprint 6 COMPLETED
-- Overall Progress: 75% (24/32 tasks)
-- Next Task: TASK-025 (Wishes & Notifications)
+- Current Sprint: Sprint 8 IN PROGRESS
+- Overall Progress: 87.5% (28/32 tasks)
+- Next Task: TASK-029 (Integration Tests)
 
 ---
 
@@ -53,16 +53,16 @@ Sprint 8: Polish, Testing & Deployment
 
 ## 📊 Sprint Overview Table
 
-| Sprint   | Focus Area                   | Backend Tasks | Frontend Tasks | Total Tasks | Status       |
-| -------- | ---------------------------- | ------------- | -------------- | ----------- | ------------ |
-| Sprint 1 | Project Setup & Auth Backend | 4             | 0              | 4           | ✅ COMPLETED |
-| Sprint 2 | Auth Frontend & Guards       | 0             | 4              | 4           | ✅ COMPLETED |
-| Sprint 3 | Group Management Backend     | 4             | 0              | 4           | ✅ COMPLETED |
-| Sprint 4 | Group Management Frontend    | 0             | 4              | 4           | ✅ COMPLETED |
-| Sprint 5 | Raffle System Backend        | 4             | 0              | 4           | ✅ COMPLETED |
-| Sprint 6 | Raffle System Frontend       | 0             | 4              | 4           | ✅ COMPLETED |
-| Sprint 7 | Wishes & Notifications       | 2             | 2              | 4           | ⏸️ PENDING   |
-| Sprint 8 | Integration, Polish & Deploy | 2             | 2              | 4           | ⏸️ PENDING   |
+| Sprint   | Focus Area                   | Backend Tasks | Frontend Tasks | Total Tasks | Status         |
+| -------- | ---------------------------- | ------------- | -------------- | ----------- | -------------- |
+| Sprint 1 | Project Setup & Auth Backend | 4             | 0              | 4           | ✅ COMPLETED   |
+| Sprint 2 | Auth Frontend & Guards       | 0             | 4              | 4           | ✅ COMPLETED   |
+| Sprint 3 | Group Management Backend     | 4             | 0              | 4           | ✅ COMPLETED   |
+| Sprint 4 | Group Management Frontend    | 0             | 4              | 4           | ✅ COMPLETED   |
+| Sprint 5 | Raffle System Backend        | 4             | 0              | 4           | ✅ COMPLETED   |
+| Sprint 6 | Raffle System Frontend       | 0             | 4              | 4           | ✅ COMPLETED   |
+| Sprint 7 | Wishes & Notifications       | 2             | 2              | 4           | ✅ COMPLETED   |
+| Sprint 8 | Integration, Polish & Deploy | 2             | 2              | 4           | 🔄 IN PROGRESS |
 
 ---
 
@@ -493,31 +493,32 @@ Display group details and manage members.
 
 ---
 
-## 🎲 SPRINT 5: Raffle System Backend
+## 🎲 SPRINT 5: Raffle System Backend (COMPLETED)
 
 **Duration**: Weeks 9-10  
-**Status**: ⏸️ **PENDING**  
+**Status**: ✅ **COMPLETED** on January 31, 2026  
 **Goal**: Implement Secret Santa raffle algorithm and assignments  
 **Deliverables**: Fair raffle logic, assignment storage, result retrieval
 
 ### SPRINT 5 - Task Breakdown
 
-#### TASK-017: Implement Assignment Entity & Repository
+#### ✅ TASK-017: Implement Assignment Entity & Repository - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 4 hours  
-**Dependencies**: TASK-010
+**Dependencies**: TASK-010  
+**Status**: ✅ COMPLETED (January 31, 2026)
 
 **Description**:
 Create Assignment entity and persistence layer.
 
-**Files to Create**:
+**Files Created**:
 
 - `backend/src/domain/entities/Assignment.ts`
 - `backend/src/domain/entities/__tests__/Assignment.spec.ts`
 - `backend/src/ports/IAssignmentRepository.ts`
 - `backend/src/adapters/persistence/FirebaseAssignmentRepository.ts`
-- Tests
+- `backend/src/adapters/persistence/__tests__/FirebaseAssignmentRepository.spec.ts`
 
 **Model**:
 
@@ -525,7 +526,7 @@ Create Assignment entity and persistence layer.
 {
   id: string;
   groupId: string;
-  userId: string; // Who receives the gift
+  recipientId: string; // Who receives the gift
   secretSantaId: string; // Who gives the gift
   createdAt: number;
 }
@@ -535,27 +536,28 @@ Create Assignment entity and persistence layer.
 
 ---
 
-#### TASK-018: Implement Raffle Algorithm
+#### ✅ TASK-018: Implement Raffle Algorithm - COMPLETED
 
 **Priority**: CRITICAL  
 **Estimated Effort**: 6 hours  
-**Dependencies**: TASK-017
+**Dependencies**: TASK-017  
+**Status**: ✅ COMPLETED (January 31, 2026)
 
 **Description**:
 Implement fair Secret Santa assignment algorithm.
 
-**Files to Create**:
+**Files Created**:
 
 - `backend/src/shared/utils/raffleAlgorithm.ts`
 - `backend/src/shared/utils/__tests__/raffleAlgorithm.spec.ts`
 
 **Requirements**:
 
-- [ ] Each person gets exactly 1 secret santa
-- [ ] Each person is secret santa for exactly 1 person
-- [ ] No one is their own secret santa
-- [ ] Randomized but deterministic (testable)
-- [ ] Handle edge cases (2 members minimum)
+- [x] Each person gets exactly 1 secret santa
+- [x] Each person is secret santa for exactly 1 person
+- [x] No one is their own secret santa
+- [x] Randomized but deterministic (testable)
+- [x] Handle edge cases (2 members minimum)
 
 **Algorithm**: Fisher-Yates shuffle with validation
 
@@ -563,38 +565,40 @@ Implement fair Secret Santa assignment algorithm.
 
 ---
 
-#### TASK-019: Implement Perform Raffle Use Case
+#### ✅ TASK-019: Implement Perform Raffle Use Case - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 5 hours  
-**Dependencies**: TASK-018
+**Dependencies**: TASK-018  
+**Status**: ✅ COMPLETED (January 31, 2026)
 
 **Description**:
 Business logic to execute raffle for a group.
 
-**Files to Create**:
+**Files Created**:
 
 - `backend/src/application/use-cases/PerformRaffleUseCase.ts`
 - `backend/src/application/use-cases/__tests__/PerformRaffleUseCase.spec.ts`
 
 **Business Rules**:
 
-- [ ] Only admin can perform raffle
-- [ ] Minimum 2 members required
-- [ ] Cannot raffle if already completed
-- [ ] Update group status to 'completed'
-- [ ] Set raffleDate timestamp
-- [ ] Store all assignments atomically
+- [x] Only admin can perform raffle
+- [x] Minimum 2 members required
+- [x] Cannot raffle if already completed
+- [x] Update group status to 'completed'
+- [x] Set raffleDate timestamp
+- [x] Store all assignments atomically
 
 **Reference**: [ARCHITECTURE_QUICK_REF.md](./ARCHITECTURE_QUICK_REF.md) - Flow 3
 
 ---
 
-#### TASK-020: Implement Raffle Controller & Routes
+#### ✅ TASK-020: Implement Raffle Controller & Routes - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 4 hours  
-**Dependencies**: TASK-019
+**Dependencies**: TASK-019  
+**Status**: ✅ COMPLETED (January 31, 2026)
 
 **Description**:
 API endpoints for raffle operations.
@@ -724,24 +728,26 @@ Visual indicator of group raffle status.
 
 ---
 
-## 🎁 SPRINT 7: Wishes & Notifications
+## 🎁 SPRINT 7: Wishes & Notifications (COMPLETED)
 
 **Duration**: Weeks 13-14  
+**Status**: ✅ **COMPLETED** on February 2026  
 **Goal**: Implement wish lists and notification system  
 **Deliverables**: Create/edit wishes, notification triggers
 
 ### SPRINT 7 - Task Breakdown
 
-#### TASK-025: Implement Wish Backend (Entity, Repository, Use Cases)
+#### ✅ TASK-025: Implement Wish Backend (Entity, Repository, Use Cases) - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 6 hours  
-**Dependencies**: TASK-011
+**Dependencies**: TASK-011  
+**Status**: ✅ COMPLETED
 
 **Description**:
 Complete backend for wish management.
 
-**Files to Create**:
+**Files Created**:
 
 - `backend/src/domain/entities/Wish.ts` + tests
 - `backend/src/ports/IWishRepository.ts`
@@ -749,25 +755,27 @@ Complete backend for wish management.
 - `backend/src/application/use-cases/AddWishUseCase.ts` + tests
 - `backend/src/application/use-cases/UpdateWishUseCase.ts` + tests
 - `backend/src/application/use-cases/DeleteWishUseCase.ts` + tests
+- `backend/src/application/use-cases/GetMyWishesUseCase.ts` + tests
 - `backend/src/application/use-cases/GetSecretSantaWishesUseCase.ts` + tests
 
 **Reference**: [ARCHITECTURE.md](./ARCHITECTURE.md) - Wish Model
 
 ---
 
-#### TASK-026: Implement Wish Controller & Routes
+#### ✅ TASK-026: Implement Wish Controller & Routes - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 4 hours  
-**Dependencies**: TASK-025
+**Dependencies**: TASK-025  
+**Status**: ✅ COMPLETED
 
 **Description**:
 API endpoints for wishes.
 
-**Files to Create**:
+**Files Created**:
 
 - `backend/src/adapters/http/controllers/WishController.ts`
-- Controller tests
+- `backend/src/adapters/http/controllers/__tests__/WishController.spec.ts`
 
 **Endpoints**:
 
@@ -781,51 +789,57 @@ DELETE /wishes/:id                       - Delete wish
 
 ---
 
-#### TASK-027: Implement Wish List Component (Frontend)
+#### ✅ TASK-027: Implement Wish List Component (Frontend) - COMPLETED
 
 **Priority**: HIGH  
 **Estimated Effort**: 6 hours  
-**Dependencies**: TASK-026
+**Dependencies**: TASK-026  
+**Status**: ✅ COMPLETED
 
 **Description**:
 UI to manage personal wishes and view secret santa wishes.
 
-**Files to Create**:
+**Files Created**:
 
 - `frontend/src/app/adapters/components/wish-list/wish-list.component.ts`
-- Component HTML/SCSS and tests
+- `frontend/src/app/adapters/components/wish-list/wish-list.component.html`
+- `frontend/src/app/adapters/components/wish-list/wish-list.component.scss`
+- `frontend/src/app/adapters/components/wish-list/wish-list.component.spec.ts`
+- `frontend/src/app/adapters/services/wish-http.service.ts`
 
 **Features**:
 
-- [ ] Display user's wishes
-- [ ] Add/edit/delete wish inline
-- [ ] Fields: title, description, URL, estimated price
-- [ ] View secret santa's wishes (read-only)
-- [ ] Empty state
+- [x] Display user's wishes
+- [x] Add/edit/delete wish inline
+- [x] Fields: title, description, URL, estimated price
+- [x] View secret santa's wishes (read-only)
+- [x] Empty state
 
 ---
 
-#### TASK-028: Implement Basic Notification System
+#### ✅ TASK-028: Implement Basic Notification System - COMPLETED
 
 **Priority**: MEDIUM  
 **Estimated Effort**: 4 hours  
-**Dependencies**: TASK-020, TASK-026
+**Dependencies**: TASK-020, TASK-026  
+**Status**: ✅ COMPLETED
 
 **Description**:
 Simple notification storage and display.
 
-**Files to Create**:
+**Files Created**:
 
-- `backend/src/domain/entities/Notification.ts`
-- `backend/src/ports/INotificationPort.ts`
-- `backend/src/adapters/persistence/FirebaseNotificationRepository.ts`
-- `frontend/src/app/adapters/components/notifications/notifications.component.ts`
+- `frontend/src/app/adapters/components/notification/notification.component.ts`
+- `frontend/src/app/adapters/components/notification/notification.component.html`
+- `frontend/src/app/adapters/components/notification/notification.component.scss`
+- `frontend/src/app/adapters/components/notification/notification.component.spec.ts`
+- `frontend/src/app/adapters/services/notification.service.ts`
 
 **Triggers**:
 
-- [ ] User invited to group
-- [ ] Raffle completed
-- [ ] Secret santa added wish
+- [x] User invited to group
+- [x] Raffle completed
+- [x] Secret santa added wish
 
 **Scope**:
 
