@@ -53,6 +53,44 @@ Copy and complete this template when assigning a task to AI:
 - Relevant GUIDELINES.md section: [link]
 - Related entities in ARCHITECTURE.md: [link]
 - Similar example file: [path]
+
+---
+
+## 📊 Results
+
+_(Filled by sub-agent upon completion)_
+
+**Status:** ⏳ Pending → ✅ Complete / ❌ Failed
+
+**Files Created/Modified:**
+
+- [list files here]
+
+**Build:** ✅ Pass / ❌ Fail
+**Tests:** ✅ Pass / ❌ Fail / N/A
+
+**Notes:**
+[Any relevant observations, decisions made, or deviations from plan]
+
+---
+
+## ⚠️ External Issues Detected
+
+_(Filled by sub-agent if failures outside scope are found)_
+
+| File              | Issue                  | In Scope? | Action Needed        |
+| ----------------- | ---------------------- | --------- | -------------------- |
+| `path/to/file.ts` | [Description of issue] | ❌ No     | @project-lead review |
+
+---
+
+## ❓ Blockers/Questions
+
+_(Filled by sub-agent if blocked or needs clarification)_
+
+- **Question 1**: [What needs clarification?]
+  - **Context**: [Why this is blocking progress]
+  - **Options considered**: [A, B, C]
 ```
 
 ---
