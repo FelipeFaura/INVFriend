@@ -1,0 +1,95 @@
+<div class="app-layout" [class.sidebar-open]="sidebarOpen">
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <button
+      class="hamburger-btn"
+      type="button"
+      (click)="toggleSidebar()"
+      [attr.aria-expanded]="sidebarOpen"
+      aria-controls="sidebar"
+      aria-label="Toggle navigation menu"
+    >
+      <span class="hamburger-icon" aria-hidden="true">☰</span>
+    </button>
+    <span class="mobile-brand">INVFriend</span>
+  </header>
+
+  <!-- Sidebar -->
+  <aside
+    id="sidebar"
+    class="sidebar"
+    [class.open]="sidebarOpen"
+    role="navigation"
+    aria-label="Main navigation"
+  >
+    <div class="sidebar__brand">
+      <a
+        routerLink="/dashboard"
+        (click)="closeSidebarOnMobile()"
+        class="brand-link"
+      >
+        <span class="brand-icon" aria-hidden="true">🎄</span>
+        <span class="brand-text">INVFriend</span>
+      </a>
+    </div>
+
+    <nav class="sidebar__nav">
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="closeSidebarOnMobile()"
+        class="nav-link"
+      >
+        <span class="nav-icon" aria-hidden="true">🏠</span>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a
+        routerLink="/groups"
+        routerLinkActive="active"
+        (click)="closeSidebarOnMobile()"
+        class="nav-link"
+      >
+        <span class="nav-icon" aria-hidden="true">👥</span>
+        <span class="nav-label">Groups</span>
+      </a>
+      <a
+        routerLink="/profile"
+        routerLinkActive="active"
+        (click)="closeSidebarOnMobile()"
+        class="nav-link"
+      >
+        <span class="nav-icon" aria-hidden="true">👤</span>
+        <span class="nav-label">Profile</span>
+      </a>
+    </nav>
+
+    <div class="sidebar__footer">
+      <div class="user-info" *ngIf="currentUser$ | async as user">
+        <span class="user-name">{{ user.name }}</span>
+      </div>
+      <button
+        type="button"
+        class="logout-btn"
+        (click)="onLogout()"
+        aria-label="Cerrar sesión"
+      >
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Overlay for mobile -->
+  <div
+    class="sidebar-overlay"
+    *ngIf="sidebarOpen"
+    (click)="closeSidebar()"
+    role="presentation"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Main Content -->
+  <main class="main-content" id="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

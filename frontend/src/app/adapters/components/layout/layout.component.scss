@@ -1,0 +1,273 @@
+// ============================================
+// LAYOUT COMPONENT STYLES
+// ============================================
+
+@use "../../../../styles/tokens" as *;
+@use "../../../../styles/mixins" as *;
+
+// ===================
+// LAYOUT VARIABLES
+// ===================
+
+$sidebar-width: 250px;
+$mobile-header-height: 56px;
+
+// ===================
+// BASE LAYOUT
+// ===================
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: $bg-page;
+}
+
+// ===================
+// MOBILE HEADER
+// ===================
+
+.mobile-header {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $mobile-header-height;
+  padding: 0 $space-4;
+  background: $gradient-primary;
+  color: $text-inverse;
+  z-index: $z-sticky;
+
+  @include md {
+    display: none;
+  }
+}
+
+.hamburger-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: $radius-md;
+  color: $text-inverse;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background-color: rgba($color-neutral-0, 0.1);
+  }
+
+  @include focus-visible;
+}
+
+.hamburger-icon {
+  font-size: $font-size-xl;
+  line-height: 1;
+}
+
+.mobile-brand {
+  margin-left: $space-3;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+}
+
+// ===================
+// SIDEBAR
+// ===================
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: $sidebar-width;
+  height: 100vh;
+  background: $gradient-primary;
+  color: $text-inverse;
+  z-index: $z-modal;
+  transform: translateX(-100%);
+  transition: transform $transition-normal;
+
+  // Mobile: slides in when open
+  &.open {
+    transform: translateX(0);
+  }
+
+  // Desktop: always visible
+  @include md {
+    position: fixed;
+    transform: translateX(0);
+    z-index: $z-sticky;
+  }
+}
+
+// ===================
+// SIDEBAR BRAND
+// ===================
+
+.sidebar__brand {
+  padding: $space-6 $space-4;
+  border-bottom: 1px solid rgba($color-neutral-0, 0.1);
+}
+
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity $transition-fast;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  @include focus-visible;
+}
+
+.brand-icon {
+  font-size: $font-size-2xl;
+  line-height: 1;
+}
+
+.brand-text {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+}
+
+// ===================
+// SIDEBAR NAVIGATION
+// ===================
+
+.sidebar__nav {
+  flex: 1;
+  padding: $space-4 0;
+  overflow-y: auto;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  margin: $space-1 $space-2;
+  text-decoration: none;
+  color: rgba($color-neutral-0, 0.85);
+  border-radius: $radius-md;
+  transition:
+    background-color $transition-fast,
+    color $transition-fast;
+
+  &:hover {
+    background-color: rgba($color-neutral-0, 0.1);
+    color: $text-inverse;
+  }
+
+  &.active {
+    background-color: rgba($color-neutral-0, 0.2);
+    color: $text-inverse;
+    font-weight: $font-weight-medium;
+  }
+
+  @include focus-visible;
+}
+
+.nav-icon {
+  font-size: $font-size-lg;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.nav-label {
+  font-size: $font-size-base;
+}
+
+// ===================
+// SIDEBAR FOOTER
+// ===================
+
+.sidebar__footer {
+  padding: $space-4;
+  border-top: 1px solid rgba($color-neutral-0, 0.1);
+}
+
+.user-info {
+  margin-bottom: $space-3;
+}
+
+.user-name {
+  display: block;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: rgba($color-neutral-0, 0.9);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: $space-2 $space-4;
+  background-color: rgba($color-neutral-0, 0.1);
+  border: 1px solid rgba($color-neutral-0, 0.2);
+  border-radius: $radius-md;
+  color: $text-inverse;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition:
+    background-color $transition-fast,
+    border-color $transition-fast;
+
+  &:hover {
+    background-color: rgba($color-neutral-0, 0.2);
+    border-color: rgba($color-neutral-0, 0.3);
+  }
+
+  @include focus-visible;
+}
+
+// ===================
+// SIDEBAR OVERLAY
+// ===================
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba($color-neutral-900, 0.5);
+  z-index: $z-modal-backdrop;
+  cursor: pointer;
+
+  @include md {
+    display: none;
+  }
+}
+
+// ===================
+// MAIN CONTENT
+// ===================
+
+.main-content {
+  flex: 1;
+  width: 100%;
+  min-height: 100vh;
+  padding-top: $mobile-header-height;
+  transition: margin-left $transition-normal;
+
+  @include md {
+    margin-left: $sidebar-width;
+    padding-top: 0;
+  }
+}

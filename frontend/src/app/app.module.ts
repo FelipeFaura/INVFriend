@@ -12,6 +12,7 @@ import { AppComponent } from "./app.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { AuthInterceptor } from "./adapters/http/auth.interceptor";
 import { NotificationComponent } from "./adapters/components/notification/notification.component";
+import { LayoutModule } from "./adapters/components/layout/layout.module";
 
 @NgModule({
   declarations: [AppComponent, NotificationComponent],
@@ -24,6 +25,7 @@ import { NotificationComponent } from "./adapters/components/notification/notifi
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
+    LayoutModule,
   ],
   providers: [
     {
