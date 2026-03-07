@@ -1,60 +1,93 @@
-<div class="group-detail-container">
+<div class="group-detail-page">
   <!-- Loading State -->
-  <div *ngIf="isLoading" class="loading-container" data-testid="loading-spinner">
-    <div class="spinner"></div>
-    <p>Loading group...</p>
+  <div *ngIf="isLoading" class="loading-state" data-testid="loading-spinner" aria-busy="true">
+    <div class="spinner" aria-hidden="true">
+      <div class="spinner__circle"></div>
+    </div>
+    <p class="loading-state__text">Loading group...</p>
   </div>
 
   <!-- Error State -->
-  <div *ngIf="error && !isLoading" class="error-container" data-testid="error-message">
-    <p class="error-text">{{ error }}</p>
-    <button class="btn btn-secondary" (click)="goBack()">Back to Groups</button>
+  <div *ngIf="error && !isLoading" class="error-state" data-testid="error-message" role="alert">
+    <div class="alert alert--error">
+      <span class="alert__icon" aria-hidden="true">⚠️</span>
+      <span class="alert__content">{{ error }}</span>
+    </div>
+    <button class="btn btn--secondary" (click)="goBack()">Back to Groups</button>
   </div>
 
   <!-- Group Content -->
   <div *ngIf="group && !isLoading && !error" class="group-content">
-    <!-- Header -->
-    <div class="header">
-      <button class="btn-back" (click)="goBack()" data-testid="back-btn">
-        ← Back
+    <!-- Back Navigation -->
+    <nav class="page-nav" aria-label="Breadcrumb">
+      <button 
+        class="btn btn--link page-nav__back" 
+        (click)="goBack()" 
+        data-testid="back-btn"
+        aria-label="Go back to groups list">
+        ← Back to Groups
       </button>
-      <h1 class="group-title">{{ group.name }}</h1>
-      <div *ngIf="isAdmin" class="admin-actions">
-        <button 
-          class="btn-icon" 
-          (click)="editGroup()" 
-          title="Edit group"
-          data-testid="edit-btn">
-          ✏️
-        </button>
-        <button 
-          class="btn-icon btn-danger" 
-          (click)="confirmDelete()" 
-          title="Delete group"
-          data-testid="delete-btn">
-          🗑️
-        </button>
-      </div>
+    </nav>
+
+    <!-- Action Error Alert -->
+    <div *ngIf="actionError" class="alert alert--error action-alert" data-testid="action-error" role="alert">
+      <span class="alert__icon" aria-hidden="true">⚠️</span>
+      <span class="alert__content">{{ actionError }}</span>
     </div>
 
-    <!-- Action Error -->
-    <div *ngIf="actionError" class="error-banner" data-testid="action-error">
-      {{ actionError }}
-    </div>
-
-    <!-- Group Info -->
-    <div class="info-section">
-      <div class="info-row">
-        <span class="info-label">Budget:</span>
-        <span class="info-value">${{ group.budgetLimit }}</span>
+    <!-- Group Header Card -->
+    <article class="card card--featured group-header-card">
+      <div class="card__body">
+        <div class="group-header">
+          <div class="group-header__main">
+            <h1 class="group-header__title">{{ group.name }}</h1>
+            <div class="group-header__meta">
+              <span class="badge badge--info">
+                <span aria-hidden="true">👥</span>
+                {{ group.members.length }} {{ group.members.length === 1 ? 'member' : 'members' }}
+              </span>
+              <span 
+                class="badge"
+                [class.badge--success]="group.raffleStatus === 'completed'"
+                [class.badge--warning]="group.raffleStatus === 'pending'">
+                {{ group.raffleStatus === 'completed' ? '✓ Raffle Complete' : '⏳ Pending' }}
+              </span>
+            </div>
+          </div>
+          <div *ngIf="isAdmin" class="group-header__actions">
+            <button 
+              class="btn btn--icon" 
+              (click)="editGroup()" 
+              title="Edit group"
+              aria-label="Edit group settings"
+              data-testid="edit-btn">
+              ✏️
+            </button>
+            <button 
+              class="btn btn--icon btn--icon-danger" 
+              (click)="confirmDelete()" 
+              title="Delete group"
+              aria-label="Delete this group"
+              data-testid="delete-btn">
+              🗑️
+            </button>
+          </div>
+        </div>
+        
+        <div class="group-info">
+          <div class="group-info__item">
+            <span class="group-info__label">Budget</span>
+            <span class="group-info__value">${{ group.budgetLimit }}</span>
+          </div>
+          <div class="group-info__item">
+            <span class="group-info__label">Created</span>
+            <span class="group-info__value">{{ formatDate(group.createdAt) }}</span>
+          </div>
+        </div>
       </div>
-      <div class="info-row">
-        <span class="info-label">Created:</span>
-        <span class="info-value">{{ formatDate(group.createdAt) }}</span>
-      </div>
-    </div>
+    </article>
 
-    <!-- Group Status -->
+    <!-- Group Status Section -->
     <app-group-status [group]="group"></app-group-status>
 
     <!-- Secret Santa Reveal (shown to all members when raffle completed) -->
@@ -67,128 +100,181 @@
       (raffleCompleted)="onRaffleCompleted()">
     </app-raffle-trigger>
 
-    <!-- Wish List -->
+    <!-- Wish List Section -->
     <app-wish-list [group]="group"></app-wish-list>
 
-    <!-- Description -->
-    <div *ngIf="group.description" class="description-section">
-      <h3>Description</h3>
-      <p>{{ group.description }}</p>
-    </div>
+    <!-- Description Section -->
+    <section *ngIf="group.description" class="card description-card">
+      <header class="card__header">
+        <h2 class="card__title">Description</h2>
+      </header>
+      <div class="card__body">
+        <p class="description-text">{{ group.description }}</p>
+      </div>
+    </section>
 
-    <!-- Members -->
-    <div class="members-section">
-      <div class="members-header">
-        <h3>Members ({{ group.members.length }})</h3>
+    <!-- Members Section -->
+    <section class="card members-card">
+      <header class="card__header members-card__header">
+        <h2 class="card__title">Members ({{ group.members.length }})</h2>
         <button 
           *ngIf="isAdmin" 
-          class="btn btn-primary btn-sm"
+          class="btn btn--primary btn--sm"
           (click)="openAddMemberModal()"
-          data-testid="add-member-btn">
+          data-testid="add-member-btn"
+          aria-label="Add a new member to this group">
           + Add Member
         </button>
+      </header>
+      <div class="card__body members-card__body">
+        <ul class="members-list" data-testid="members-list" role="list">
+          <li 
+            *ngFor="let memberId of group.members" 
+            class="member-item"
+            [attr.data-testid]="'member-' + memberId">
+            <div class="member-item__avatar" aria-hidden="true">
+              {{ getMemberDisplayName(memberId).charAt(0).toUpperCase() }}
+            </div>
+            <div class="member-item__info">
+              <span class="member-item__name">{{ getMemberDisplayName(memberId) }}</span>
+              <span *ngIf="isMemberAdmin(memberId)" class="badge badge--primary member-item__badge">
+                <span aria-hidden="true">👑</span> Admin
+              </span>
+            </div>
+            <button 
+              *ngIf="isAdmin && !isMemberAdmin(memberId)"
+              class="btn btn--sm btn--danger member-item__remove"
+              (click)="confirmRemoveMember(memberId)"
+              [attr.data-testid]="'remove-' + memberId"
+              [attr.aria-label]="'Remove ' + getMemberDisplayName(memberId) + ' from group'">
+              Remove
+            </button>
+          </li>
+        </ul>
       </div>
-
-      <div class="members-list" data-testid="members-list">
-        <div 
-          *ngFor="let memberId of group.members" 
-          class="member-item"
-          [attr.data-testid]="'member-' + memberId">
-          <div class="member-info">
-            <span *ngIf="isMemberAdmin(memberId)" class="admin-badge">👑</span>
-            <span class="member-name">{{ getMemberDisplayName(memberId) }}</span>
-            <span *ngIf="isMemberAdmin(memberId)" class="admin-label">(Admin)</span>
-          </div>
-          <button 
-            *ngIf="isAdmin && !isMemberAdmin(memberId)"
-            class="btn-remove"
-            (click)="confirmRemoveMember(memberId)"
-            [attr.data-testid]="'remove-' + memberId">
-            Remove
-          </button>
-        </div>
-      </div>
-    </div>
+    </section>
   </div>
 
   <!-- Delete Confirmation Modal -->
-  <div *ngIf="showDeleteConfirm" class="modal-overlay" data-testid="delete-modal">
-    <div class="modal">
-      <h3>Delete Group</h3>
-      <p>Are you sure you want to delete "{{ group?.name }}"? This action cannot be undone.</p>
-      <div class="modal-actions">
+  <div 
+    *ngIf="showDeleteConfirm" 
+    class="modal-backdrop" 
+    data-testid="delete-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="delete-modal-title">
+    <div class="modal modal--sm">
+      <header class="modal__header">
+        <h3 id="delete-modal-title" class="modal__title">Delete Group</h3>
+      </header>
+      <div class="modal__body">
+        <p>Are you sure you want to delete "<strong>{{ group?.name }}</strong>"?</p>
+        <p class="modal__warning">This action cannot be undone.</p>
+      </div>
+      <footer class="modal__footer">
         <button 
-          class="btn btn-secondary" 
+          class="btn btn--secondary" 
           (click)="cancelDelete()"
           [disabled]="isProcessing"
           data-testid="cancel-delete-btn">
           Cancel
         </button>
         <button 
-          class="btn btn-danger" 
+          class="btn btn--danger" 
+          [class.btn--loading]="isProcessing"
           (click)="deleteGroup()"
           [disabled]="isProcessing"
           data-testid="confirm-delete-btn">
+          <span *ngIf="isProcessing" class="btn__spinner" aria-hidden="true"></span>
           {{ isProcessing ? 'Deleting...' : 'Delete' }}
         </button>
-      </div>
+      </footer>
     </div>
   </div>
 
   <!-- Add Member Modal -->
-  <div *ngIf="showAddMemberModal" class="modal-overlay" data-testid="add-member-modal">
-    <div class="modal">
-      <h3>Add Member</h3>
-      <div *ngIf="actionError" class="error-text modal-error">{{ actionError }}</div>
-      <div class="form-group">
-        <label for="memberId">User ID</label>
-        <input 
-          type="text" 
-          id="memberId"
-          [(ngModel)]="newMemberId"
-          placeholder="Enter user ID"
-          class="form-input"
-          data-testid="member-id-input"
-        />
+  <div 
+    *ngIf="showAddMemberModal" 
+    class="modal-backdrop" 
+    data-testid="add-member-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="add-member-modal-title">
+    <div class="modal modal--sm">
+      <header class="modal__header">
+        <h3 id="add-member-modal-title" class="modal__title">Add Member</h3>
+      </header>
+      <div class="modal__body">
+        <div *ngIf="actionError" class="alert alert--error modal-alert" role="alert">
+          <span class="alert__icon" aria-hidden="true">⚠️</span>
+          <span class="alert__content">{{ actionError }}</span>
+        </div>
+        <div class="form-group">
+          <label for="memberId" class="form-group__label">User ID</label>
+          <input 
+            type="text" 
+            id="memberId"
+            [(ngModel)]="newMemberId"
+            placeholder="Enter user ID"
+            class="form-input"
+            data-testid="member-id-input"
+            aria-describedby="memberId-hint"
+          />
+          <span id="memberId-hint" class="form-hint">Enter the user's unique identifier</span>
+        </div>
       </div>
-      <div class="modal-actions">
+      <footer class="modal__footer">
         <button 
-          class="btn btn-secondary" 
+          class="btn btn--secondary" 
           (click)="closeAddMemberModal()"
           [disabled]="isProcessing">
           Cancel
         </button>
         <button 
-          class="btn btn-primary" 
+          class="btn btn--primary" 
+          [class.btn--loading]="isProcessing"
           (click)="addMember()"
           [disabled]="isProcessing || !newMemberId.trim()"
           data-testid="confirm-add-btn">
+          <span *ngIf="isProcessing" class="btn__spinner" aria-hidden="true"></span>
           {{ isProcessing ? 'Adding...' : 'Add Member' }}
         </button>
-      </div>
+      </footer>
     </div>
   </div>
 
   <!-- Remove Member Confirmation Modal -->
-  <div *ngIf="showRemoveMemberConfirm" class="modal-overlay" data-testid="remove-member-modal">
-    <div class="modal">
-      <h3>Remove Member</h3>
-      <p>Are you sure you want to remove this member from the group?</p>
-      <div class="modal-actions">
+  <div 
+    *ngIf="showRemoveMemberConfirm" 
+    class="modal-backdrop" 
+    data-testid="remove-member-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="remove-member-modal-title">
+    <div class="modal modal--sm">
+      <header class="modal__header">
+        <h3 id="remove-member-modal-title" class="modal__title">Remove Member</h3>
+      </header>
+      <div class="modal__body">
+        <p>Are you sure you want to remove this member from the group?</p>
+      </div>
+      <footer class="modal__footer">
         <button 
-          class="btn btn-secondary" 
+          class="btn btn--secondary" 
           (click)="cancelRemoveMember()"
           [disabled]="isProcessing">
           Cancel
         </button>
         <button 
-          class="btn btn-danger" 
+          class="btn btn--danger" 
+          [class.btn--loading]="isProcessing"
           (click)="removeMember()"
           [disabled]="isProcessing"
           data-testid="confirm-remove-btn">
+          <span *ngIf="isProcessing" class="btn__spinner" aria-hidden="true"></span>
           {{ isProcessing ? 'Removing...' : 'Remove' }}
         </button>
-      </div>
+      </footer>
     </div>
   </div>
 </div>

@@ -1,0 +1,680 @@
+// ============================================
+// NAVIGATION - frontend/src/styles/components/_navigation.scss
+// ============================================
+// Header/navbar, navigation links, user menu, and responsive drawer.
+//
+// Dependencies: _tokens.scss, _mixins.scss
+// ============================================
+
+@use '../tokens' as *;
+@use '../mixins' as *;
+
+
+// ===================
+// HEADER
+// ===================
+
+/// Main application header with gradient background
+/// Sticky positioned at top of viewport
+.header {
+  background: $gradient-primary;
+  color: $text-inverse;
+  padding: $space-4 $space-6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: $shadow-md;
+  position: sticky;
+  top: 0;
+  z-index: $z-sticky;
+  min-height: 64px;
+
+  @include mobile-only {
+    padding: $space-3 $space-4;
+    min-height: 56px;
+  }
+}
+
+/// Brand/logo area within header
+.header__brand {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity $transition-fast;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  @include focus-visible;
+}
+
+/// Brand logo image
+.header__logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+
+  @include mobile-only {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/// Brand text
+.header__brand-text {
+  @include mobile-only {
+    // Hide brand text on small screens to save space
+    display: none;
+  }
+
+  @include sm {
+    display: inline;
+  }
+}
+
+/// Navigation container within header
+.header__nav {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+
+  @include mobile-only {
+    gap: $space-2;
+  }
+}
+
+/// Left section of header (brand + main nav)
+.header__left {
+  display: flex;
+  align-items: center;
+  gap: $space-6;
+
+  @include mobile-only {
+    gap: $space-3;
+  }
+}
+
+/// Right section of header (user menu)
+.header__right {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+
+  @include mobile-only {
+    gap: $space-2;
+  }
+}
+
+
+// ===================
+// NAVIGATION LINKS
+// ===================
+
+/// Desktop navigation container
+.nav {
+  display: none;
+
+  @include md {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+  }
+}
+
+/// Navigation link styling
+.nav-link {
+  color: rgba($color-neutral-0, 0.9);
+  text-decoration: none;
+  padding: $space-2 $space-3;
+  border-radius: $radius-md;
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  transition: background-color $transition-fast, color $transition-fast;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: rgba($color-neutral-0, 0.1);
+    color: $color-neutral-0;
+  }
+
+  &:active {
+    background-color: rgba($color-neutral-0, 0.15);
+  }
+
+  @include focus-visible;
+
+  // Active state for current route
+  &--active,
+  &.active {
+    background-color: rgba($color-neutral-0, 0.2);
+    font-weight: $font-weight-medium;
+    color: $color-neutral-0;
+  }
+
+  // Disabled state
+  &--disabled,
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+
+// ===================
+// USER MENU
+// ===================
+
+/// User menu container in header
+.user-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/// User menu trigger button
+.user-menu__trigger {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2;
+  background: rgba($color-neutral-0, 0.1);
+  border: none;
+  border-radius: $radius-full;
+  color: $text-inverse;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background: rgba($color-neutral-0, 0.2);
+  }
+
+  @include focus-visible;
+}
+
+/// User avatar
+.user-menu__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-full;
+  object-fit: cover;
+  background: rgba($color-neutral-0, 0.2);
+
+  @include mobile-only {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/// Avatar placeholder with initials
+.user-menu__avatar-placeholder {
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-full;
+  background: rgba($color-neutral-0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $text-inverse;
+
+  @include mobile-only {
+    width: 32px;
+    height: 32px;
+    font-size: $font-size-xs;
+  }
+}
+
+/// User name display
+.user-menu__name {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @include mobile-only {
+    display: none;
+  }
+}
+
+/// Dropdown arrow icon
+.user-menu__arrow {
+  width: 16px;
+  height: 16px;
+  transition: transform $transition-fast;
+
+  .user-menu__trigger[aria-expanded="true"] & {
+    transform: rotate(180deg);
+  }
+
+  @include mobile-only {
+    display: none;
+  }
+}
+
+/// User menu dropdown panel
+.user-menu__dropdown {
+  position: absolute;
+  top: calc(100% + $space-2);
+  right: 0;
+  min-width: 200px;
+  background: $bg-surface;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-lg;
+  padding: $space-2;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-$space-2);
+  transition: all $transition-fast;
+  z-index: $z-dropdown;
+
+  // Open state
+  &--open,
+  .user-menu__trigger[aria-expanded="true"] + & {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+/// User info section in dropdown
+.user-menu__info {
+  padding: $space-3;
+  border-bottom: $border-width-default solid $border-default;
+  margin-bottom: $space-2;
+}
+
+/// User email in dropdown
+.user-menu__email {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/// Dropdown menu item
+.user-menu__item {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  width: 100%;
+  padding: $space-3;
+  background: none;
+  border: none;
+  border-radius: $radius-md;
+  color: $text-primary;
+  font-size: $font-size-base;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background: $bg-hover;
+  }
+
+  @include focus-visible;
+
+  // Danger variant (logout, delete, etc.)
+  &--danger {
+    color: $color-error-600;
+
+    &:hover {
+      background: $color-error-50;
+    }
+  }
+}
+
+/// Icon in dropdown item
+.user-menu__item-icon {
+  width: 20px;
+  height: 20px;
+  opacity: 0.7;
+}
+
+/// Divider between dropdown sections
+.user-menu__divider {
+  height: $border-width-default;
+  background: $border-default;
+  margin: $space-2 0;
+}
+
+
+// ===================
+// MOBILE MENU TOGGLE
+// ===================
+
+/// Hamburger menu button for mobile
+.menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  border-radius: $radius-md;
+  color: $text-inverse;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background: rgba($color-neutral-0, 0.1);
+  }
+
+  @include focus-visible;
+
+  // Hide on larger screens
+  @include md {
+    display: none;
+  }
+}
+
+/// Hamburger icon
+.menu-toggle__icon {
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+
+/// Hamburger bars
+.menu-toggle__bar {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: currentColor;
+  border-radius: $radius-full;
+  transition: all $transition-fast;
+
+  &:nth-child(1) {
+    top: 4px;
+  }
+
+  &:nth-child(2) {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &:nth-child(3) {
+    bottom: 4px;
+  }
+
+  // Open state animation
+  .menu-toggle[aria-expanded="true"] & {
+    &:nth-child(1) {
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    &:nth-child(2) {
+      opacity: 0;
+    }
+
+    &:nth-child(3) {
+      bottom: 50%;
+      transform: translateY(50%) rotate(-45deg);
+    }
+  }
+}
+
+
+// ===================
+// MOBILE DRAWER
+// ===================
+
+/// Backdrop overlay for mobile drawer
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba($color-neutral-900, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transition: all $transition-normal;
+  z-index: $z-modal-backdrop;
+
+  &--open {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/// Mobile navigation drawer
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  max-width: 85vw;
+  height: 100vh;
+  background: $bg-surface;
+  box-shadow: $shadow-xl;
+  transform: translateX(-100%);
+  transition: transform $transition-normal;
+  z-index: $z-modal;
+  overflow-y: auto;
+
+  &--open {
+    transform: translateX(0);
+  }
+
+  // Right-side variant
+  &--right {
+    left: auto;
+    right: 0;
+    transform: translateX(100%);
+
+    &.drawer--open {
+      transform: translateX(0);
+    }
+  }
+}
+
+/// Drawer header
+.drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $space-4;
+  border-bottom: $border-width-default solid $border-default;
+  background: $gradient-primary;
+  color: $text-inverse;
+}
+
+/// Drawer brand
+.drawer__brand {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+}
+
+/// Drawer close button
+.drawer__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba($color-neutral-0, 0.1);
+  border: none;
+  border-radius: $radius-md;
+  color: $text-inverse;
+  cursor: pointer;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background: rgba($color-neutral-0, 0.2);
+  }
+
+  @include focus-visible;
+}
+
+/// Drawer navigation section
+.drawer__nav {
+  padding: $space-4;
+}
+
+/// Drawer navigation link
+.drawer__link {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  color: $text-primary;
+  text-decoration: none;
+  font-size: $font-size-base;
+  border-radius: $radius-md;
+  transition: background-color $transition-fast;
+
+  &:hover {
+    background: $bg-hover;
+  }
+
+  @include focus-visible;
+
+  &--active,
+  &.active {
+    background: $color-primary-50;
+    color: $color-primary-600;
+    font-weight: $font-weight-medium;
+  }
+}
+
+/// Drawer link icon
+.drawer__link-icon {
+  width: 20px;
+  height: 20px;
+  opacity: 0.7;
+
+  .drawer__link--active &,
+  .drawer__link.active & {
+    opacity: 1;
+  }
+}
+
+/// Drawer section divider
+.drawer__divider {
+  height: $border-width-default;
+  background: $border-default;
+  margin: $space-4 0;
+}
+
+/// Drawer section title
+.drawer__section-title {
+  padding: $space-2 $space-4;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/// Drawer footer (user info/logout)
+.drawer__footer {
+  padding: $space-4;
+  border-top: $border-width-default solid $border-default;
+  margin-top: auto;
+}
+
+/// User section in drawer
+.drawer__user {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-3;
+  background: $bg-muted;
+  border-radius: $radius-lg;
+  margin-bottom: $space-4;
+}
+
+/// User avatar in drawer
+.drawer__user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-full;
+  object-fit: cover;
+  background: $color-neutral-300;
+}
+
+/// User info in drawer
+.drawer__user-info {
+  flex: 1;
+  min-width: 0; // For text truncation
+}
+
+/// User name in drawer
+.drawer__user-name {
+  font-weight: $font-weight-medium;
+  color: $text-primary;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/// User email in drawer
+.drawer__user-email {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+// ===================
+// BREADCRUMBS
+// ===================
+
+/// Breadcrumb navigation
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-3 0;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/// Breadcrumb item
+.breadcrumbs__item {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+
+  // Separator
+  &:not(:last-child)::after {
+    content: "/";
+    color: $text-muted;
+  }
+}
+
+/// Breadcrumb link
+.breadcrumbs__link {
+  color: $text-secondary;
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $text-link;
+  }
+
+  @include focus-visible;
+}
+
+/// Current breadcrumb (not a link)
+.breadcrumbs__current {
+  color: $text-primary;
+  font-weight: $font-weight-medium;
+}

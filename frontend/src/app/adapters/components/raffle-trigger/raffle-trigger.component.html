@@ -11,7 +11,7 @@
 
   <!-- Raffle Already Completed -->
   <div class="raffle-completed" *ngIf="isRaffleCompleted && state === 'idle'">
-    <span class="completed-badge">✓ Raffle Completed</span>
+    <span class="completed-badge"><span aria-hidden="true">✓</span> Raffle Completed</span>
     <span class="completed-info">Assignments have been made</span>
   </div>
 
@@ -22,8 +22,9 @@
       [disabled]="isButtonDisabled"
       (click)="showConfirmation()"
       data-testid="raffle-trigger-btn"
+      aria-label="Perform Secret Santa raffle"
     >
-      🎲 Perform Raffle
+      <span aria-hidden="true">🎲</span> Perform Raffle
     </button>
 
     <p class="warning-text" *ngIf="!hasEnoughMembers">
@@ -32,10 +33,16 @@
   </ng-container>
 
   <!-- Confirmation Dialog -->
-  <div class="confirmation-dialog" *ngIf="state === 'confirm'">
+  <div 
+    class="confirmation-dialog" 
+    *ngIf="state === 'confirm'"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="confirm-raffle-title"
+    aria-describedby="confirm-raffle-desc">
     <div class="dialog-content">
-      <h4>⚠️ Confirm Raffle</h4>
-      <p>
+      <h4 id="confirm-raffle-title"><span aria-hidden="true">⚠️</span> Confirm Raffle</h4>
+      <p id="confirm-raffle-desc">
         You are about to perform the Secret Santa raffle for
         <strong>{{ memberCount }}</strong> members.
       </p>
@@ -60,14 +67,14 @@
   </div>
 
   <!-- Processing State -->
-  <div class="processing" *ngIf="state === 'processing'">
-    <div class="spinner"></div>
+  <div class="processing" *ngIf="state === 'processing'" aria-live="polite" aria-busy="true">
+    <div class="spinner" aria-hidden="true"></div>
     <span>Performing raffle...</span>
   </div>
 
   <!-- Success State -->
-  <div class="success-message" *ngIf="state === 'success'">
-    <span class="success-icon">🎉</span>
+  <div class="success-message" *ngIf="state === 'success'" role="status" aria-live="polite">
+    <span class="success-icon" aria-hidden="true">🎉</span>
     <h4>Raffle Complete!</h4>
     <p>
       {{ raffleResult?.assignmentCount }} assignments have been made.
@@ -78,8 +85,8 @@
   </div>
 
   <!-- Error State -->
-  <div class="error-message" *ngIf="state === 'error'">
-    <span class="error-icon">❌</span>
+  <div class="error-message" *ngIf="state === 'error'" role="alert">
+    <span class="error-icon" aria-hidden="true">❌</span>
     <p>{{ errorMessage }}</p>
     <button
       class="btn btn-secondary"

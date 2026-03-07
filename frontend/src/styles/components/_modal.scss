@@ -1,0 +1,248 @@
+// ============================================
+// MODAL COMPONENT STYLES
+// frontend/src/styles/components/_modal.scss
+// ============================================
+//
+// Styles for modal dialogs with backdrop, animations,
+// and size variants.
+//
+// Structure:
+//   .modal-backdrop
+//     .modal
+//       .modal__header
+//       .modal__body
+//       .modal__footer
+//
+// Variants:
+//   .modal--sm    (max-width: 400px)
+//   .modal--lg    (max-width: 700px)
+//
+// ============================================
+
+@use '../tokens' as *;
+
+// ===================
+// ANIMATIONS
+// ===================
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes modal-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-slide-down {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+
+// ===================
+// BACKDROP
+// ===================
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba($color-neutral-900, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-modal-backdrop;
+  animation: modal-fade-in $transition-normal forwards;
+  padding: $space-4;
+
+  // Closing state
+  &--closing {
+    animation: modal-fade-out $transition-normal forwards;
+  }
+}
+
+
+// ===================
+// MODAL CONTAINER
+// ===================
+
+.modal {
+  background-color: $color-neutral-0;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-xl;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: modal-slide-up $transition-normal forwards;
+  display: flex;
+  flex-direction: column;
+
+  // Closing state
+  &--closing {
+    animation: modal-slide-down $transition-normal forwards;
+  }
+
+  // -------------------
+  // Size Variants
+  // -------------------
+
+  &--sm {
+    max-width: 400px;
+  }
+
+  &--lg {
+    max-width: 700px;
+  }
+
+  // -------------------
+  // Modal Header
+  // -------------------
+
+  &__header {
+    padding: $space-4 $space-6;
+    border-bottom: $border-width-default solid $border-default;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin: 0;
+    line-height: $line-height-tight;
+  }
+
+  &__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: $radius-md;
+    color: $text-secondary;
+    cursor: pointer;
+    transition: background-color $transition-fast, color $transition-fast;
+
+    &:hover {
+      background-color: $bg-hover;
+      color: $text-primary;
+    }
+
+    &:focus-visible {
+      outline: $border-width-thick solid $border-focus;
+      outline-offset: 2px;
+    }
+  }
+
+  // -------------------
+  // Modal Body
+  // -------------------
+
+  &__body {
+    padding: $space-6;
+    overflow-y: auto;
+    flex: 1;
+
+    // Ensure scrollbar styling (for WebKit browsers)
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $color-neutral-100;
+      border-radius: $radius-full;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $color-neutral-300;
+      border-radius: $radius-full;
+
+      &:hover {
+        background: $color-neutral-400;
+      }
+    }
+  }
+
+  // -------------------
+  // Modal Footer
+  // -------------------
+
+  &__footer {
+    padding: $space-4 $space-6;
+    border-top: $border-width-default solid $border-default;
+    display: flex;
+    justify-content: flex-end;
+    gap: $space-3;
+    flex-shrink: 0;
+
+    // Alternative: spread buttons
+    &--spread {
+      justify-content: space-between;
+    }
+
+    // Alternative: center buttons
+    &--center {
+      justify-content: center;
+    }
+  }
+}
+
+
+// ===================
+// ACCESSIBILITY
+// ===================
+
+// Focus trap indicator (visual affordance when modal is focused)
+.modal:focus {
+  outline: none;
+}
+
+// Reduce motion preference
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop {
+    animation: none;
+  }
+
+  .modal {
+    animation: none;
+  }
+
+  .modal-backdrop--closing,
+  .modal--closing {
+    animation: none;
+  }
+}

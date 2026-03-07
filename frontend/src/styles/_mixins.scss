@@ -1,0 +1,487 @@
+// ============================================
+// MIXINS - frontend/src/styles/_mixins.scss
+// ============================================
+// Reusable SCSS mixins for responsive breakpoints,
+// accessibility states, and common utilities.
+//
+// Dependencies: _tokens.scss (must be imported first in main stylesheet)
+// ============================================
+
+@use 'tokens' as *;
+
+// ===================
+// RESPONSIVE BREAKPOINTS (Mobile-First)
+// ===================
+
+/// Small screens and up (640px+)
+/// @example
+///   .element {
+///     font-size: $font-size-sm;
+///     @include sm {
+///       font-size: $font-size-base;
+///     }
+///   }
+@mixin sm {
+  @media (min-width: $breakpoint-sm) {
+    @content;
+  }
+}
+
+/// Medium screens and up (768px+)
+/// @example
+///   .sidebar {
+///     display: none;
+///     @include md {
+///       display: block;
+///     }
+///   }
+@mixin md {
+  @media (min-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+/// Large screens and up (1024px+)
+/// @example
+///   .container {
+///     max-width: 100%;
+///     @include lg {
+///       max-width: 960px;
+///     }
+///   }
+@mixin lg {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+/// Extra large screens and up (1280px+)
+/// @example
+///   .grid {
+///     grid-template-columns: repeat(3, 1fr);
+///     @include xl {
+///       grid-template-columns: repeat(4, 1fr);
+///     }
+///   }
+@mixin xl {
+  @media (min-width: $breakpoint-xl) {
+    @content;
+  }
+}
+
+/// Extra extra large screens and up (1536px+)
+/// @example
+///   .container {
+///     max-width: 1280px;
+///     @include xxl {
+///       max-width: 1440px;
+///     }
+///   }
+@mixin xxl {
+  @media (min-width: $breakpoint-2xl) {
+    @content;
+  }
+}
+
+// ===================
+// MAX-WIDTH BREAKPOINTS (Desktop-First)
+// ===================
+
+/// Mobile only (< 640px)
+/// Use for mobile-specific overrides
+/// @example
+///   .desktop-nav {
+///     display: flex;
+///     @include mobile-only {
+///       display: none;
+///     }
+///   }
+@mixin mobile-only {
+  @media (max-width: ($breakpoint-sm - 1)) {
+    @content;
+  }
+}
+
+/// Tablet and below (< 768px)
+/// @example
+///   .sidebar {
+///     position: relative;
+///     @include tablet-down {
+///       position: fixed;
+///     }
+///   }
+@mixin tablet-down {
+  @media (max-width: ($breakpoint-md - 1)) {
+    @content;
+  }
+}
+
+/// Desktop small and below (< 1024px)
+/// @example
+///   .wide-content {
+///     width: 100%;
+///     @include desktop-down {
+///       width: auto;
+///     }
+///   }
+@mixin desktop-down {
+  @media (max-width: ($breakpoint-lg - 1)) {
+    @content;
+  }
+}
+
+// ===================
+// ACCESSIBILITY MIXINS
+// ===================
+
+/// Focus visible state for keyboard navigation
+/// Provides clear visual indicator for keyboard users while
+/// not showing on mouse clicks (uses :focus-visible)
+/// @example
+///   .btn {
+///     @include focus-visible;
+///   }
+@mixin focus-visible {
+  &:focus-visible {
+    outline: 2px solid $border-focus;
+    outline-offset: 2px;
+    box-shadow: $shadow-focus;
+  }
+}
+
+/// Focus visible with custom color (for error states, etc.)
+/// @param {Color} $color - The focus ring color
+/// @example
+///   .input--error {
+///     @include focus-visible-custom($color-error-500);
+///   }
+@mixin focus-visible-custom($color) {
+  &:focus-visible {
+    outline: 2px solid $color;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba($color, 0.2);
+  }
+}
+
+/// Visually hidden content for screen readers only
+/// Makes content invisible but accessible to assistive technology
+/// @example
+///   .sr-only {
+///     @include visually-hidden;
+///   }
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// ===================
+// INTERACTIVE STATES
+// ===================
+
+/// Interactive states for clickable elements
+/// Handles hover, active, disabled states and focus visibility
+/// @param {Color} $bg-color - Base background color
+/// @param {Percentage} $hover-darken [8%] - Amount to darken on hover
+/// @example
+///   .card--clickable {
+///     @include interactive-states($bg-surface, 5%);
+///   }
+@mixin interactive-states($bg-color, $hover-darken: 8%) {
+  background-color: $bg-color;
+  transition: background-color $transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: darken($bg-color, $hover-darken);
+  }
+
+  &:active:not(:disabled) {
+    background-color: darken($bg-color, $hover-darken + 4%);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @include focus-visible;
+}
+
+/// Interactive states with lighten effect (for dark backgrounds)
+/// @param {Color} $bg-color - Base background color
+/// @param {Percentage} $hover-lighten [8%] - Amount to lighten on hover
+/// @example
+///   .dark-card {
+///     @include interactive-states-light($color-neutral-800, 10%);
+///   }
+@mixin interactive-states-light($bg-color, $hover-lighten: 8%) {
+  background-color: $bg-color;
+  transition: background-color $transition-fast;
+
+  &:hover:not(:disabled) {
+    background-color: lighten($bg-color, $hover-lighten);
+  }
+
+  &:active:not(:disabled) {
+    background-color: lighten($bg-color, $hover-lighten + 4%);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @include focus-visible;
+}
+
+// ===================
+// TEXT UTILITIES
+// ===================
+
+/// Truncate text with ellipsis (single line)
+/// @example
+///   .card-title {
+///     @include truncate;
+///   }
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/// Multi-line text truncation with ellipsis
+/// @param {Number} $lines - Number of lines to show before truncating
+/// @example
+///   .card-description {
+///     @include truncate-lines(3);
+///   }
+@mixin truncate-lines($lines) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// ===================
+// LAYOUT UTILITIES
+// ===================
+
+/// Flexbox center alignment
+/// @example
+///   .centered-content {
+///     @include flex-center;
+///   }
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/// Flexbox vertical center (cross-axis)
+/// @example
+///   .row {
+///     @include flex-align-center;
+///   }
+@mixin flex-align-center {
+  display: flex;
+  align-items: center;
+}
+
+/// Flexbox space between with vertical centering
+/// @example
+///   .card-header {
+///     @include flex-between;
+///   }
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/// Flexbox column layout
+/// @example
+///   .form-group {
+///     @include flex-column;
+///   }
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/// Absolute positioning to fill parent
+/// @example
+///   .overlay {
+///     @include absolute-fill;
+///   }
+@mixin absolute-fill {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+/// Fixed positioning to fill viewport
+/// @example
+///   .modal-backdrop {
+///     @include fixed-fill;
+///   }
+@mixin fixed-fill {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+// ===================
+// FORM UTILITIES
+// ===================
+
+/// Base input styling reset
+/// @example
+///   .custom-input {
+///     @include input-reset;
+///   }
+@mixin input-reset {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  outline: none;
+
+  &::-webkit-search-decoration,
+  &::-webkit-search-cancel-button {
+    display: none;
+  }
+}
+
+/// Button reset - removes default browser styling
+/// @example
+///   .icon-btn {
+///     @include button-reset;
+///   }
+@mixin button-reset {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+// ===================
+// ANIMATION UTILITIES
+// ===================
+
+/// Smooth transition for multiple properties
+/// @param {List} $properties - Properties to transition
+/// @param {Time} $duration [$transition-normal] - Duration of transition
+/// @example
+///   .btn {
+///     @include smooth-transition(background-color, transform);
+///   }
+@mixin smooth-transition($properties...) {
+  $transitions: ();
+  @each $prop in $properties {
+    $transitions: append($transitions, $prop $transition-normal, comma);
+  }
+  transition: $transitions;
+}
+
+/// Fade in animation
+/// @param {Time} $duration [300ms] - Animation duration
+/// @example
+///   .modal {
+///     @include fade-in(200ms);
+///   }
+@mixin fade-in($duration: 300ms) {
+  animation: fadeIn $duration ease forwards;
+}
+
+/// Slide up animation
+/// @param {Time} $duration [300ms] - Animation duration
+/// @param {Length} $distance [10px] - Distance to slide
+/// @example
+///   .toast {
+///     @include slide-up(200ms, 20px);
+///   }
+@mixin slide-up($duration: 300ms, $distance: 10px) {
+  animation: slideUp $duration ease forwards;
+
+  @at-root {
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY($distance);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+// ===================
+// SCROLLBAR STYLING
+// ===================
+
+/// Custom scrollbar styling (webkit browsers)
+/// @param {Color} $thumb-color [$color-neutral-300] - Scrollbar thumb color
+/// @param {Color} $track-color [$color-neutral-100] - Scrollbar track color
+/// @example
+///   .scrollable-area {
+///     @include custom-scrollbar($color-primary-300);
+///   }
+@mixin custom-scrollbar($thumb-color: $color-neutral-300, $track-color: $color-neutral-100) {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $track-color;
+    border-radius: $radius-full;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $thumb-color;
+    border-radius: $radius-full;
+
+    &:hover {
+      background: darken($thumb-color, 10%);
+    }
+  }
+
+  // Firefox
+  scrollbar-width: thin;
+  scrollbar-color: $thumb-color $track-color;
+}
+
+/// Hide scrollbar while maintaining scroll functionality
+/// @example
+///   .horizontal-scroll {
+///     @include hide-scrollbar;
+///     overflow-x: auto;
+///   }
+@mixin hide-scrollbar {
+  -ms-overflow-style: none; // IE and Edge
+  scrollbar-width: none; // Firefox
+
+  &::-webkit-scrollbar {
+    display: none; // Chrome, Safari, Opera
+  }
+}

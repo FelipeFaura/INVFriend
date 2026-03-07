@@ -1,0 +1,293 @@
+// ============================================
+// DESIGN TOKENS
+// INVFriend Design System
+// ============================================
+//
+// This file contains all design tokens used across the application.
+// These tokens define the visual foundation: colors, typography,
+// spacing, shadows, and other design primitives.
+//
+// DO NOT add component-specific styles here.
+// This is for design system primitives only.
+// ============================================
+
+
+// ===================
+// COLOR PALETTE
+// ===================
+
+// Primary - Brand gradient (keeping established identity)
+// Base: #667eea (blue-indigo)
+$color-primary-50: #f0f2ff;
+$color-primary-100: #e0e5ff;
+$color-primary-200: #c7ceff;
+$color-primary-300: #a3adff;
+$color-primary-400: #8090f7;
+$color-primary-500: #667eea; // Main primary
+$color-primary-600: #5568d4;
+$color-primary-700: #4553b8;
+$color-primary-800: #3a4599;
+$color-primary-900: #333c7a;
+
+// Secondary - Purple accent (from gradient end)
+// Base: #764ba2 (purple)
+$color-secondary-50: #faf5ff;
+$color-secondary-100: #f3e8ff;
+$color-secondary-200: #e9d5ff;
+$color-secondary-300: #d8b4fe;
+$color-secondary-400: #a855f7;
+$color-secondary-500: #764ba2; // Main secondary
+$color-secondary-600: #6b4190;
+$color-secondary-700: #5a367a;
+$color-secondary-800: #4a2d64;
+$color-secondary-900: #3d2653;
+
+// Brand Gradient
+$gradient-primary: linear-gradient(
+  135deg,
+  $color-primary-500 0%,
+  $color-secondary-500 100%
+);
+$gradient-primary-hover: linear-gradient(
+  135deg,
+  $color-primary-600 0%,
+  $color-secondary-600 100%
+);
+
+// -------------------
+// Semantic Colors
+// -------------------
+
+// Success (green)
+$color-success-50: #f0fdf4;
+$color-success-100: #dcfce7;
+$color-success-200: #bbf7d0;
+$color-success-300: #86efac;
+$color-success-400: #4ade80;
+$color-success-500: #22c55e; // Main success
+$color-success-600: #16a34a;
+$color-success-700: #15803d;
+$color-success-800: #166534;
+$color-success-900: #14532d;
+
+// Warning (amber/orange)
+$color-warning-50: #fffbeb;
+$color-warning-100: #fef3c7;
+$color-warning-200: #fde68a;
+$color-warning-300: #fcd34d;
+$color-warning-400: #fbbf24;
+$color-warning-500: #f59e0b; // Main warning
+$color-warning-600: #d97706;
+$color-warning-700: #b45309;
+$color-warning-800: #92400e;
+$color-warning-900: #78350f;
+
+// Error (red)
+$color-error-50: #fef2f2;
+$color-error-100: #fee2e2;
+$color-error-200: #fecaca;
+$color-error-300: #fca5a5;
+$color-error-400: #f87171;
+$color-error-500: #ef4444; // Main error
+$color-error-600: #dc2626;
+$color-error-700: #b91c1c;
+$color-error-800: #991b1b;
+$color-error-900: #7f1d1d;
+
+// Info (blue)
+$color-info-50: #eff6ff;
+$color-info-100: #dbeafe;
+$color-info-200: #bfdbfe;
+$color-info-300: #93c5fd;
+$color-info-400: #60a5fa;
+$color-info-500: #3b82f6; // Main info
+$color-info-600: #2563eb;
+$color-info-700: #1d4ed8;
+$color-info-800: #1e40af;
+$color-info-900: #1e3a8a;
+
+// -------------------
+// Neutral Colors
+// -------------------
+
+$color-neutral-0: #ffffff;
+$color-neutral-50: #f9fafb;
+$color-neutral-100: #f3f4f6;
+$color-neutral-200: #e5e7eb;
+$color-neutral-300: #d1d5db;
+$color-neutral-400: #9ca3af;
+$color-neutral-500: #6b7280;
+$color-neutral-600: #4b5563;
+$color-neutral-700: #374151;
+$color-neutral-800: #1f2937;
+$color-neutral-900: #111827;
+
+
+// ===================
+// SEMANTIC ALIASES
+// ===================
+
+// Text colors
+$text-primary: $color-neutral-800;
+$text-secondary: $color-neutral-600;
+$text-muted: $color-neutral-400;
+$text-inverse: $color-neutral-0;
+$text-link: $color-primary-500;
+$text-link-hover: $color-primary-600;
+
+// Background colors
+$bg-page: $color-neutral-50;
+$bg-surface: $color-neutral-0;
+$bg-muted: $color-neutral-100;
+$bg-hover: $color-neutral-100;
+
+// Border colors
+$border-default: $color-neutral-200;
+$border-strong: $color-neutral-300;
+$border-focus: $color-primary-500;
+
+
+// ===================
+// TYPOGRAPHY
+// ===================
+
+// Font families
+$font-family-base:
+  "Inter",
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  Roboto,
+  Oxygen,
+  Ubuntu,
+  Cantarell,
+  "Open Sans",
+  "Helvetica Neue",
+  sans-serif;
+
+$font-family-mono:
+  "Fira Code",
+  "JetBrains Mono",
+  Consolas,
+  Monaco,
+  "Andale Mono",
+  monospace;
+
+// Font sizes (based on 16px = 1rem)
+$font-size-xs: 0.75rem;     // 12px
+$font-size-sm: 0.875rem;    // 14px
+$font-size-base: 1rem;      // 16px
+$font-size-lg: 1.125rem;    // 18px
+$font-size-xl: 1.25rem;     // 20px
+$font-size-2xl: 1.5rem;     // 24px
+$font-size-3xl: 1.875rem;   // 30px
+$font-size-4xl: 2.25rem;    // 36px
+
+// Font weights
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Line heights
+$line-height-tight: 1.25;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+
+
+// ===================
+// SPACING
+// ===================
+
+// Spacing scale (rem-based, 4px increments)
+$space-0: 0;
+$space-1: 0.25rem;   // 4px
+$space-2: 0.5rem;    // 8px
+$space-3: 0.75rem;   // 12px
+$space-4: 1rem;      // 16px
+$space-5: 1.25rem;   // 20px
+$space-6: 1.5rem;    // 24px
+$space-8: 2rem;      // 32px
+$space-10: 2.5rem;   // 40px
+$space-12: 3rem;     // 48px
+$space-16: 4rem;     // 64px
+
+
+// ===================
+// BORDERS & RADIUS
+// ===================
+
+// Border widths
+$border-width-default: 1px;
+$border-width-thick: 2px;
+
+// Border radius
+$radius-none: 0;
+$radius-sm: 0.25rem;   // 4px
+$radius-md: 0.5rem;    // 8px
+$radius-lg: 0.75rem;   // 12px
+$radius-xl: 1rem;      // 16px
+$radius-2xl: 1.5rem;   // 24px
+$radius-full: 9999px;  // pill shape / circular
+
+
+// ===================
+// SHADOWS
+// ===================
+
+$shadow-none: none;
+
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+$shadow-md:
+  0 4px 6px -1px rgba(0, 0, 0, 0.1),
+  0 2px 4px -2px rgba(0, 0, 0, 0.1);
+
+$shadow-lg:
+  0 10px 15px -3px rgba(0, 0, 0, 0.1),
+  0 4px 6px -4px rgba(0, 0, 0, 0.1);
+
+$shadow-xl:
+  0 20px 25px -5px rgba(0, 0, 0, 0.1),
+  0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+// Focus ring shadows (for accessibility)
+$shadow-focus: 0 0 0 3px rgba($color-primary-500, 0.2);
+$shadow-focus-error: 0 0 0 3px rgba($color-error-500, 0.2);
+
+
+// ===================
+// BREAKPOINTS
+// ===================
+
+// Mobile-first breakpoints
+$breakpoint-sm: 640px;   // Small devices (landscape phones)
+$breakpoint-md: 768px;   // Medium devices (tablets)
+$breakpoint-lg: 1024px;  // Large devices (desktops)
+$breakpoint-xl: 1280px;  // Extra large devices (large desktops)
+$breakpoint-2xl: 1536px; // 2X large devices (wide screens)
+
+
+// ===================
+// Z-INDEX SCALE
+// ===================
+
+// Layering system for stacking contexts
+$z-dropdown: 100;
+$z-sticky: 200;
+$z-fixed: 300;
+$z-modal-backdrop: 400;
+$z-modal: 500;
+$z-popover: 600;
+$z-tooltip: 700;
+$z-notification: 800;
+
+
+// ===================
+// TRANSITIONS
+// ===================
+
+// Timing for animations and transitions
+$transition-fast: 150ms ease;
+$transition-normal: 200ms ease;
+$transition-slow: 300ms ease;

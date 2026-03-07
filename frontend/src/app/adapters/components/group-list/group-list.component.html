@@ -1,20 +1,23 @@
-<div class="group-list-container">
-  <!-- Header -->
-  <div class="header">
+<div class="page-container">
+  <!-- Page Header -->
+  <header class="page-header">
     <h1>My Groups</h1>
     <button 
-      class="btn btn-primary" 
+      class="btn btn--primary" 
       (click)="navigateToCreate()"
-      data-testid="create-group-btn">
+      data-testid="create-group-btn"
+      aria-label="Create a new group">
       + Create Group
     </button>
-  </div>
+  </header>
 
   <!-- Search -->
   <div class="search-container">
+    <label for="group-search" class="sr-only">Search groups</label>
     <input
+      id="group-search"
       type="text"
-      class="search-input"
+      class="form-input"
       placeholder="Search groups..."
       [value]="searchTerm"
       (input)="onSearchChange($any($event.target).value)"
@@ -23,15 +26,17 @@
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="isLoading" class="loading-container" data-testid="loading-spinner">
-    <div class="spinner"></div>
-    <p>Loading groups...</p>
+  <div *ngIf="isLoading" class="loading-container" data-testid="loading-spinner" aria-busy="true">
+    <div class="spinner spinner--lg"></div>
+    <p class="loading-text">Loading groups...</p>
   </div>
 
   <!-- Error State -->
-  <div *ngIf="error && !isLoading" class="error-container" data-testid="error-message">
-    <p class="error-text">{{ error }}</p>
-    <button class="btn btn-secondary" (click)="loadGroups()">Try Again</button>
+  <div *ngIf="error && !isLoading" class="alert alert--error" role="alert" data-testid="error-message">
+    <div class="alert__content">
+      <p>{{ error }}</p>
+      <button class="btn btn--secondary" (click)="loadGroups()">Try Again</button>
+    </div>
   </div>
 
   <!-- Empty State -->
@@ -39,49 +44,61 @@
     *ngIf="!isLoading && !error && groups.length === 0" 
     class="empty-state"
     data-testid="empty-state">
-    <div class="empty-icon">📋</div>
-    <h2>No Groups Yet</h2>
-    <p>Create your first Secret Santa group to get started!</p>
-    <button class="btn btn-primary" (click)="navigateToCreate()">
-      Create Your First Group
-    </button>
+    <span class="empty-state__icon" aria-hidden="true">📭</span>
+    <h2 class="empty-state__title">No Groups Yet</h2>
+    <p class="empty-state__description">Create your first Secret Santa group to get started!</p>
+    <div class="empty-state__actions">
+      <button class="btn btn--primary" (click)="navigateToCreate()">
+        Create Your First Group
+      </button>
+    </div>
   </div>
 
   <!-- No Results State -->
   <div 
     *ngIf="!isLoading && !error && groups.length > 0 && filteredGroups.length === 0" 
-    class="no-results"
+    class="empty-state empty-state--compact"
     data-testid="no-results">
-    <p>No groups match "{{ searchTerm }}"</p>
+    <span class="empty-state__icon" aria-hidden="true">🔍</span>
+    <p class="empty-state__description">No groups match "{{ searchTerm }}"</p>
   </div>
 
-  <!-- Group List -->
+  <!-- Group Cards Grid -->
   <div 
     *ngIf="!isLoading && !error && filteredGroups.length > 0" 
-    class="groups-grid"
+    class="card-grid"
     data-testid="groups-list">
-    <div
+    <article
       *ngFor="let group of filteredGroups"
-      class="group-card"
+      class="card card--interactive"
       (click)="navigateToGroup(group.id)"
-      [attr.data-testid]="'group-card-' + group.id">
+      (keydown.enter)="navigateToGroup(group.id)"
+      [attr.tabindex]="0"
+      [attr.data-testid]="'group-card-' + group.id"
+      [attr.aria-label]="'Group: ' + group.name + ', ' + group.memberCount + ' members, ' + getStatusLabel(group.raffleStatus)">
       
-      <div class="group-header">
+      <header class="card__header">
         <span *ngIf="group.isAdmin" class="admin-badge" title="You are the admin">
-          👑
+          <span aria-hidden="true">👑</span>
+          <span class="sr-only">Admin</span>
         </span>
-        <h3 class="group-name">{{ group.name }}</h3>
-      </div>
+        <h3 class="card__title">{{ group.name }}</h3>
+      </header>
       
-      <div class="group-info">
-        <span class="member-count">
-          {{ group.memberCount }} {{ group.memberCount === 1 ? 'member' : 'members' }}
-        </span>
-        <span class="separator">•</span>
-        <span [class]="getStatusClass(group.raffleStatus)">
-          {{ getStatusLabel(group.raffleStatus) }}
-        </span>
+      <div class="card__body">
+        <div class="group-meta">
+          <span class="group-meta__members">
+            {{ group.memberCount }} {{ group.memberCount === 1 ? 'member' : 'members' }}
+          </span>
+          <span class="group-meta__separator" aria-hidden="true">•</span>
+          <span 
+            class="badge" 
+            [class.badge--success]="group.raffleStatus === 'completed'"
+            [class.badge--warning]="group.raffleStatus === 'pending'">
+            {{ getStatusLabel(group.raffleStatus) }}
+          </span>
+        </div>
       </div>
-    </div>
+    </article>
   </div>
 </div>

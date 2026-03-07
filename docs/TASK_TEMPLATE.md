@@ -74,6 +74,31 @@ _(Filled by sub-agent upon completion)_
 
 ---
 
+## 📈 Session Metrics
+
+_(Filled by sub-agent upon completion - report what's accessible)_
+
+| Metric                 | Value                                       |
+| ---------------------- | ------------------------------------------- |
+| **Model**              | [Claude Sonnet 4 / Claude Opus 4 / Unknown] |
+| **Tokens In**          | [number or "N/A if unavailable"]            |
+| **Tokens Out**         | [number or "N/A if unavailable"]            |
+| **Context Window %**   | [estimated % used or "N/A"]                 |
+| **Duration**           | [minutes from start to completion]          |
+| **Tool Calls**         | [number of tool invocations]                |
+| **Errors/Retries**     | [count and brief description]               |
+| **User Interventions** | [Yes/No - reason if yes]                    |
+| **Files Modified**     | [count]                                     |
+| **Lines Changed**      | [+added / -removed]                         |
+| **Difficulty (1-5)**   | [1=trivial, 5=very complex]                 |
+
+**Cost Estimate:** ~$X.XX _(based on token usage if available)_
+
+**Metrics Notes:**
+[Any issues obtaining metrics, unusual patterns, or efficiency observations]
+
+---
+
 ## ⚠️ External Issues Detected
 
 _(Filled by sub-agent if failures outside scope are found)_

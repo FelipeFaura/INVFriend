@@ -337,7 +337,42 @@ modelDescription: |
 
 ---
 
-## 📖 Known Patterns
+## � Session Metrics Reporting
+
+Upon completing any task, you MUST fill the **Session Metrics** section in the task document.
+
+### Required Metrics
+
+| Metric                 | How to Obtain                           | Notes                             |
+| ---------------------- | --------------------------------------- | --------------------------------- |
+| **Model**              | State which model you are (Sonnet/Opus) | If unknown, write "Unknown"       |
+| **Tokens In/Out**      | Check session info if available         | Write "N/A" if not accessible     |
+| **Context Window %**   | Estimate based on conversation length   | Rough estimate acceptable         |
+| **Duration**           | Note start/end time of task             | Minutes from first to last action |
+| **Tool Calls**         | Count tool invocations made             | Approximate count                 |
+| **Errors/Retries**     | Count failed attempts                   | Include brief reason              |
+| **User Interventions** | Note if user had to clarify/correct     | Yes/No with reason                |
+| **Files Modified**     | Count from Results section              | Exact count                       |
+| **Lines Changed**      | Estimate +/- lines                      | Approximate                       |
+| **Difficulty (1-5)**   | Self-assessment                         | 1=trivial, 5=very complex         |
+
+### Why This Matters
+
+- `@project-lead` aggregates metrics to optimize AI usage
+- Helps determine which model to use for which task types
+- Identifies inefficiencies and improvement opportunities
+
+### If Metrics Unavailable
+
+If you cannot access certain metrics (e.g., token counts), explicitly state:
+
+```
+**Metrics Notes:** Token counts not accessible from this session. Duration estimated from timestamps.
+```
+
+---
+
+## �📖 Known Patterns
 
 <!-- Add patterns discovered during work. Git merge consolidates duplicates across developers. -->
 
@@ -386,6 +421,31 @@ modelDescription: |
 - **Problem**: Content shift when data loads
 - **Solution**: Skeleton placeholders matching content dimensions
 - **Example**: See `frontend/src/styles/_skeleton.scss`
+
+### Pattern: Proactive Accessibility
+
+- **Problem**: Accessibility often deprioritized or forgotten
+- **Solution**: Add basic a11y improvements even when not explicitly requested (aria-hidden on decorative icons, aria-labels on icon-only buttons, semantic HTML)
+- **Example**: During UI Design System migration, all 6 component tasks added ARIA attributes proactively
+- **Learned from**: PLAN_UI_DESIGN_SYSTEM (March 2026)
+
+### Pattern: Import Design Tokens
+
+- **Problem**: Component styles drift from design system over time
+- **Solution**: Always `@use` design tokens at component level; never hardcode colors, spacing, or typography
+- **Example**:
+
+```scss
+@use "../../../../styles/tokens" as *;
+
+.my-component {
+  padding: $space-4; // ✅ Use token
+  color: $text-primary; // ✅ Use token
+  // padding: 16px;            // ❌ Never hardcode
+}
+```
+
+- **Learned from**: UI Design System migration achieved 57% SCSS reduction
 
 ---
 

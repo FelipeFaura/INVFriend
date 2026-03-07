@@ -1,0 +1,215 @@
+// ============================================
+// CARDS - frontend/src/styles/components/_cards.scss
+// ============================================
+// Reusable card components for displaying content in
+// contained, elevated surfaces with optional interactivity.
+//
+// Dependencies: _tokens.scss
+// ============================================
+
+@use '../tokens' as *;
+
+// ===================
+// BASE CARD
+// ===================
+
+/// Base card component with sections for header, body, and footer.
+/// Provides a clean, elevated surface for content grouping.
+///
+/// @example
+///   <article class="card">
+///     <header class="card__header">Title</header>
+///     <div class="card__body">Content</div>
+///     <footer class="card__footer">Actions</footer>
+///   </article>
+.card {
+  background-color: $bg-surface;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  overflow: hidden;
+
+  // -------------------
+  // Card Sections
+  // -------------------
+
+  /// Card header - typically contains title and actions
+  &__header {
+    padding: $space-4 $space-6;
+    border-bottom: $border-width-default solid $border-default;
+  }
+
+  /// Card body - main content area
+  &__body {
+    padding: $space-6;
+  }
+
+  /// Card footer - typically contains actions or metadata
+  &__footer {
+    padding: $space-4 $space-6;
+    border-top: $border-width-default solid $border-default;
+    background-color: $bg-muted;
+  }
+
+  // -------------------
+  // Card Title (optional helper)
+  // -------------------
+
+  /// Title element within card header
+  &__title {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    line-height: $line-height-tight;
+  }
+
+  // ===================
+  // VARIANTS
+  // ===================
+
+  // -------------------
+  // Interactive Card
+  // -------------------
+  /// Clickable card with hover lift effect.
+  /// Use for cards that navigate or trigger actions.
+  ///
+  /// @example
+  ///   <article class="card card--interactive" (click)="onCardClick()">
+  ///     ...
+  ///   </article>
+  &--interactive {
+    cursor: pointer;
+    transition:
+      transform $transition-normal,
+      box-shadow $transition-normal;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $shadow-md;
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: $shadow-sm;
+    }
+
+    // Focus state for keyboard navigation
+    &:focus-visible {
+      outline: $border-width-thick solid $border-focus;
+      outline-offset: 2px;
+      box-shadow: $shadow-focus;
+    }
+  }
+
+  // -------------------
+  // Featured Card
+  // -------------------
+  /// Highlighted card with gradient accent border.
+  /// Use to draw attention to important or promoted content.
+  ///
+  /// @example
+  ///   <article class="card card--featured">
+  ///     ...
+  ///   </article>
+  &--featured {
+    position: relative;
+    border: $border-width-thick solid transparent;
+    background:
+      linear-gradient($bg-surface, $bg-surface) padding-box,
+      $gradient-primary border-box;
+    box-shadow: $shadow-md;
+
+    // Subtle glow effect
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: $radius-lg;
+      background: $gradient-primary;
+      z-index: -1;
+      opacity: 0.15;
+      filter: blur(8px);
+    }
+  }
+
+  // ===================
+  // MODIFIERS
+  // ===================
+
+  // -------------------
+  // No Shadow
+  // -------------------
+  /// Remove card shadow for flat appearance.
+  ///
+  /// @example
+  ///   <article class="card card--no-shadow">
+  ///     ...
+  ///   </article>
+  &--no-shadow {
+    box-shadow: $shadow-none;
+  }
+
+  // -------------------
+  // Bordered
+  // -------------------
+  /// Replace shadow with border for subtle containment.
+  ///
+  /// @example
+  ///   <article class="card card--bordered">
+  ///     ...
+  ///   </article>
+  &--bordered {
+    box-shadow: $shadow-none;
+    border: $border-width-default solid $border-default;
+  }
+
+  // ===================
+  // RESPONSIVE ADJUSTMENTS
+  // ===================
+
+  // Reduced padding on mobile for space efficiency
+  @media (max-width: ($breakpoint-sm - 1)) {
+    &__header {
+      padding: $space-3 $space-4;
+    }
+
+    &__body {
+      padding: $space-4;
+    }
+
+    &__footer {
+      padding: $space-3 $space-4;
+    }
+  }
+}
+
+// ===================
+// CARD GROUP UTILITY
+// ===================
+
+/// Container for multiple cards with consistent spacing.
+///
+/// @example
+///   <div class="card-group">
+///     <article class="card">...</article>
+///     <article class="card">...</article>
+///   </div>
+.card-group {
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+/// Grid layout for card collections.
+///
+/// @example
+///   <div class="card-grid">
+///     <article class="card">...</article>
+///     <article class="card">...</article>
+///     <article class="card">...</article>
+///   </div>
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: $space-6;
+}

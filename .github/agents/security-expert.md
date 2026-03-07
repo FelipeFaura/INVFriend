@@ -552,7 +552,42 @@ modelDescription: |
 
 ---
 
-## 📖 Known Patterns
+## � Session Metrics Reporting
+
+Upon completing any audit/review, you MUST fill the **Session Metrics** section in the task document.
+
+### Required Metrics
+
+| Metric                    | How to Obtain                           | Notes                             |
+| ------------------------- | --------------------------------------- | --------------------------------- |
+| **Model**                 | State which model you are (Sonnet/Opus) | If unknown, write "Unknown"       |
+| **Tokens In/Out**         | Check session info if available         | Write "N/A" if not accessible     |
+| **Context Window %**      | Estimate based on conversation length   | Rough estimate acceptable         |
+| **Duration**              | Note start/end time of audit            | Minutes from first to last action |
+| **Tool Calls**            | Count tool invocations made             | Approximate count                 |
+| **Errors/Retries**        | Count failed attempts                   | Include brief reason              |
+| **User Interventions**    | Note if user had to clarify/correct     | Yes/No with reason                |
+| **Files Audited**         | Count of files reviewed                 | Exact count                       |
+| **Vulnerabilities Found** | Count by severity                       | Critical/High/Medium/Low          |
+| **Difficulty (1-5)**      | Self-assessment                         | 1=trivial, 5=very complex         |
+
+### Why This Matters
+
+- `@project-lead` aggregates metrics to optimize AI usage
+- Helps determine which model to use for which audit types
+- Identifies inefficiencies and improvement opportunities
+
+### If Metrics Unavailable
+
+If you cannot access certain metrics (e.g., token counts), explicitly state:
+
+```
+**Metrics Notes:** Token counts not accessible from this session. Duration estimated from timestamps.
+```
+
+---
+
+## �📖 Known Patterns
 
 <!-- Add patterns discovered during security reviews. -->
 

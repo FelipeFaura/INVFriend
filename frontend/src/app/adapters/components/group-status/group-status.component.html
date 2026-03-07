@@ -1,18 +1,18 @@
 <div class="group-status" *ngIf="group">
   <!-- Status Badge -->
-  <div class="status-badge" [ngClass]="statusClass" data-testid="status-badge">
-    <span class="status-icon">
+  <div class="status-badge" [ngClass]="statusClass" data-testid="status-badge" role="status">
+    <span class="status-icon" aria-hidden="true">
       {{ isRaffleCompleted ? '✓' : '⏳' }}
     </span>
     <span class="status-text">{{ statusLabel }}</span>
   </div>
 
   <!-- Member Progress (only shown if raffle pending) -->
-  <div class="member-progress" *ngIf="!isRaffleCompleted">
+  <div class="member-progress" *ngIf="!isRaffleCompleted" role="group" aria-label="Member progress">
     <div class="progress-label">
       <span>Members: {{ memberCount }} / {{ MIN_MEMBERS }} minimum</span>
     </div>
-    <div class="progress-bar">
+    <div class="progress-bar" role="progressbar" [attr.aria-valuenow]="memberCount" [attr.aria-valuemin]="0" [attr.aria-valuemax]="MIN_MEMBERS" [attr.aria-label]="memberCount + ' of ' + MIN_MEMBERS + ' members'">
       <div
         class="progress-fill"
         [style.width.%]="memberProgress"
@@ -21,7 +21,7 @@
       ></div>
     </div>
     <div class="progress-status" *ngIf="hasEnoughMembers">
-      ✓ Ready for raffle
+      <span aria-hidden="true">✓</span> Ready for raffle
     </div>
     <div class="progress-status warning" *ngIf="!hasEnoughMembers">
       Add {{ MIN_MEMBERS - memberCount }} more member{{ MIN_MEMBERS - memberCount > 1 ? 's' : '' }}

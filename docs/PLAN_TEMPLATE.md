@@ -76,6 +76,71 @@ Additional context, decisions made, or references:
 | ---------- | ------------------ | -------------------- |
 | YYYY-MM-DD | Plan created       | @project-lead        |
 | YYYY-MM-DD | TASK-001 completed | @angular-implementer |
+
+## 📈 Efficiency Analysis
+
+_(Filled by @project-lead upon plan completion)_
+
+### Session Metrics Summary
+
+| Task | Model | Tokens In | Tokens Out | Duration | Tool Calls | Difficulty |
+| ---- | ----- | --------- | ---------- | -------- | ---------- | ---------- |
+| 001  | -     | -         | -          | -        | -          | -          |
+| 002  | -     | -         | -          | -        | -          | -          |
+| ...  | -     | -         | -          | -        | -          | -          |
+
+**Totals:**
+
+- Total Tokens: [sum]
+- Total Duration: [sum] minutes
+- Estimated Cost: ~$X.XX
+
+### Project Lead Session
+
+| Metric                | Value                           |
+| --------------------- | ------------------------------- |
+| **Model**             | [model used]                    |
+| **Plan Duration**     | [total time managing this plan] |
+| **Tokens Used**       | [if available]                  |
+| **Tasks Coordinated** | [count]                         |
+
+### Performance Analysis
+
+**Most Efficient Task:**
+
+- Task ID: [XXX]
+- Reason: [low tokens, fast completion, etc.]
+
+**Least Efficient Task:**
+
+- Task ID: [XXX]
+- Reason: [high tokens, many retries, user intervention, etc.]
+
+**Model Recommendations:**
+
+| Task Type      | Recommended Model | Reason                     |
+| -------------- | ----------------- | -------------------------- |
+| Simple styling | Sonnet            | Fast, low token usage      |
+| Complex logic  | Opus              | Better first-time accuracy |
+| Migrations     | [model]           | [reason]                   |
+| Testing        | [model]           | [reason]                   |
+
+### Lessons Learned
+
+1. [Observation about what worked well]
+2. [Observation about what could improve]
+3. [Recommendation for future similar work]
+
+### Efficiency Score
+
+**Overall: X/10**
+
+Criteria:
+
+- Token efficiency: X/10
+- Time efficiency: X/10
+- First-attempt success rate: X%
+- User intervention rate: X%
 ```
 
 ---

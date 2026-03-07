@@ -1,0 +1,603 @@
+// ============================================
+// FEEDBACK COMPONENTS
+// frontend/src/styles/components/_feedback.scss
+// ============================================
+// Styles for feedback messages: alerts, toasts,
+// spinners, loading overlays, and empty states.
+//
+// Dependencies: @use '../tokens' as *;
+// ============================================
+
+@use '../tokens' as *;
+@use '../mixins' as *;
+
+// ===================
+// ALERT MESSAGES
+// ===================
+
+/// Base alert component
+/// Usage: <div class="alert alert--success">Message</div>
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-4;
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  line-height: $line-height-normal;
+
+  // Icon slot
+  &__icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-top: 1px; // Align with text baseline
+  }
+
+  // Content area
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  // Alert title (optional)
+  &__title {
+    font-weight: $font-weight-semibold;
+    margin-bottom: $space-1;
+  }
+
+  // Dismiss button (optional)
+  &__dismiss {
+    @include button-reset;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    opacity: 0.6;
+    transition: opacity $transition-fast;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    @include focus-visible;
+  }
+
+  // -------------------
+  // Semantic Variants
+  // -------------------
+
+  &--success {
+    background-color: $color-success-50;
+    border: $border-width-default solid $color-success-200;
+    color: $color-success-800;
+
+    .alert__icon {
+      color: $color-success-500;
+    }
+  }
+
+  &--error {
+    background-color: $color-error-50;
+    border: $border-width-default solid $color-error-200;
+    color: $color-error-800;
+
+    .alert__icon {
+      color: $color-error-500;
+    }
+  }
+
+  &--warning {
+    background-color: $color-warning-50;
+    border: $border-width-default solid $color-warning-200;
+    color: $color-warning-800;
+
+    .alert__icon {
+      color: $color-warning-600;
+    }
+  }
+
+  &--info {
+    background-color: $color-info-50;
+    border: $border-width-default solid $color-info-200;
+    color: $color-info-800;
+
+    .alert__icon {
+      color: $color-info-500;
+    }
+  }
+}
+
+
+// ===================
+// TOAST NOTIFICATIONS
+// ===================
+
+/// Toast container (position-fixed viewport corner)
+/// Usage: <div class="toast-container"><div class="toast">...</div></div>
+.toast-container {
+  position: fixed;
+  z-index: $z-notification;
+  display: flex;
+  flex-direction: column;
+  gap: $space-3;
+  pointer-events: none;
+
+  // Position modifiers
+  &--top-right {
+    top: $space-4;
+    right: $space-4;
+  }
+
+  &--top-left {
+    top: $space-4;
+    left: $space-4;
+  }
+
+  &--top-center {
+    top: $space-4;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &--bottom-right {
+    bottom: $space-4;
+    right: $space-4;
+  }
+
+  &--bottom-left {
+    bottom: $space-4;
+    left: $space-4;
+  }
+
+  &--bottom-center {
+    bottom: $space-4;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/// Individual toast notification
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-3;
+  padding: $space-3 $space-4;
+  min-width: 280px;
+  max-width: 400px;
+  background-color: $bg-surface;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-lg;
+  pointer-events: auto;
+  animation: toastSlideIn $transition-slow forwards;
+
+  &__icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin-bottom: $space-1;
+  }
+
+  &__message {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    line-height: $line-height-normal;
+  }
+
+  &__dismiss {
+    @include button-reset;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: $text-muted;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $text-secondary;
+    }
+
+    @include focus-visible;
+  }
+
+  // Progress bar for auto-dismiss
+  &__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: currentColor;
+    border-radius: 0 0 $radius-lg $radius-lg;
+    animation: toastProgress linear forwards;
+    opacity: 0.3;
+  }
+
+  // -------------------
+  // Semantic Variants
+  // -------------------
+
+  &--success {
+    border-left: 4px solid $color-success-500;
+
+    .toast__icon {
+      color: $color-success-500;
+    }
+  }
+
+  &--error {
+    border-left: 4px solid $color-error-500;
+
+    .toast__icon {
+      color: $color-error-500;
+    }
+  }
+
+  &--warning {
+    border-left: 4px solid $color-warning-500;
+
+    .toast__icon {
+      color: $color-warning-600;
+    }
+  }
+
+  &--info {
+    border-left: 4px solid $color-info-500;
+
+    .toast__icon {
+      color: $color-info-500;
+    }
+  }
+
+  // -------------------
+  // Exit Animation
+  // -------------------
+
+  &--exiting {
+    animation: toastSlideOut $transition-normal forwards;
+  }
+}
+
+// Toast animations
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+@keyframes toastProgress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0;
+  }
+}
+
+
+// ===================
+// SPINNER
+// ===================
+
+/// Loading spinner
+/// Usage: <div class="spinner"></div>
+.spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid $color-neutral-200;
+  border-top-color: $color-primary-500;
+  border-radius: $radius-full;
+  animation: spinnerRotate 0.8s linear infinite;
+
+  // Size variants
+  &--sm {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+  }
+
+  &--lg {
+    width: 32px;
+    height: 32px;
+    border-width: 4px;
+  }
+
+  &--xl {
+    width: 48px;
+    height: 48px;
+    border-width: 5px;
+  }
+
+  // Color variants
+  &--primary {
+    border-color: rgba($color-primary-500, 0.2);
+    border-top-color: $color-primary-500;
+  }
+
+  &--white {
+    border-color: rgba($color-neutral-0, 0.3);
+    border-top-color: $color-neutral-0;
+  }
+
+  &--success {
+    border-color: rgba($color-success-500, 0.2);
+    border-top-color: $color-success-500;
+  }
+
+  &--error {
+    border-color: rgba($color-error-500, 0.2);
+    border-top-color: $color-error-500;
+  }
+}
+
+@keyframes spinnerRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+// ===================
+// LOADING OVERLAY
+// ===================
+
+/// Full-screen or container loading overlay
+/// Usage: <div class="loading-overlay"><div class="spinner"></div></div>
+.loading-overlay {
+  @include absolute-fill;
+  @include flex-center;
+  background-color: rgba($bg-surface, 0.8);
+  z-index: $z-modal-backdrop;
+  animation: fadeIn $transition-normal forwards;
+
+  // Dark variant
+  &--dark {
+    background-color: rgba($color-neutral-900, 0.7);
+  }
+
+  // Full viewport variant
+  &--fullscreen {
+    @include fixed-fill;
+    z-index: $z-modal;
+  }
+
+  // Loading content wrapper
+  &__content {
+    @include flex-column;
+    align-items: center;
+    gap: $space-4;
+    text-align: center;
+  }
+
+  &__text {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    margin-top: $space-2;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+
+// ===================
+// SKELETON LOADER
+// ===================
+
+/// Skeleton placeholder for loading states
+/// Usage: <div class="skeleton skeleton--text"></div>
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    $color-neutral-200 25%,
+    $color-neutral-100 50%,
+    $color-neutral-200 75%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s ease-in-out infinite;
+  border-radius: $radius-sm;
+
+  // Type variants
+  &--text {
+    height: 1em;
+    width: 100%;
+  }
+
+  &--title {
+    height: 1.5em;
+    width: 60%;
+  }
+
+  &--avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-full;
+  }
+
+  &--avatar-lg {
+    width: 64px;
+    height: 64px;
+    border-radius: $radius-full;
+  }
+
+  &--button {
+    height: 40px;
+    width: 120px;
+    border-radius: $radius-md;
+  }
+
+  &--card {
+    height: 200px;
+    width: 100%;
+    border-radius: $radius-lg;
+  }
+
+  &--image {
+    height: 160px;
+    width: 100%;
+    border-radius: $radius-md;
+  }
+}
+
+@keyframes skeletonShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+
+// ===================
+// EMPTY STATES
+// ===================
+
+/// Empty state placeholder for "no data" messages
+/// Usage: <div class="empty-state">...</div>
+.empty-state {
+  @include flex-column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: $space-8 $space-4;
+  color: $text-secondary;
+
+  &__icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: $space-4;
+    color: $text-muted;
+    opacity: 0.6;
+  }
+
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin-bottom: $space-2;
+  }
+
+  &__description {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    max-width: 320px;
+    line-height: $line-height-relaxed;
+    margin-bottom: $space-6;
+  }
+
+  // Action button area
+  &__actions {
+    display: flex;
+    gap: $space-3;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  // Compact variant for smaller containers
+  &--compact {
+    padding: $space-4 $space-3;
+
+    .empty-state__icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: $space-3;
+    }
+
+    .empty-state__title {
+      font-size: $font-size-base;
+    }
+
+    .empty-state__description {
+      margin-bottom: $space-4;
+    }
+  }
+}
+
+
+// ===================
+// INLINE BADGE / CHIP
+// ===================
+
+/// Small inline status indicators
+/// Usage: <span class="badge badge--success">Active</span>
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  padding: $space-1 $space-2;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  line-height: 1;
+  border-radius: $radius-full;
+  white-space: nowrap;
+
+  // Dot indicator
+  &__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: $radius-full;
+    background-color: currentColor;
+  }
+
+  // Default (neutral)
+  background-color: $color-neutral-100;
+  color: $color-neutral-700;
+
+  // Semantic variants
+  &--success {
+    background-color: $color-success-100;
+    color: $color-success-700;
+  }
+
+  &--error {
+    background-color: $color-error-100;
+    color: $color-error-700;
+  }
+
+  &--warning {
+    background-color: $color-warning-100;
+    color: $color-warning-800;
+  }
+
+  &--info {
+    background-color: $color-info-100;
+    color: $color-info-700;
+  }
+
+  &--primary {
+    background-color: $color-primary-100;
+    color: $color-primary-700;
+  }
+}

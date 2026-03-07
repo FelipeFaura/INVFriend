@@ -248,7 +248,42 @@ modelDescription: |
 
 ---
 
-## 📖 Known Patterns
+## � Session Metrics Reporting
+
+Upon completing any review, you MUST fill the **Session Metrics** section in the task document.
+
+### Required Metrics
+
+| Metric                 | How to Obtain                           | Notes                             |
+| ---------------------- | --------------------------------------- | --------------------------------- |
+| **Model**              | State which model you are (Sonnet/Opus) | If unknown, write "Unknown"       |
+| **Tokens In/Out**      | Check session info if available         | Write "N/A" if not accessible     |
+| **Context Window %**   | Estimate based on conversation length   | Rough estimate acceptable         |
+| **Duration**           | Note start/end time of review           | Minutes from first to last action |
+| **Tool Calls**         | Count tool invocations made             | Approximate count                 |
+| **Errors/Retries**     | Count failed attempts                   | Include brief reason              |
+| **User Interventions** | Note if user had to clarify/correct     | Yes/No with reason                |
+| **Files Reviewed**     | Count from review scope                 | Exact count                       |
+| **Issues Found**       | Count of issues identified              | By severity                       |
+| **Difficulty (1-5)**   | Self-assessment                         | 1=trivial, 5=very complex         |
+
+### Why This Matters
+
+- `@project-lead` aggregates metrics to optimize AI usage
+- Helps determine which model to use for which review types
+- Identifies inefficiencies and improvement opportunities
+
+### If Metrics Unavailable
+
+If you cannot access certain metrics (e.g., token counts), explicitly state:
+
+```
+**Metrics Notes:** Token counts not accessible from this session. Duration estimated from timestamps.
+```
+
+---
+
+## �📖 Known Patterns
 
 <!-- Add patterns discovered during reviews. Git merge consolidates duplicates across developers.
 Format:

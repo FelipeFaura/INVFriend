@@ -1,0 +1,257 @@
+// ============================================
+// BUTTONS - frontend/src/styles/components/_buttons.scss
+// ============================================
+// Complete button system with variants, sizes, and states.
+// 
+// Dependencies: _tokens.scss, _mixins.scss
+// ============================================
+
+@use '../tokens' as *;
+@use '../mixins' as *;
+
+
+// ===================
+// BASE BUTTON
+// ===================
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  padding: $space-3 $space-4;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-tight;
+  border: $border-width-default solid transparent;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: all $transition-fast;
+  text-decoration: none;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @include focus-visible;
+}
+
+
+// ===================
+// SIZE VARIANTS
+// ===================
+
+/// Small button - reduced padding and font size
+.btn--sm {
+  padding: $space-2 $space-3;
+  font-size: $font-size-sm;
+}
+
+/// Large button - increased padding and font size
+.btn--lg {
+  padding: $space-4 $space-6;
+  font-size: $font-size-lg;
+}
+
+
+// ===================
+// STYLE VARIANTS
+// ===================
+
+/// Primary button - gradient brand colors
+/// Use for main calls-to-action
+.btn--primary {
+  background: $gradient-primary;
+  color: $text-inverse;
+  border-color: transparent;
+
+  &:hover:not(:disabled) {
+    background: $gradient-primary-hover;
+    transform: translateY(-1px);
+    box-shadow: $shadow-md;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: $shadow-sm;
+  }
+}
+
+/// Secondary button - light background with border
+/// Use for secondary actions
+.btn--secondary {
+  background-color: $bg-muted;
+  color: $text-primary;
+  border-color: $border-default;
+
+  &:hover:not(:disabled) {
+    background-color: $color-neutral-200;
+    border-color: $border-strong;
+  }
+
+  &:active:not(:disabled) {
+    background-color: $color-neutral-300;
+  }
+}
+
+/// Danger button - red/error colored
+/// Use for destructive actions (delete, remove, etc.)
+.btn--danger {
+  background-color: $color-error-500;
+  color: $text-inverse;
+  border-color: transparent;
+
+  &:hover:not(:disabled) {
+    background-color: $color-error-600;
+  }
+
+  &:active:not(:disabled) {
+    background-color: $color-error-700;
+  }
+
+  @include focus-visible-custom($color-error-500);
+}
+
+/// Ghost button - transparent background
+/// Use for less prominent actions
+.btn--ghost {
+  background-color: transparent;
+  color: $text-primary;
+  border-color: transparent;
+
+  &:hover:not(:disabled) {
+    background-color: $bg-hover;
+  }
+
+  &:active:not(:disabled) {
+    background-color: $color-neutral-200;
+  }
+}
+
+/// Link-style button - appears as text link
+/// Use for inline text actions
+.btn--link {
+  background: none;
+  color: $text-link;
+  padding: 0;
+  border: none;
+
+  &:hover:not(:disabled) {
+    color: $text-link-hover;
+    text-decoration: underline;
+  }
+
+  &:active:not(:disabled) {
+    color: $color-primary-700;
+  }
+
+  // Override focus-visible for link style
+  &:focus-visible {
+    outline: 2px solid $border-focus;
+    outline-offset: 2px;
+    box-shadow: none;
+    border-radius: $radius-sm;
+  }
+}
+
+
+// ===================
+// ICON BUTTON
+// ===================
+
+/// Icon-only button - square shape for icon content
+/// Use for icon-only actions (close, menu toggle, etc.)
+.btn--icon {
+  padding: $space-2;
+  background: transparent;
+  border: $border-width-default solid $border-default;
+
+  &:hover:not(:disabled) {
+    background-color: $bg-hover;
+  }
+
+  &:active:not(:disabled) {
+    background-color: $color-neutral-200;
+  }
+
+  // Danger variant for icon buttons (e.g., delete icons)
+  &.btn--icon-danger {
+    &:hover:not(:disabled) {
+      background-color: $color-error-50;
+      border-color: $color-error-200;
+      color: $color-error-600;
+    }
+
+    &:active:not(:disabled) {
+      background-color: $color-error-100;
+      border-color: $color-error-300;
+    }
+
+    @include focus-visible-custom($color-error-500);
+  }
+}
+
+
+// ===================
+// MODIFIERS
+// ===================
+
+/// Full-width button - spans container width
+.btn--block {
+  width: 100%;
+}
+
+
+// ===================
+// LOADING STATE
+// ===================
+
+/// Loading state - disables interaction and shows spinner
+.btn--loading {
+  pointer-events: none;
+  position: relative;
+
+  // Spinner element inside button
+  .btn__spinner {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: $radius-full;
+    animation: btn-spin 0.8s linear infinite;
+  }
+}
+
+/// Spinner keyframe animation
+@keyframes btn-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+// ===================
+// BUTTON GROUPS (Optional)
+// ===================
+
+/// Button group - groups buttons together with proper spacing
+.btn-group {
+  display: inline-flex;
+  gap: $space-2;
+
+  // Stack vertically on mobile
+  @include mobile-only {
+    flex-direction: column;
+    width: 100%;
+
+    .btn {
+      width: 100%;
+    }
+  }
+}

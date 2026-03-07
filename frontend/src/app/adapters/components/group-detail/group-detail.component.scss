@@ -1,380 +1,359 @@
-.group-detail-container {
+// ============================================
+// GROUP DETAIL COMPONENT STYLES
+// ============================================
+// Component-specific styles that extend the design system.
+// Design system classes (.btn, .card, .badge, .modal, etc.)
+// are imported globally via styles.scss
+// ============================================
+
+@use '../../../../styles/tokens' as *;
+@use '../../../../styles/mixins' as *;
+
+// ===================
+// PAGE LAYOUT
+// ===================
+
+.group-detail-page {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  padding: $space-4 $space-4 $space-12;
+
+  @include md {
+    padding: $space-6 $space-6 $space-16;
+  }
 }
 
-// Loading State
-.loading-container {
+.group-content {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+}
+
+
+// ===================
+// LOADING STATE
+// ===================
+
+.loading-state {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 48px;
+  justify-content: center;
+  padding: $space-16 $space-4;
+  min-height: 300px;
 
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #f0f0f0;
-    border-top-color: #4a90d9;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  p {
-    margin-top: 16px;
-    color: #666;
+  &__text {
+    margin-top: $space-4;
+    color: $text-secondary;
+    font-size: $font-size-base;
   }
 }
 
-@keyframes spin {
+.spinner {
+  width: 48px;
+  height: 48px;
+  position: relative;
+
+  &__circle {
+    width: 100%;
+    height: 100%;
+    border: 3px solid $color-neutral-200;
+    border-top-color: $color-primary-500;
+    border-radius: $radius-full;
+    animation: spinner-rotate 1s linear infinite;
+  }
+}
+
+@keyframes spinner-rotate {
   to {
     transform: rotate(360deg);
   }
 }
 
-// Error State
-.error-container {
-  text-align: center;
-  padding: 48px;
-  background-color: #fff5f5;
-  border-radius: 12px;
-  border: 1px solid #fed7d7;
 
-  .error-text {
-    color: #c53030;
-    margin-bottom: 16px;
+// ===================
+// ERROR STATE
+// ===================
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-12 $space-4;
+  text-align: center;
+
+  .alert {
+    max-width: 400px;
   }
 }
 
-.error-banner {
-  padding: 12px 16px;
-  background-color: #fff5f5;
-  border: 1px solid #fed7d7;
-  border-radius: 8px;
-  color: #c53030;
-  margin-bottom: 16px;
+
+// ===================
+// PAGE NAVIGATION
+// ===================
+
+.page-nav {
+  margin-bottom: $space-2;
+
+  &__back {
+    font-size: $font-size-sm;
+  }
 }
 
-// Header
-.header {
+
+// ===================
+// ACTION ALERT
+// ===================
+
+.action-alert {
+  margin-bottom: $space-2;
+}
+
+
+// ===================
+// GROUP HEADER CARD
+// ===================
+
+.group-header-card {
+  .card__body {
+    padding: $space-6;
+
+    @include md {
+      padding: $space-8;
+    }
+  }
+}
+
+.group-header {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
+  flex-direction: column;
+  gap: $space-4;
+  margin-bottom: $space-6;
 
-  .btn-back {
-    background: none;
-    border: none;
-    color: #4a90d9;
-    font-size: 1rem;
-    cursor: pointer;
-    padding: 8px 0;
+  @include md {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
 
-    &:hover {
-      text-decoration: underline;
+  &__main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    margin: 0 0 $space-3;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+    line-height: $line-height-tight;
+
+    @include md {
+      font-size: $font-size-3xl;
     }
   }
 
-  .group-title {
-    flex: 1;
-    margin: 0;
-    font-size: 1.5rem;
-    color: #333;
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+  }
+
+  &__actions {
+    display: flex;
+    gap: $space-2;
+    flex-shrink: 0;
   }
 }
 
-.admin-actions {
-  display: flex;
-  gap: 8px;
-}
 
-.btn-icon {
-  background: none;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s;
+// ===================
+// GROUP INFO
+// ===================
 
-  &:hover {
-    background-color: #f0f0f0;
-  }
-
-  &.btn-danger:hover {
-    background-color: #fff5f5;
-    border-color: #fed7d7;
-  }
-}
-
-// Info Section
-.info-section {
+.group-info {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
-  padding: 16px;
-  background-color: #f8f9fa;
-  border-radius: 12px;
-  margin-bottom: 24px;
-}
+  gap: $space-6;
+  padding: $space-4;
+  background-color: $bg-muted;
+  border-radius: $radius-md;
 
-.info-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.info-label {
-  color: #666;
-  font-weight: 500;
-}
-
-.info-value {
-  color: #333;
-}
-
-.status-pending {
-  color: #d69e2e;
-  font-weight: 500;
-}
-
-.status-completed {
-  color: #38a169;
-  font-weight: 500;
-}
-
-// Description Section
-.description-section {
-  margin-bottom: 24px;
-
-  h3 {
-    margin: 0 0 8px;
-    font-size: 1.1rem;
-    color: #333;
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
   }
 
-  p {
-    color: #666;
-    line-height: 1.6;
+  &__label {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__value {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+  }
+}
+
+
+// ===================
+// DESCRIPTION CARD
+// ===================
+
+.description-card {
+  .description-text {
+    color: $text-secondary;
+    line-height: $line-height-relaxed;
     margin: 0;
   }
 }
 
-// Members Section
-.members-section {
-  margin-bottom: 24px;
-}
 
-.members-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
+// ===================
+// MEMBERS CARD
+// ===================
 
-  h3 {
-    margin: 0;
-    font-size: 1.1rem;
-    color: #333;
+.members-card {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $space-3;
+  }
+
+  &__body {
+    padding: 0;
   }
 }
 
 .members-list {
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  overflow: hidden;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .member-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid #e0e0e0;
+  gap: $space-3;
+  padding: $space-4 $space-6;
+  border-bottom: $border-width-default solid $border-default;
+  transition: background-color $transition-fast;
 
   &:last-child {
     border-bottom: none;
   }
-}
-
-.member-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.admin-badge {
-  font-size: 1rem;
-}
-
-.member-id {
-  color: #333;
-}
-
-.admin-label {
-  color: #666;
-  font-size: 0.85rem;
-}
-
-.btn-remove {
-  background: none;
-  border: 1px solid #fed7d7;
-  color: #c53030;
-  padding: 4px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: background-color 0.2s;
 
   &:hover {
-    background-color: #fff5f5;
-  }
-}
-
-// Buttons
-.btn {
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: 500;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s, opacity 0.2s;
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
-.btn-sm {
-  padding: 8px 16px;
-  font-size: 0.9rem;
-}
-
-.btn-primary {
-  background-color: #4a90d9;
-  color: white;
-
-  &:hover:not(:disabled) {
-    background-color: #3a7bc8;
-  }
-}
-
-.btn-secondary {
-  background-color: #f0f0f0;
-  color: #333;
-
-  &:hover:not(:disabled) {
-    background-color: #e0e0e0;
-  }
-}
-
-.btn-danger {
-  background-color: #c53030;
-  color: white;
-
-  &:hover:not(:disabled) {
-    background-color: #9b2c2c;
-  }
-}
-
-// Modal
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  max-width: 400px;
-  width: 90%;
-
-  h3 {
-    margin: 0 0 16px;
-    color: #333;
+    background-color: $bg-hover;
   }
 
-  p {
-    color: #666;
-    margin-bottom: 24px;
-  }
-}
-
-.modal-error {
-  margin-bottom: 16px;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
-.form-group {
-  margin-bottom: 16px;
-
-  label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #333;
-  }
-}
-
-.form-input {
-  width: 100%;
-  padding: 12px 16px;
-  font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-sizing: border-box;
-
-  &:focus {
-    outline: none;
-    border-color: #4a90d9;
-    box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.1);
-  }
-}
-
-.error-text {
-  color: #c53030;
-  font-size: 0.85rem;
-}
-
-// Responsive
-@media (max-width: 600px) {
-  .group-detail-container {
-    padding: 16px;
+  &__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: $gradient-primary;
+    color: $text-inverse;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    border-radius: $radius-full;
+    flex-shrink: 0;
   }
 
-  .header {
+  &__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
     flex-wrap: wrap;
+    gap: $space-2;
+  }
 
-    .group-title {
-      order: -1;
+  &__name {
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__badge {
+    flex-shrink: 0;
+  }
+
+  &__remove {
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+}
+
+
+// ===================
+// MODAL EXTENSIONS
+// ===================
+
+.modal__warning {
+  margin-top: $space-2;
+  font-size: $font-size-sm;
+  color: $color-error-600;
+  font-weight: $font-weight-medium;
+}
+
+.modal-alert {
+  margin-bottom: $space-4;
+}
+
+
+// ===================
+// FORM EXTENSIONS
+// ===================
+
+.form-hint {
+  display: block;
+  margin-top: $space-2;
+  font-size: $font-size-xs;
+  color: $text-muted;
+}
+
+
+// ===================
+// RESPONSIVE ADJUSTMENTS
+// ===================
+
+@include mobile-only {
+  .group-header {
+    &__actions {
       width: 100%;
-      margin-bottom: 8px;
+      justify-content: flex-end;
     }
   }
 
-  .info-section {
-    flex-direction: column;
-    gap: 12px;
+  .member-item {
+    flex-wrap: wrap;
+    gap: $space-2;
+    padding: $space-3 $space-4;
+
+    &__info {
+      flex: 1 0 calc(100% - 52px);
+    }
+
+    &__remove {
+      margin-left: 52px;
+      width: calc(100% - 52px);
+    }
   }
 
-  .members-header {
+  .group-info {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    gap: $space-3;
   }
 }

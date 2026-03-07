@@ -1,0 +1,666 @@
+// ============================================
+// FORM STYLES - _forms.scss
+// ============================================
+// Complete form system including inputs, labels,
+// validation states, and form groups.
+//
+// Dependencies: _tokens.scss, _mixins.scss
+// ============================================
+
+@use '../tokens' as *;
+@use '../mixins' as *;
+
+// ===================
+// FORM GROUP
+// ===================
+
+/// Form group container
+/// Groups label, input, and helper/error text together
+.form-group {
+  margin-bottom: $space-4;
+
+  &__label {
+    display: block;
+    margin-bottom: $space-2;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+    line-height: $line-height-normal;
+  }
+
+  &__label--required {
+    &::after {
+      content: ' *';
+      color: $color-error-500;
+    }
+  }
+
+  // Inline form groups (side by side)
+  &--inline {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+
+    .form-group__label {
+      margin-bottom: 0;
+      white-space: nowrap;
+    }
+  }
+
+  // Horizontal layout (label on left)
+  &--horizontal {
+    @include md {
+      display: grid;
+      grid-template-columns: minmax(120px, 200px) 1fr;
+      gap: $space-4;
+      align-items: start;
+
+      .form-group__label {
+        margin-bottom: 0;
+        padding-top: $space-3;
+        text-align: right;
+      }
+    }
+  }
+}
+
+
+// ===================
+// BASE INPUT STYLES (shared)
+// ===================
+
+%input-base {
+  @include input-reset;
+  width: 100%;
+  padding: $space-3 $space-4;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: $line-height-normal;
+  color: $text-primary;
+  background-color: $bg-surface;
+  border: $border-width-thick solid $border-default;
+  border-radius: $radius-md;
+  transition:
+    border-color $transition-fast,
+    box-shadow $transition-fast,
+    background-color $transition-fast;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  // Focus state
+  &:focus {
+    border-color: $border-focus;
+    box-shadow: $shadow-focus;
+    outline: none;
+  }
+
+  // Disabled state
+  &:disabled {
+    background-color: $bg-muted;
+    color: $text-muted;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  // Read-only state
+  &:read-only:not(:disabled) {
+    background-color: $bg-muted;
+    cursor: default;
+  }
+}
+
+
+// ===================
+// TEXT INPUT
+// ===================
+
+.form-input {
+  @extend %input-base;
+
+  // Size variants
+  &--sm {
+    padding: $space-2 $space-3;
+    font-size: $font-size-sm;
+  }
+
+  &--lg {
+    padding: $space-4 $space-5;
+    font-size: $font-size-lg;
+  }
+
+  // Validation states
+  &--error {
+    border-color: $color-error-500;
+
+    &:focus {
+      border-color: $color-error-500;
+      box-shadow: $shadow-focus-error;
+    }
+  }
+
+  &--success {
+    border-color: $color-success-500;
+
+    &:focus {
+      border-color: $color-success-500;
+      box-shadow: 0 0 0 3px rgba($color-success-500, 0.2);
+    }
+  }
+
+  &--warning {
+    border-color: $color-warning-500;
+
+    &:focus {
+      border-color: $color-warning-500;
+      box-shadow: 0 0 0 3px rgba($color-warning-500, 0.2);
+    }
+  }
+}
+
+
+// ===================
+// TEXTAREA
+// ===================
+
+.form-textarea {
+  @extend %input-base;
+  min-height: 120px;
+  resize: vertical;
+  line-height: $line-height-relaxed;
+
+  // Size variants
+  &--sm {
+    min-height: 80px;
+    padding: $space-2 $space-3;
+    font-size: $font-size-sm;
+  }
+
+  &--lg {
+    min-height: 160px;
+    padding: $space-4 $space-5;
+  }
+
+  // No resize
+  &--no-resize {
+    resize: none;
+  }
+
+  // Auto-expand (JS controlled, but styled here)
+  &--auto {
+    min-height: auto;
+    overflow: hidden;
+  }
+
+  // Validation states
+  &--error {
+    border-color: $color-error-500;
+
+    &:focus {
+      border-color: $color-error-500;
+      box-shadow: $shadow-focus-error;
+    }
+  }
+
+  &--success {
+    border-color: $color-success-500;
+
+    &:focus {
+      border-color: $color-success-500;
+      box-shadow: 0 0 0 3px rgba($color-success-500, 0.2);
+    }
+  }
+}
+
+
+// ===================
+// SELECT
+// ===================
+
+.form-select {
+  @extend %input-base;
+  appearance: none;
+  padding-right: $space-10; // Space for arrow
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right $space-3 center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+
+  // Hide default arrow in IE
+  &::-ms-expand {
+    display: none;
+  }
+
+  // Size variants
+  &--sm {
+    padding: $space-2 $space-8 $space-2 $space-3;
+    font-size: $font-size-sm;
+    background-position: right $space-2 center;
+    background-size: 1.25em 1.25em;
+  }
+
+  &--lg {
+    padding: $space-4 $space-12 $space-4 $space-5;
+    font-size: $font-size-lg;
+    background-position: right $space-4 center;
+    background-size: 1.75em 1.75em;
+  }
+
+  // Validation states
+  &--error {
+    border-color: $color-error-500;
+
+    &:focus {
+      border-color: $color-error-500;
+      box-shadow: $shadow-focus-error;
+    }
+  }
+
+  &--success {
+    border-color: $color-success-500;
+
+    &:focus {
+      border-color: $color-success-500;
+      box-shadow: 0 0 0 3px rgba($color-success-500, 0.2);
+    }
+  }
+
+  // Disabled styling
+  &:disabled {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  }
+}
+
+
+// ===================
+// CHECKBOX & RADIO
+// ===================
+
+.form-check {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-2;
+  cursor: pointer;
+
+  &__input {
+    @include input-reset;
+    flex-shrink: 0;
+    width: 1.125rem;
+    height: 1.125rem;
+    margin-top: 0.125rem; // Align with text baseline
+    border: $border-width-thick solid $border-default;
+    background-color: $bg-surface;
+    cursor: pointer;
+    transition:
+      border-color $transition-fast,
+      background-color $transition-fast,
+      box-shadow $transition-fast;
+
+    &[type="checkbox"] {
+      border-radius: $radius-sm;
+    }
+
+    &[type="radio"] {
+      border-radius: $radius-full;
+    }
+
+    &:checked {
+      border-color: $color-primary-500;
+      background-color: $color-primary-500;
+    }
+
+    &[type="checkbox"]:checked {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3e%3cpath fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' clip-rule='evenodd'/%3e%3c/svg%3e");
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    &[type="radio"]:checked {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3ccircle cx='10' cy='10' r='4' fill='white'/%3e%3c/svg%3e");
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $border-focus;
+      outline-offset: 2px;
+      box-shadow: $shadow-focus;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    // Error state
+    &--error {
+      border-color: $color-error-500;
+
+      &:checked {
+        background-color: $color-error-500;
+      }
+    }
+  }
+
+  &__label {
+    font-size: $font-size-base;
+    color: $text-primary;
+    line-height: $line-height-normal;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  // Disabled state for label
+  &--disabled {
+    cursor: not-allowed;
+
+    .form-check__label {
+      color: $text-muted;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Checkbox/Radio group (stacked)
+.form-check-group {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+
+  &--inline {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: $space-4;
+  }
+}
+
+
+// ===================
+// VALIDATION MESSAGES
+// ===================
+
+/// Error message text
+.form-error {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  margin-top: $space-2;
+  font-size: $font-size-sm;
+  color: $color-error-600;
+  line-height: $line-height-normal;
+
+  // Icon placeholder (if using icon font or SVG)
+  &__icon {
+    flex-shrink: 0;
+    width: 1em;
+    height: 1em;
+  }
+}
+
+/// Success message text
+.form-success {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  margin-top: $space-2;
+  font-size: $font-size-sm;
+  color: $color-success-600;
+  line-height: $line-height-normal;
+
+  &__icon {
+    flex-shrink: 0;
+    width: 1em;
+    height: 1em;
+  }
+}
+
+/// Helper text (hints, instructions)
+.form-help {
+  margin-top: $space-2;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  line-height: $line-height-normal;
+}
+
+
+// ===================
+// INPUT GROUP
+// ===================
+
+/// Combined input + button or addon layouts
+.input-group {
+  display: flex;
+  width: 100%;
+
+  // Input within group
+  > .form-input,
+  > .form-select {
+    flex: 1;
+    min-width: 0; // Prevent overflow
+
+    // Remove border radius on sides touching addons
+    &:not(:first-child) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    &:not(:last-child) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right: none;
+    }
+  }
+
+  // Addon (static text or icon)
+  &__addon {
+    @include flex-center;
+    padding: $space-3 $space-4;
+    font-size: $font-size-base;
+    color: $text-secondary;
+    background-color: $bg-muted;
+    border: $border-width-thick solid $border-default;
+    white-space: nowrap;
+
+    &:first-child {
+      border-right: none;
+      border-radius: $radius-md 0 0 $radius-md;
+    }
+
+    &:last-child {
+      border-left: none;
+      border-radius: 0 $radius-md $radius-md 0;
+    }
+  }
+
+  // Button within group
+  > .btn,
+  > button {
+    flex-shrink: 0;
+
+    &:not(:first-child) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      margin-left: -$border-width-thick; // Overlap borders
+    }
+
+    &:not(:last-child) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+
+  // Size variants
+  &--sm {
+    > .form-input,
+    > .form-select {
+      padding: $space-2 $space-3;
+      font-size: $font-size-sm;
+    }
+
+    > .input-group__addon {
+      padding: $space-2 $space-3;
+      font-size: $font-size-sm;
+    }
+  }
+
+  &--lg {
+    > .form-input,
+    > .form-select {
+      padding: $space-4 $space-5;
+      font-size: $font-size-lg;
+    }
+
+    > .input-group__addon {
+      padding: $space-4 $space-5;
+      font-size: $font-size-lg;
+    }
+  }
+}
+
+
+// ===================
+// FORM LAYOUT
+// ===================
+
+/// Full-width form container
+.form {
+  width: 100%;
+}
+
+/// Form row for multi-column layouts
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 (-$space-2);
+
+  > .form-group {
+    flex: 1;
+    padding: 0 $space-2;
+    min-width: 200px;
+  }
+
+  // Equal width columns
+  &--equal {
+    > .form-group {
+      flex: 1 1 0;
+    }
+  }
+
+  @include mobile-only {
+    flex-direction: column;
+
+    > .form-group {
+      min-width: 100%;
+    }
+  }
+}
+
+/// Form actions container (submit, cancel buttons)
+.form-actions {
+  display: flex;
+  gap: $space-3;
+  margin-top: $space-6;
+  padding-top: $space-4;
+  border-top: 1px solid $border-default;
+
+  &--center {
+    justify-content: center;
+  }
+
+  &--end {
+    justify-content: flex-end;
+  }
+
+  &--between {
+    justify-content: space-between;
+  }
+
+  // Stack on mobile
+  @include mobile-only {
+    flex-direction: column;
+
+    > .btn,
+    > button {
+      width: 100%;
+    }
+  }
+}
+
+
+// ===================
+// FLOATING LABELS
+// ===================
+
+/// Floating label input pattern
+.form-floating {
+  position: relative;
+
+  > .form-input,
+  > .form-textarea,
+  > .form-select {
+    height: calc($space-4 * 3.5);
+    padding: $space-5 $space-4 $space-2;
+
+    &::placeholder {
+      color: transparent;
+    }
+
+    &:focus,
+    &:not(:placeholder-shown) {
+      ~ .form-floating__label {
+        opacity: 0.65;
+        transform: scale(0.85) translateY(-$space-2) translateX(0.15rem);
+      }
+    }
+
+    // For select, always show label as "floated"
+    &.form-select {
+      ~ .form-floating__label {
+        opacity: 0.65;
+        transform: scale(0.85) translateY(-$space-2) translateX(0.15rem);
+      }
+    }
+  }
+
+  > .form-textarea {
+    height: auto;
+    min-height: calc($space-4 * 6);
+  }
+
+  &__label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    padding: $space-3 $space-4;
+    pointer-events: none;
+    color: $text-secondary;
+    border: $border-width-thick solid transparent;
+    transform-origin: 0 0;
+    transition:
+      opacity $transition-fast,
+      transform $transition-fast;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+
+// ===================
+// ACCESSIBILITY
+// ===================
+
+/// Required field indicator (screen reader text)
+.form-required-sr {
+  @include visually-hidden;
+}
+
+/// Live region for form errors (announced by screen readers)
+.form-error-live {
+  @include visually-hidden;
+}
