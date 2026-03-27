@@ -1,0 +1,170 @@
+@use '../../../../styles/tokens' as *;
+
+.dashboard-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: $space-8;
+  background: $gradient-primary;
+}
+
+.dashboard-header {
+  text-align: center;
+  color: $text-inverse;
+  margin-bottom: $space-8;
+
+  h1 {
+    font-size: $font-size-4xl;
+    font-weight: $font-weight-bold;
+    margin-bottom: $space-2;
+  }
+
+  p {
+    font-size: $font-size-lg;
+    opacity: 0.9;
+  }
+}
+
+.dashboard-content {
+  flex: 1;
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+// Loading state
+.dashboard-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-4;
+  margin-top: $space-12;
+  color: $text-inverse;
+  font-size: $font-size-lg;
+}
+
+// Assignments section
+.assignments-section {
+  margin-top: $space-4;
+}
+
+.assignments-title {
+  color: $text-inverse;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $space-6;
+  text-align: center;
+}
+
+.assignments-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-4;
+
+  @media (min-width: $breakpoint-md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// Assignment card
+.assignment-card {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+  padding: $space-4;
+  background: $bg-surface;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+  cursor: pointer;
+  transition: transform $transition-normal, box-shadow $transition-normal;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Photo / avatar
+.assignment-card__photo {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+}
+
+.assignment-card__img {
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-full;
+  object-fit: cover;
+}
+
+.assignment-card__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-full;
+  background: $gradient-primary;
+  color: $text-inverse;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+}
+
+// Info
+.assignment-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.assignment-card__name {
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.assignment-card__group {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  margin: $space-1 0 0;
+}
+
+.assignment-card__budget {
+  font-size: $font-size-sm;
+  color: $color-primary-600;
+  font-weight: $font-weight-medium;
+  margin: $space-1 0 0;
+}
+
+// Arrow
+.assignment-card__arrow {
+  flex-shrink: 0;
+  font-size: $font-size-xl;
+  color: $text-muted;
+  transition: color $transition-fast;
+
+  .assignment-card:hover & {
+    color: $color-primary-500;
+  }
+}
+
+// Empty state
+.dashboard-empty {
+  margin-top: $space-12;
+  text-align: center;
+  color: $text-inverse;
+  font-size: $font-size-lg;
+  line-height: $line-height-relaxed;
+}

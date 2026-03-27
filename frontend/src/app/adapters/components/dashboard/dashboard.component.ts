@@ -1,69 +1,109 @@
-import { Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { Router } from "@angular/router";
+import { Subject, forkJoin, of } from "rxjs";
+import { catchError, takeUntil } from "rxjs/operators";
 
 import { AuthApplicationService } from "../../../application/services/auth-application.service";
+import { AssignmentHttpService } from "../../services/assignment-http.service";
+import { UserHttpService } from "../../services/user-http.service";
+import { MyAssignmentSummary } from "../../../domain/models/assignment.model";
+import { UserPublicProfile } from "../../../domain/models/user.model";
+
+interface AssignmentWithProfile {
+  assignment: MyAssignmentSummary;
+  profile: UserPublicProfile | null;
+}
 
 /**
- * Dashboard component - main landing page for authenticated users
- * Navigation is handled by the Layout sidebar
+ * Dashboard component - main landing page for authenticated users.
+ * Shows all Secret Santa assignment cards across groups.
  */
 @Component({
   selector: "app-dashboard",
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="dashboard-container">
-      <header class="dashboard-header">
-        <h1>Welcome to INVFriend</h1>
-        <p *ngIf="currentUser$ | async as user">Hello, {{ user.name }}!</p>
-      </header>
-
-      <main class="dashboard-content">
-        <section class="placeholder-message">
-          <p>🎄 Secret Santa features coming soon!</p>
-        </section>
-      </main>
-    </div>
-  `,
-  styles: [
-    `
-      .dashboard-container {
-        min-height: 100%;
-        display: flex;
-        flex-direction: column;
-        padding: 2rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      }
-
-      .dashboard-header {
-        text-align: center;
-        color: white;
-        margin-bottom: 2rem;
-      }
-
-      .dashboard-header h1 {
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
-      }
-
-      .dashboard-content {
-        flex: 1;
-        max-width: 800px;
-        margin: 0 auto;
-        width: 100%;
-      }
-
-      .placeholder-message {
-        margin-top: 2rem;
-        text-align: center;
-        color: white;
-        font-size: 1.2rem;
-      }
-    `,
-  ],
+  templateUrl: "./dashboard.component.html",
+  styleUrls: ["./dashboard.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit, OnDestroy {
   currentUser$ = this.authService.currentUser$;
+  loading = true;
+  assignments: MyAssignmentSummary[] = [];
+  assignmentsWithProfiles: AssignmentWithProfile[] = [];
 
-  constructor(private readonly authService: AuthApplicationService) {}
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private readonly authService: AuthApplicationService,
+    private readonly assignmentService: AssignmentHttpService,
+    private readonly userService: UserHttpService,
+    private readonly router: Router,
+  ) {}
+
+  ngOnInit(): void {
+    this.loadAssignments();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  /** Navigate to the receiver's wish list */
+  navigateToWishes(assignment: MyAssignmentSummary): void {
+    this.router.navigate([
+      "/groups",
+      assignment.groupId,
+      "assignment",
+      assignment.receiverId,
+      "wishes",
+    ]);
+  }
+
+  /** Get the first letter of a name for the avatar fallback */
+  getInitial(name?: string): string {
+    return name ? name.charAt(0).toUpperCase() : "?";
+  }
+
+  private loadAssignments(): void {
+    this.assignmentService
+      .getAllMyAssignments()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (assignments) => {
+          this.assignments = assignments;
+
+          if (assignments.length === 0) {
+            this.loading = false;
+            return;
+          }
+
+          const profileRequests = assignments.map((a) =>
+            this.userService.getUserPublicProfile(a.receiverId).pipe(
+              catchError(() => of(null)),
+            ),
+          );
+
+          forkJoin(profileRequests)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe({
+              next: (profiles) => {
+                this.assignmentsWithProfiles = assignments.map((assignment, i) => ({
+                  assignment,
+                  profile: profiles[i],
+                }));
+                this.loading = false;
+              },
+              error: () => {
+                this.loading = false;
+              },
+            });
+        },
+        error: () => {
+          this.loading = false;
+        },
+      });
+  }
 }
