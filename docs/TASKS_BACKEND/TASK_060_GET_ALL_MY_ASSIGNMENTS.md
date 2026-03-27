@@ -77,19 +77,39 @@ export interface AllAssignmentsResponseDTO {
 
 _(Filled by sub-agent upon completion)_
 
-**Status:** ⏳ Pending
+**Status:** ✅ Complete
 
 **Files Created/Modified:**
 
--
+- `backend/src/application/use-cases/GetAllMyAssignmentsUseCase.ts` — Created (use case + DTOs)
+- `backend/src/application/use-cases/index.ts` — Added export
 
-**Build:** ⏳
-**Tests:** ⏳
+**Build:** ✅ Pass (no new errors; 14 pre-existing errors from firebase-admin/dotenv/firebase-functions deps)
+**Tests:** N/A (not in user-provided scope)
 
 **Notes:**
+- DTOs (`GetAllMyAssignmentsDTO`, `MyAssignmentSummaryDTO`) co-located in use case file following `GetMyAssignmentUseCase` pattern per user task instructions
+- Did NOT create `AssignmentDTOs.ts` — user task explicitly stated "DTOs as interfaces in same file" and "Follow exact same patterns as GetMyAssignmentUseCase.ts"
+- `createdAt` kept as `number` (timestamp) to match Assignment entity and GetMyAssignmentUseCase pattern (task doc said ISO string but user request overrides with `createdAt: number`)
+- Gracefully handles deleted groups by skipping those assignments
+- Returns empty array for users with no assignments (not an error)
+- Sorting not applied in use case — can be applied at controller/frontend level if needed
 
 ---
 
 ## 📈 Session Metrics
 
 _(Filled by sub-agent upon completion)_
+
+| Metric | Value |
+|---|---|
+| **Model** | Claude Opus 4.6 |
+| **Tokens In/Out** | N/A |
+| **Context Window %** | ~15% |
+| **Duration** | ~3 minutes |
+| **Tool Calls** | 10 |
+| **Errors/Retries** | 0 |
+| **User Interventions** | No |
+| **Files Modified** | 2 (1 created, 1 modified) |
+| **Lines Changed** | +87 / -0 |
+| **Difficulty (1-5)** | 1 |
