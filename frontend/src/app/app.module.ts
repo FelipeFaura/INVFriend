@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { AngularFireModule } from "@angular/fire/compat";
 import { AngularFireAuthModule } from "@angular/fire/compat/auth";
 import { AngularFirestoreModule } from "@angular/fire/compat/firestore";
+import { AngularFireStorageModule } from "@angular/fire/compat/storage";
 
 import { environment } from "../environments/environment";
 import { AppComponent } from "./app.component";
@@ -25,6 +26,7 @@ import { LayoutModule } from "./adapters/components/layout/layout.module";
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
+    AngularFireStorageModule,
     LayoutModule,
   ],
   providers: [

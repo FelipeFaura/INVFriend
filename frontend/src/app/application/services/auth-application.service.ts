@@ -9,6 +9,7 @@ import { User } from "../../domain/models/user.model";
 import {
   RegisterRequestDTO,
   LoginRequestDTO,
+  UpdateProfileDTO,
   StoredAuthState,
   INITIAL_AUTH_STATE,
 } from "../../application/dto/auth.dto";
@@ -18,8 +19,11 @@ import {
   UserAlreadyExistsError,
   NetworkError,
   InvalidTokenError,
+  ValidationError,
   AUTH_ERROR_CODES,
 } from "../../domain/errors/auth-errors";
+import { StorageError } from "../../domain/errors/storage-errors";
+import { StorageService } from "../../adapters/services/storage.service";
 
 /**
  * Application service for authentication state management
@@ -43,6 +47,7 @@ export class AuthApplicationService {
   constructor(
     private readonly afAuth: AngularFireAuth,
     private readonly firestore: AngularFirestore,
+    private readonly storageService: StorageService,
   ) {
     // Initialize currentUser$ observable
     this.currentUser$ = this.authState$.pipe(map((state) => state.user));
@@ -256,6 +261,106 @@ export class AuthApplicationService {
    */
   initializeFromStorage(): void {
     // Firebase handles persistence automatically
+  }
+
+  /**
+   * Update user profile (name and/or photo)
+   * @param data - Profile update data with optional name and photoFile
+   * @returns Observable<User> - Updated user data
+   * @throws ValidationError if name is invalid
+   * @throws StorageError if photo upload fails
+   */
+  updateProfile(data: UpdateProfileDTO): Observable<User> {
+    return from(this.afAuth.currentUser).pipe(
+      switchMap((firebaseUser) => {
+        if (!firebaseUser) {
+          return throwError(() => new Error("Not authenticated"));
+        }
+
+        // Validate name if provided
+        if (data.name !== undefined) {
+          if (data.name.length < 2 || data.name.length > 50) {
+            return throwError(
+              () => new ValidationError("Name must be 2-50 characters"),
+            );
+          }
+        }
+
+        // Upload photo if provided
+        const photoUpload$: Observable<string | undefined> = data.photoFile
+          ? this.uploadProfilePhoto(firebaseUser.uid, data.photoFile)
+          : of(undefined as string | undefined);
+
+        return photoUpload$.pipe(
+          switchMap((photoUrl: string | undefined) =>
+            this.performProfileUpdate(firebaseUser, data.name, photoUrl),
+          ),
+        );
+      }),
+    );
+  }
+
+  /**
+   * Upload profile photo to Firebase Storage
+   */
+  private uploadProfilePhoto(userId: string, file: File): Observable<string> {
+    const validation = this.storageService.validateFile(file, {
+      maxSizeBytes: 2 * 1024 * 1024,
+      allowedTypes: ["image/jpeg", "image/png", "image/webp"],
+    });
+
+    if (!validation.valid) {
+      return throwError(
+        () => new StorageError(validation.error!, "VALIDATION_FAILED"),
+      );
+    }
+
+    const ext = file.name.split(".").pop() || "jpg";
+    const path = `users/${userId}/profile.${ext}`;
+    return this.storageService.uploadFile(file, path);
+  }
+
+  /**
+   * Perform the actual profile update on Firebase Auth and Firestore
+   */
+  private performProfileUpdate(
+    user: firebase.User,
+    name?: string,
+    photoUrl?: string,
+  ): Observable<User> {
+    const updates: { displayName?: string; photoURL?: string } = {};
+    const firestoreUpdates: Record<string, unknown> = {
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (name !== undefined) {
+      updates.displayName = name;
+      firestoreUpdates["name"] = name;
+    }
+
+    if (photoUrl !== undefined) {
+      updates.photoURL = photoUrl;
+      firestoreUpdates["photoUrl"] = photoUrl;
+    }
+
+    return from(user.updateProfile(updates)).pipe(
+      switchMap(() =>
+        this.firestore
+          .collection("users")
+          .doc(user.uid)
+          .update(firestoreUpdates),
+      ),
+      switchMap(() => from(user.reload())),
+      map(() => {
+        const updatedUser = this.mapFirebaseUser(user);
+        // Update local state
+        this.updateAuthState({
+          ...this.authStateSubject.value,
+          user: updatedUser,
+        });
+        return updatedUser;
+      }),
+    );
   }
 
   /**

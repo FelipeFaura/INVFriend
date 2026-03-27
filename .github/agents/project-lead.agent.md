@@ -332,6 +332,88 @@ Only AFTER user approval:
 4. **Handle blockers** and escalations
 5. **Report completion** when all tasks done
 
+### Phase 6: Plan Closure (MANDATORY)
+
+**⚠️ NEVER skip this phase. Execute ALL steps before reporting plan completion.**
+
+When ALL tasks in a plan are marked complete:
+
+#### Step 1: Read ALL Execution Logs
+
+For EACH completed task, read the full Results/Execution Log section:
+
+- Build/Test status
+- Files modified
+- Warnings reported (even "pre-existing")
+- Retries/errors
+- External Issues Detected
+- Session Metrics
+
+#### Step 2: Verify Production Build
+
+```powershell
+# ALWAYS run production build, NOT development
+cd frontend; ng build 2>&1  # NOT --configuration=development
+```
+
+| Result      | Action                                                    |
+| ----------- | --------------------------------------------------------- |
+| ✅ Pass     | Proceed                                                   |
+| ⚠️ Warnings | Evaluate if blocking, add to Known Issues if pre-existing |
+| ❌ Fail     | Create fix task, do NOT close plan                        |
+
+#### Step 3: Identify & Track Issues
+
+| Issue Type                        | Action                                    |
+| --------------------------------- | ----------------------------------------- |
+| Pre-existing (reported by agents) | Add to PROJECT_PROGRESS.md → Known Issues |
+| New issue caused by tasks         | Create fix task, add to plan              |
+| External Issues Detected          | Evaluate ownership, create task if needed |
+
+#### Step 4: Extract Learnings
+
+Review for patterns worth documenting:
+
+- Repeated mistakes → Add to relevant agent's Known Patterns
+- Successful approaches → Document in agent files
+- Process improvements → Update this workflow
+
+#### Step 5: Complete Efficiency Analysis
+
+Fill the Efficiency Analysis section in PLAN.md:
+
+- Task metrics table (duration, tool calls, errors, lines changed)
+- Totals
+- Issues detected
+- Lessons learned
+- Recommendations
+
+#### Step 6: Update All Documentation
+
+| Document                 | Update                                                  |
+| ------------------------ | ------------------------------------------------------- |
+| PLAN.md                  | Status ✅ COMPLETADO, all tasks ✅, Efficiency Analysis |
+| PROJECT_PROGRESS.md      | Dashboard, Deliverables, Known Issues, Recent Activity  |
+| TASKS_FRONTEND/README.md | Move to Completed Task Groups                           |
+| Agent files              | New patterns if discovered                              |
+
+#### Step 7: Report to User
+
+```
+✅ [PLAN NAME] COMPLETADO
+
+📊 Resumen:
+- Tareas: X/X completadas
+- Build: ✅ Dev / [✅❌] Prod
+- Issues detectados: [list or "Ninguno"]
+
+⚠️ Acciones requeridas: [if any]
+
+📚 Patterns agregados: [if any]
+```
+
+---
+
 ### Processing Completed Tasks
 
 **⚠️ MANDATORY: Deep Review Process**
@@ -677,3 +759,24 @@ Format:
 - **Solution**: Upon plan completion, review efficiency analysis and add relevant patterns to agent files
 - **Example**: After UI Design System, added 3 new patterns to project-lead.agent.md
 - **Learned from**: UI Design System closure (March 2026)
+
+### Pattern: Verify Production Build, Not Just Development
+
+- **Problem**: Development builds may pass while production builds fail (e.g., bundle budget limits)
+- **Solution**: When reviewing agent completion, verify with `ng build` (production), not `ng build --configuration=development`
+- **Example**: Profile Edition TASK-049,050,051 passed dev build but production fails with "bundle initial exceeded maximum budget (1.10 MB > 1.05 MB limit)"
+- **Learned from**: Profile Edition closure (March 2026)
+
+### Pattern: Pre-existing Issues Must Be Tracked
+
+- **Problem**: Agents correctly report pre-existing issues but they get forgotten if not tracked
+- **Solution**: When agents report "pre-existing" warnings/errors, add them to Known Issues in PROJECT_PROGRESS.md
+- **Example**: Bundle budget warning reported as "pre-existing" in 3 tasks but not tracked until plan closure audit
+- **Learned from**: Profile Edition closure (March 2026)
+
+### Pattern: Exhaustive Review at Plan Closure
+
+- **Problem**: Closing plans without reviewing agent results misses issues and learning opportunities
+- **Solution**: Before marking a plan complete, read ALL Execution Logs, check for: (1) External Issues Detected, (2) Warnings reported, (3) Retries/errors, (4) Session metrics anomalies
+- **Example**: Profile Edition closure revealed production build failure that agents had noted as "pre-existing"
+- **Learned from**: Profile Edition closure (March 2026)

@@ -47,6 +47,16 @@ export interface RefreshTokenRequestDTO {
   refreshToken: string;
 }
 
+/**
+ * DTO for profile update request
+ */
+export interface UpdateProfileDTO {
+  /** Updated display name (2-50 characters) */
+  name?: string;
+  /** Photo file to upload */
+  photoFile?: File;
+}
+
 // ============================================================================
 // RESPONSE DTOs
 // ============================================================================

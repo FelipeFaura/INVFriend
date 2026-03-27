@@ -4,103 +4,64 @@ This folder contains detailed task specifications for frontend (Angular) develop
 
 **📊 Current Status**: See [PROJECT_PROGRESS.md](../PROJECT_PROGRESS.md) for live dashboard and metrics.
 
-## 🔄 In Progress Tasks
+## 🔴 Critical: Pending Fix
 
-### Sprint 2: Authentication Frontend
+| Task ID  | Task Name                  | Agent                | Status     | Priority |
+| -------- | -------------------------- | -------------------- | ---------- | -------- |
+| TASK-052 | Fix Production Bundle Size | @angular-implementer | ⏳ Pending | 🔴 High  |
 
-| Task ID  | Task Name                             | Status            | Dependencies | Estimated |
-| -------- | ------------------------------------- | ----------------- | ------------ | --------- |
-| TASK-005 | Implement Auth Domain Models & Errors | 🔄 READY TO START | TASK-004 ✅  | 2 hours   |
-| TASK-006 | Implement Auth HTTP Service           | ⏸️ PENDING        | TASK-005     | 4 hours   |
-| TASK-007 | Implement Login & Register Components | ⏸️ PENDING        | TASK-006     | 6 hours   |
-| TASK-008 | Implement Auth Guards & Routing       | ⏸️ PENDING        | TASK-007     | 3 hours   |
+[Task Details](./TASK_052_FIX_BUNDLE_SIZE.md) - **Blocks production deployment**
 
-**Expected Files**:
+## ✅ Completed Task Groups
 
-- `frontend/src/app/domain/models/user.model.ts`
-- `frontend/src/app/domain/errors/auth-errors.ts`
-- `frontend/src/app/application/dto/auth.dto.ts`
-- `frontend/src/app/adapters/services/auth-http.service.ts`
-- `frontend/src/app/adapters/components/login/login.component.ts`
-- `frontend/src/app/adapters/components/register/register.component.ts`
-- `frontend/src/app/adapters/guards/auth.guard.ts`
-- `frontend/src/app/adapters/guards/admin.guard.ts`
+| Group                     | Tasks                | Status      |
+| ------------------------- | -------------------- | ----------- |
+| Sprint 2: Auth Frontend   | TASK-005 to TASK-008 | ✅ Complete |
+| Sprint 4: Group Frontend  | TASK-013 to TASK-016 | ✅ Complete |
+| Sprint 6: Raffle Frontend | TASK-021 to TASK-024 | ✅ Complete |
+| UI Design System          | TASK-026 to TASK-044 | ✅ Complete |
+| Navigation Layout         | TASK-045 to TASK-048 | ✅ Complete |
+| Profile Edition           | TASK-049 to TASK-051 | ✅ Complete |
 
-## 📝 Next Task Details
+## 📂 Plans
 
-### TASK-005: Implement Auth Domain Models & Errors (Frontend)
+| Plan                                                               | Description                             | Status      |
+| ------------------------------------------------------------------ | --------------------------------------- | ----------- |
+| [PLAN_UI_DESIGN_SYSTEM.md](./PLAN_UI_DESIGN_SYSTEM.md)             | Design tokens, mixins, component styles | ✅ Complete |
+| [PLAN_NAVIGATION_LAYOUT.md](./PLAN_NAVIGATION_LAYOUT.md)           | Global sidebar layout                   | ✅ Complete |
+| [PLAN_PROFILE_EDITION.md](./PLAN_PROFILE_EDITION.md)               | User profile editing                    | ✅ Complete |
+| [PLAN_DASHBOARD_SECRET_SANTA.md](./PLAN_DASHBOARD_SECRET_SANTA.md) | Dashboard + user display improvements   | ⏳ Backlog  |
+| [PLAN_GROUP_IMPROVEMENTS.md](./PLAN_GROUP_IMPROVEMENTS.md)         | Add by email + edit group               | ⏳ Backlog  |
 
-**What to implement**:
+## 📋 Backlog
 
-1. Create `User` model matching backend structure
-2. Define error classes for common auth failures
-3. Create DTOs for:
-   - Login (email, password)
-   - Register (email, password, name)
-   - Google login (googleToken)
-   - Auth response (user, accessToken, expiresIn)
+### Dashboard Secret Santa (TASK-062 to TASK-065)
 
-**Files to create**:
+| Task ID  | Task Name                  | Status     | Dependencies |
+| -------- | -------------------------- | ---------- | ------------ |
+| TASK-062 | User profile service       | ⏳ Pending | TASK-059     |
+| TASK-063 | Assignment wishes page     | ⏳ Pending | TASK-062     |
+| TASK-064 | Update Secret Santa Reveal | ⏳ Pending | TASK-062     |
+| TASK-065 | Dashboard assignment cards | ⏳ Pending | TASK-061,062 |
 
-```typescript
-// frontend/src/app/domain/models/user.model.ts
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  photoUrl: string | null;
-  createdAt: number;
-  updatedAt: number;
-}
+[Full Plan](./PLAN_DASHBOARD_SECRET_SANTA.md)
 
-// frontend/src/app/domain/errors/auth-errors.ts
-export class AuthError extends Error {}
-export class InvalidCredentialsError extends AuthError {}
-export class UserAlreadyExistsError extends AuthError {}
+### Group Improvements (TASK-055 to TASK-057)
 
-// frontend/src/app/application/dto/auth.dto.ts
-export interface LoginDTO {
-  email: string;
-  password: string;
-}
+| Task ID  | Task Name               | Status     | Dependencies |
+| -------- | ----------------------- | ---------- | ------------ |
+| TASK-055 | Update Add Member modal | ⏳ Pending | TASK-054     |
+| TASK-056 | Create Edit Group modal | ⏳ Pending | -            |
+| TASK-057 | Connect Edit to service | ⏳ Pending | TASK-056     |
 
-export interface RegisterDTO {
-  email: string;
-  password: string;
-  name: string;
-}
-
-export interface AuthResponse {
-  user: User;
-  accessToken: string;
-  expiresIn?: number;
-}
-```
-
-**Reference Backend Implementation**:
-
-- See `backend/src/domain/entities/User.ts`
-- See `backend/src/domain/errors/AuthErrors.ts`
-- See `backend/src/shared/types/AuthTypes.ts`
-
-## 🔮 Upcoming Tasks (Sprint 4)
-
-### Sprint 4: Group Management Frontend
-
-| Task ID  | Task Name                             | Status     | Dependencies |
-| -------- | ------------------------------------- | ---------- | ------------ |
-| TASK-013 | Implement Group Models & HTTP Service | ⏸️ PENDING | TASK-012     |
-| TASK-014 | Implement Group List Component        | ⏸️ PENDING | TASK-013     |
-| TASK-015 | Implement Create Group Component      | ⏸️ PENDING | TASK-013     |
-| TASK-016 | Implement Group Detail Component      | ⏸️ PENDING | TASK-014     |
+[Full Plan](./PLAN_GROUP_IMPROVEMENTS.md)
 
 ## 📊 Statistics
 
 **📈 For complete statistics and velocity metrics**, see [PROJECT_PROGRESS.md](../PROJECT_PROGRESS.md).
 
-- **Total Frontend Tasks**: 16
-- **Ready to Start**: 1 (TASK-005)
-- **Pending**: 15
+- **Total Frontend Tasks**: 58 (1 cancelled: TASK-038, 1 pending fix: TASK-052, 7 backlog)
+- **Status**: Blocked by production build failure
 
 ---
 

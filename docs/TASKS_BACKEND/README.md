@@ -56,8 +56,31 @@ This folder contains detailed task specifications for backend development follow
 
 **📈 For complete statistics and velocity metrics**, see [PROJECT_PROGRESS.md](../PROJECT_PROGRESS.md).
 
-- **Total Backend Tasks**: 16
-- **Completed**: 4 (25%)
+- **Total Backend Tasks**: 22
+- **Completed**: 16
+- **Pending**: 6 (TASK-053, TASK-054, TASK-058 to 061)
+
+## 📋 Backlog
+
+### Dashboard Secret Santa (TASK-058 to TASK-061)
+
+| Task ID  | Task Name                   | Status     | Dependencies |
+| -------- | --------------------------- | ---------- | ------------ |
+| TASK-058 | GetUserPublicProfileUseCase | ⏳ Pending | -            |
+| TASK-059 | User Profile Endpoint       | ⏳ Pending | TASK-058     |
+| TASK-060 | GetAllMyAssignmentsUseCase  | ⏳ Pending | -            |
+| TASK-061 | All Assignments Endpoint    | ⏳ Pending | TASK-060     |
+
+[Full Plan](../TASKS_FRONTEND/PLAN_DASHBOARD_SECRET_SANTA.md)
+
+### Group Improvements (TASK-053 to TASK-054)
+
+| Task ID  | Task Name                       | Status     | Dependencies |
+| -------- | ------------------------------- | ---------- | ------------ |
+| TASK-053 | AddMemberByEmailUseCase         | ⏳ Pending | -            |
+| TASK-054 | Invite Member by Email Endpoint | ⏳ Pending | TASK-053     |
+
+[Full Plan](../TASKS_FRONTEND/PLAN_GROUP_IMPROVEMENTS.md)
 
 ---
 
