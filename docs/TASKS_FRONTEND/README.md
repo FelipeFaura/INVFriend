@@ -4,14 +4,6 @@ This folder contains detailed task specifications for frontend (Angular) develop
 
 **📊 Current Status**: See [PROJECT_PROGRESS.md](../PROJECT_PROGRESS.md) for live dashboard and metrics.
 
-## 🔴 Critical: Pending Fix
-
-| Task ID  | Task Name                  | Agent                | Status     | Priority |
-| -------- | -------------------------- | -------------------- | ---------- | -------- |
-| TASK-052 | Fix Production Bundle Size | @angular-implementer | ⏳ Pending | 🔴 High  |
-
-[Task Details](./TASK_052_FIX_BUNDLE_SIZE.md) - **Blocks production deployment**
-
 ## ✅ Completed Task Groups
 
 | Group                     | Tasks                | Status      |
@@ -22,6 +14,8 @@ This folder contains detailed task specifications for frontend (Angular) develop
 | UI Design System          | TASK-026 to TASK-044 | ✅ Complete |
 | Navigation Layout         | TASK-045 to TASK-048 | ✅ Complete |
 | Profile Edition           | TASK-049 to TASK-051 | ✅ Complete |
+| Fix Bundle Size           | TASK-052             | ✅ Complete |
+| Dashboard Secret Santa    | TASK-058 to TASK-065 | ✅ Complete |
 
 ## 📂 Plans
 
@@ -30,21 +24,10 @@ This folder contains detailed task specifications for frontend (Angular) develop
 | [PLAN_UI_DESIGN_SYSTEM.md](./PLAN_UI_DESIGN_SYSTEM.md)             | Design tokens, mixins, component styles | ✅ Complete |
 | [PLAN_NAVIGATION_LAYOUT.md](./PLAN_NAVIGATION_LAYOUT.md)           | Global sidebar layout                   | ✅ Complete |
 | [PLAN_PROFILE_EDITION.md](./PLAN_PROFILE_EDITION.md)               | User profile editing                    | ✅ Complete |
-| [PLAN_DASHBOARD_SECRET_SANTA.md](./PLAN_DASHBOARD_SECRET_SANTA.md) | Dashboard + user display improvements   | ⏳ Backlog  |
+| [PLAN_DASHBOARD_SECRET_SANTA.md](./PLAN_DASHBOARD_SECRET_SANTA.md) | Dashboard + user display improvements   | ✅ Complete |
 | [PLAN_GROUP_IMPROVEMENTS.md](./PLAN_GROUP_IMPROVEMENTS.md)         | Add by email + edit group               | ⏳ Backlog  |
 
 ## 📋 Backlog
-
-### Dashboard Secret Santa (TASK-062 to TASK-065)
-
-| Task ID  | Task Name                  | Status     | Dependencies |
-| -------- | -------------------------- | ---------- | ------------ |
-| TASK-062 | User profile service       | ⏳ Pending | TASK-059     |
-| TASK-063 | Assignment wishes page     | ⏳ Pending | TASK-062     |
-| TASK-064 | Update Secret Santa Reveal | ⏳ Pending | TASK-062     |
-| TASK-065 | Dashboard assignment cards | ⏳ Pending | TASK-061,062 |
-
-[Full Plan](./PLAN_DASHBOARD_SECRET_SANTA.md)
 
 ### Group Improvements (TASK-055 to TASK-057)
 
