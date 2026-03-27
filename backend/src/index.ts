@@ -4,9 +4,12 @@ import dotenv from "dotenv";
 import * as functions from "firebase-functions";
 import { createGroupRoutes } from "./adapters/http/routes/groupRoutes";
 import { createWishRoutes } from "./adapters/http/routes/wishRoutes";
+import { createUserRoutes } from "./adapters/http/routes/userRoutes";
+import { createAssignmentRoutes } from "./adapters/http/routes/assignmentRoutes";
 import { FirebaseGroupRepository } from "./adapters/persistence/FirebaseGroupRepository";
 import { FirebaseAssignmentRepository } from "./adapters/persistence/FirebaseAssignmentRepository";
 import { FirebaseWishRepository } from "./adapters/persistence/FirebaseWishRepository";
+import { FirebaseUserRepository } from "./adapters/persistence/FirebaseUserRepository";
 
 dotenv.config();
 
@@ -16,6 +19,7 @@ const app = express();
 const groupRepository = new FirebaseGroupRepository();
 const assignmentRepository = new FirebaseAssignmentRepository();
 const wishRepository = new FirebaseWishRepository();
+const userRepository = new FirebaseUserRepository();
 
 // Middleware
 app.use(cors({ origin: true }));
@@ -34,6 +38,11 @@ app.use(
 app.use(
   "/api/groups/:groupId/wishes",
   createWishRoutes(wishRepository, groupRepository, assignmentRepository),
+);
+app.use("/api/users", createUserRoutes(userRepository));
+app.use(
+  "/api/assignments",
+  createAssignmentRoutes(assignmentRepository, groupRepository),
 );
 
 // Export for Firebase Functions

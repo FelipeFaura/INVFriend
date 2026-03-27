@@ -32,3 +32,16 @@ export { UpdateWishUseCase } from "./UpdateWishUseCase";
 export { DeleteWishUseCase } from "./DeleteWishUseCase";
 export { GetMyWishesUseCase } from "./GetMyWishesUseCase";
 export { GetSecretSantaWishesUseCase } from "./GetSecretSantaWishesUseCase";
+
+// Assignment Use Cases (cross-group)
+export {
+  GetAllMyAssignmentsUseCase,
+  GetAllMyAssignmentsDTO,
+  MyAssignmentSummaryDTO,
+} from "./GetAllMyAssignmentsUseCase";
+
+// User Use Cases
+export {
+  GetUserPublicProfileUseCase,
+  UserNotFoundError,
+} from "./GetUserPublicProfileUseCase";
