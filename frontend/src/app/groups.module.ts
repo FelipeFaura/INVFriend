@@ -14,10 +14,12 @@ import { RaffleTriggerComponent } from "./adapters/components/raffle-trigger/raf
 import { SecretSantaRevealComponent } from "./adapters/components/secret-santa-reveal/secret-santa-reveal.component";
 import { GroupStatusComponent } from "./adapters/components/group-status/group-status.component";
 import { WishListComponent } from "./adapters/components/wish-list/wish-list.component";
+import { AssignmentWishesComponent } from "./adapters/components/assignment-wishes/assignment-wishes.component";
 
 const routes: Routes = [
   { path: "", component: GroupListComponent },
   { path: "create", component: GroupCreateComponent },
+  { path: ":id/assignment/:userId/wishes", component: AssignmentWishesComponent },
   { path: ":id", component: GroupDetailComponent },
 ];
 
@@ -30,6 +32,7 @@ const routes: Routes = [
     SecretSantaRevealComponent,
     GroupStatusComponent,
     WishListComponent,
+    AssignmentWishesComponent,
   ],
   imports: [
     CommonModule,
@@ -45,6 +48,7 @@ const routes: Routes = [
     SecretSantaRevealComponent,
     GroupStatusComponent,
     WishListComponent,
+    AssignmentWishesComponent,
   ],
 })
 export class GroupsModule {}

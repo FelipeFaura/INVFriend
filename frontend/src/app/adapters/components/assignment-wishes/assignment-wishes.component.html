@@ -1,0 +1,116 @@
+<!-- Assignment Wishes: shows the wish list of the assigned recipient -->
+<div class="assignment-wishes-container">
+  <!-- Back Navigation -->
+  <a class="btn btn--ghost btn--sm back-link" [routerLink]="['/groups', groupId]">
+    ← Back to Group
+  </a>
+
+  <!-- Loading State -->
+  <div *ngIf="state === 'loading'" class="loading-container">
+    <div class="spinner spinner--lg spinner--primary"></div>
+    <p class="loading-container__text">Loading wish list...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="state === 'error'" class="card error-card">
+    <div class="card__body">
+      <div class="error-content">
+        <span class="error-content__icon" aria-hidden="true">❌</span>
+        <p class="error-content__message">{{ errorMessage }}</p>
+        <button type="button" class="btn btn--secondary" (click)="retry()">
+          Try Again
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loaded State -->
+  <ng-container *ngIf="state === 'loaded'">
+    <!-- Profile Header -->
+    <section class="card profile-header">
+      <div class="card__body">
+        <p class="profile-header__label">Gift Ideas for:</p>
+        <div class="profile-header__info">
+          <img
+            *ngIf="receiverProfile?.photoUrl"
+            [src]="receiverProfile!.photoUrl!"
+            [alt]="receiverProfile!.name"
+            class="profile-header__photo"
+          />
+          <div
+            *ngIf="!receiverProfile?.photoUrl"
+            class="profile-header__avatar"
+          >
+            {{ getReceiverInitial() }}
+          </div>
+          <h2 class="profile-header__name">{{ receiverProfile?.name }}</h2>
+        </div>
+        <span *ngIf="group?.budgetLimit" class="profile-header__budget">
+          Budget: ${{ group!.budgetLimit }}
+        </span>
+      </div>
+    </section>
+
+    <!-- Wishes List -->
+    <section class="card wish-section wish-section--assigned">
+      <header class="card__header">
+        <h3 class="card__title">🎁 Wish List</h3>
+      </header>
+
+      <div class="card__body">
+        <!-- Empty State -->
+        <div
+          *ngIf="wishes.length === 0"
+          class="empty-state empty-state--compact"
+        >
+          <p class="empty-state__title">No wishes yet</p>
+          <p class="empty-state__description">
+            Your recipient hasn't added any wishes yet. Check back later or get
+            creative with your gift!
+          </p>
+        </div>
+
+        <!-- Wish Cards -->
+        <ul *ngIf="wishes.length > 0" class="wish-list">
+          <li
+            *ngFor="let wish of wishes"
+            class="wish-item wish-item--assigned"
+            [attr.data-testid]="'wish-' + wish.id"
+          >
+            <div class="wish-item__header">
+              <h4 class="wish-item__title">{{ wish.title }}</h4>
+            </div>
+
+            <div class="wish-item__content">
+              <p *ngIf="wish.description" class="wish-item__description">
+                {{ wish.description }}
+              </p>
+
+              <div class="wish-item__meta">
+                <span
+                  *ngIf="wish.priority"
+                  class="badge badge--warning"
+                  [title]="'Priority: ' + wish.priority"
+                >
+                  {{ getPriorityLabel(wish.priority) }}
+                </span>
+                <span *ngIf="wish.estimatedPrice" class="badge badge--success">
+                  {{ formatPrice(wish.estimatedPrice) }}
+                </span>
+                <a
+                  *ngIf="isValidUrl(wish.url)"
+                  [href]="wish.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="wish-item__link"
+                >
+                  🔗 View Link
+                </a>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </ng-container>
+</div>

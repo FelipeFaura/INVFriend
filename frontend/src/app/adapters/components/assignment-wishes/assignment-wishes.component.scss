@@ -1,0 +1,247 @@
+// ============================================
+// ASSIGNMENT WISHES COMPONENT STYLES
+// ============================================
+// Page displaying the wish list of the assigned gift recipient.
+// Uses design system tokens and reuses card/wish patterns.
+// ============================================
+
+@use '../../../../styles/tokens' as *;
+
+// ===================
+// CONTAINER
+// ===================
+
+.assignment-wishes-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: $space-4;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+// ===================
+// BACK LINK
+// ===================
+
+.back-link {
+  align-self: flex-start;
+  text-decoration: none;
+}
+
+// ===================
+// PROFILE HEADER
+// ===================
+
+.profile-header {
+  text-align: center;
+
+  &__label {
+    color: $text-secondary;
+    font-size: $font-size-sm;
+    margin: 0 0 $space-3 0;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-2;
+    margin-bottom: $space-4;
+  }
+
+  &__photo {
+    width: 80px;
+    height: 80px;
+    border-radius: $radius-full;
+    object-fit: cover;
+  }
+
+  &__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: $radius-full;
+    background: $gradient-primary;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+  }
+
+  &__budget {
+    display: inline-block;
+    padding: $space-2 $space-4;
+    background-color: $color-success-50;
+    color: $color-success-700;
+    font-weight: $font-weight-semibold;
+    font-size: $font-size-sm;
+    border-radius: $radius-full;
+  }
+}
+
+// ===================
+// WISH SECTION
+// ===================
+
+.wish-section--assigned {
+  background: linear-gradient(135deg, $color-primary-50 0%, $color-secondary-50 100%);
+  border: $border-width-thick solid $color-primary-100;
+}
+
+// ===================
+// WISH LIST
+// ===================
+
+.wish-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $space-4;
+}
+
+// ===================
+// WISH ITEM
+// ===================
+
+.wish-item {
+  background-color: $bg-surface;
+  border: $border-width-default solid $border-default;
+  border-radius: $radius-md;
+  padding: $space-4;
+  transition: box-shadow $transition-normal;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+
+  &--assigned {
+    background-color: $color-neutral-0;
+    border-color: $color-primary-200;
+  }
+
+  &__header {
+    margin-bottom: $space-2;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    line-height: $line-height-tight;
+  }
+
+  &__content {
+    color: $text-secondary;
+  }
+
+  &__description {
+    margin: 0 0 $space-3 0;
+    line-height: $line-height-relaxed;
+    color: $text-secondary;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-3;
+    align-items: center;
+    font-size: $font-size-sm;
+  }
+
+  &__link {
+    color: $text-link;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: $space-1;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $text-link-hover;
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      outline: $border-width-thick solid $border-focus;
+      outline-offset: 2px;
+      border-radius: $radius-sm;
+    }
+  }
+}
+
+// ===================
+// LOADING STATE
+// ===================
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $space-8 $space-4;
+  text-align: center;
+
+  &__text {
+    margin-top: $space-4;
+    color: $text-secondary;
+    font-size: $font-size-sm;
+  }
+}
+
+// ===================
+// ERROR STATE
+// ===================
+
+.error-card {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.error-content {
+  text-align: center;
+  padding: $space-4;
+
+  &__icon {
+    display: block;
+    font-size: 2rem;
+    margin-bottom: $space-3;
+    line-height: 1;
+  }
+
+  &__message {
+    color: $text-secondary;
+    margin-bottom: $space-4;
+  }
+}
+
+// ===================
+// RESPONSIVE
+// ===================
+
+@media (max-width: $breakpoint-sm) {
+  .assignment-wishes-container {
+    padding: $space-3;
+  }
+
+  .profile-header__photo,
+  .profile-header__avatar {
+    width: 64px;
+    height: 64px;
+  }
+
+  .profile-header__name {
+    font-size: $font-size-xl;
+  }
+}
