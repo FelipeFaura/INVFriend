@@ -10,12 +10,15 @@ import {
   SimpleChanges,
   OnDestroy,
 } from "@angular/core";
+import { Router } from "@angular/router";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
 import { RaffleHttpService } from "../../services/raffle-http.service";
+import { UserHttpService } from "../../services/user-http.service";
 import { Assignment } from "../../../domain/models/assignment.model";
 import { Group } from "../../../domain/models/group.model";
+import { UserPublicProfile } from "../../../domain/models/user.model";
 import {
   RaffleNotCompletedError,
   AssignmentNotFoundError,
@@ -48,9 +51,16 @@ export class SecretSantaRevealComponent
   /** Error message if any */
   errorMessage: string | null = null;
 
+  /** Receiver's public profile */
+  receiverProfile: UserPublicProfile | null = null;
+
   private destroy$ = new Subject<void>();
 
-  constructor(private raffleHttpService: RaffleHttpService) {}
+  constructor(
+    private raffleHttpService: RaffleHttpService,
+    private userHttpService: UserHttpService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.checkAndLoadAssignment();
@@ -100,6 +110,7 @@ export class SecretSantaRevealComponent
         next: (assignment) => {
           this.assignment = assignment;
           this.state = "revealed";
+          this.loadReceiverProfile(assignment.receiverId);
         },
         error: (err) => {
           if (
@@ -123,11 +134,48 @@ export class SecretSantaRevealComponent
   }
 
   /**
-   * Get member name by ID (simplified - in real app, would look up user info)
+   * Load the receiver's public profile
+   */
+  loadReceiverProfile(userId: string): void {
+    this.userHttpService
+      .getUserPublicProfile(userId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (profile) => {
+          this.receiverProfile = profile;
+        },
+        error: () => {
+          // Profile load failure is non-critical; keep showing assignment
+          this.receiverProfile = null;
+        },
+      });
+  }
+
+  /**
+   * Navigate to the assignment's wishes page
+   */
+  navigateToWishes(): void {
+    if (!this.group || !this.assignment) return;
+    this.router.navigate([
+      "/groups",
+      this.group.id,
+      "assignment",
+      this.assignment.receiverId,
+      "wishes",
+    ]);
+  }
+
+  /**
+   * Get first letter of receiver name for avatar fallback
+   */
+  getReceiverInitial(): string {
+    return this.receiverProfile?.name?.charAt(0)?.toUpperCase() || "?";
+  }
+
+  /**
+   * Get member name by ID (fallback when profile not loaded)
    */
   getMemberDisplay(memberId: string): string {
-    // For now, return the ID
-    // In a real app, this would be replaced with actual user lookup
     return memberId;
   }
 }
