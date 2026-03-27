@@ -7,7 +7,7 @@
 | **Task ID**      | TASK-052              |
 | **Plan**         | Standalone fix        |
 | **Agent**        | @angular-implementer  |
-| **Status**       | ⏳ Pending            |
+| **Status**       | ✅ Complete           |
 | **Dependencies** | None                  |
 | **Priority**     | 🔴 High (blocks prod) |
 
@@ -138,6 +138,89 @@ ng serve
 
 ---
 
+## Results
+
+**Status:** ⏳ → ✅
+**Approach:** Combination of Option A (Optimize) + Option B (Adjust Budget)
+
+### Optimizations Applied (Option A)
+
+1. **Lazy loaded Login and Register components** via `loadComponent` in routing
+   - Login/Register were standalone components loaded eagerly
+   - Moved to lazy chunks, saving ~65 kB from initial bundle
+   - main.js reduced from 1.03 MB → 964.86 kB
+
+2. **Removed unused `ReactiveFormsModule` from `AppModule`**
+   - Only standalone components (Login, Register) used it, and they import it themselves
+   - `AppComponent` and `NotificationComponent` (the only AppModule declarations) don't use forms
+
+### Budget Adjustment (Option B)
+
+- `maximumWarning`: 500 kB → 750 kB
+- `maximumError`: 1 MB → 1.2 MB
+- **Justification**: The app imports Firebase compat SDK (Auth + Firestore + Storage) which is inherently large and not tree-shakeable. The 1.04 MB / 263 kB transfer initial bundle is standard for Angular 18 + Firebase compat. A full migration to modular Firebase APIs would be a separate task.
+
+### Bundle Comparison
+
+| Metric           | Before       | After        | Change   |
+| ---------------- | ------------ | ------------ | -------- |
+| main.js          | 1.03 MB      | 964.86 kB    | -65 kB   |
+| Initial total    | 1.10 MB      | 1.04 MB      | -60 kB   |
+| Transfer size    | 274.52 kB    | 263.55 kB    | -11 kB   |
+| Build result     | ❌ Error      | ✅ Pass       | Fixed    |
+
+### New Lazy Chunks
+
+| Chunk                    | Size     |
+| ------------------------ | -------- |
+| login-component          | 43.40 kB |
+| register-component       | 10.66 kB |
+| login-component (shared) | 7.63 kB  |
+
+### Files Modified
+
+| File | Changes |
+| --- | --- |
+| `frontend/angular.json` | Budget: maximumWarning 500kb→750kb, maximumError 1mb→1.2mb |
+| `frontend/src/app/app.module.ts` | Removed unused `ReactiveFormsModule` import |
+| `frontend/src/app/app-routing.module.ts` | Changed login/register to `loadComponent` lazy loading |
+
+**Build:** ✅ Pass
+**Tests:** N/A (no test files modified)
+
+### Future Recommendations
+
+To further reduce bundle size in a future task:
+- Migrate from `@angular/fire/compat` to modular `@angular/fire` APIs (estimated savings: 100-200 kB)
+- This would affect: `auth-application.service.ts`, `storage.service.ts`, `group-detail.component.ts`
+
+---
+
+## Session Metrics
+
+| Metric                 | Value                                              |
+| ---------------------- | -------------------------------------------------- |
+| **Model**              | Claude Opus 4.6                                    |
+| **Tokens In/Out**      | N/A                                                |
+| **Context Window %**   | ~30%                                               |
+| **Duration**           | ~10 minutes                                        |
+| **Tool Calls**         | ~20                                                |
+| **Errors/Retries**     | 1 (npm install needed before build)                |
+| **User Interventions** | No                                                 |
+| **Files Modified**     | 3                                                  |
+| **Lines Changed**      | ~+20 / -10                                         |
+| **Difficulty (1-5)**   | 2                                                  |
+
+**Metrics Notes:** Token counts not accessible from this session. Duration estimated from timestamps.
+
+---
+
 ## Execution Log
 
-_To be filled during implementation_
+1. Confirmed production build fails with "Budget 1.05 MB was not met by 51.41 kB"
+2. Analyzed all Firebase compat imports — all required at root by AuthApplicationService
+3. Identified LoginComponent/RegisterComponent as standalone but eagerly loaded
+4. Identified ReactiveFormsModule as unused at AppModule level
+5. Applied optimizations: lazy load auth components, remove unused module import
+6. Adjusted budget (1mb→1.2mb error, 500kb→750kb warning) with justification
+7. Verified production build passes (1.04 MB initial, within 1.2 MB budget)

@@ -1,8 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { LoginComponent } from "./adapters/components/login/login.component";
-import { RegisterComponent } from "./adapters/components/register/register.component";
 import { LayoutComponent } from "./adapters/components/layout/layout.component";
 import { AuthGuard } from "./adapters/guards/auth.guard";
 import { GuestGuard } from "./adapters/guards/guest.guard";
@@ -21,13 +19,19 @@ const routes: Routes = [
   // Auth routes (no layout)
   {
     path: "login",
-    component: LoginComponent,
+    loadComponent: () =>
+      import("./adapters/components/login/login.component").then(
+        (m) => m.LoginComponent,
+      ),
     canActivate: [GuestGuard],
     title: "Login - INVFriend",
   },
   {
     path: "register",
-    component: RegisterComponent,
+    loadComponent: () =>
+      import("./adapters/components/register/register.component").then(
+        (m) => m.RegisterComponent,
+      ),
     canActivate: [GuestGuard],
     title: "Register - INVFriend",
   },
