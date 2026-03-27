@@ -49,3 +49,10 @@ export function createUser(data: CreateUserData): User {
     updatedAt: now,
   };
 }
+
+/** Public profile - only public fields, no email or timestamps */
+export interface UserPublicProfile {
+  readonly id: string;
+  readonly name: string;
+  readonly photoUrl: string | null;
+}

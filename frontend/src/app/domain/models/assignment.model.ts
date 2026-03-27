@@ -28,3 +28,13 @@ export interface RaffleResult {
   /** Number of assignments created */
   assignmentCount: number;
 }
+
+/** Assignment enriched with group info, for dashboard display */
+export interface MyAssignmentSummary {
+  assignmentId: string;
+  groupId: string;
+  groupName: string;
+  budgetLimit: number;
+  receiverId: string;
+  createdAt: number;
+}
