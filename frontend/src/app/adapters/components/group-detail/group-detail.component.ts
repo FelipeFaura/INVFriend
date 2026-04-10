@@ -31,7 +31,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
   showAddMemberModal = false;
   showRemoveMemberConfirm = false;
   memberToRemove: string | null = null;
-  newMemberId = "";
+  newMemberEmail = "";
   actionError: string | null = null;
   isProcessing = false;
 
@@ -199,24 +199,29 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
   // Add Member
   openAddMemberModal(): void {
     this.showAddMemberModal = true;
-    this.newMemberId = "";
+    this.newMemberEmail = "";
     this.actionError = null;
   }
 
   closeAddMemberModal(): void {
     this.showAddMemberModal = false;
-    this.newMemberId = "";
+    this.newMemberEmail = "";
     this.actionError = null;
   }
 
   addMember(): void {
-    if (!this.group || !this.newMemberId.trim()) return;
+    if (!this.group || !this.newMemberEmail.trim()) return;
+
+    if (!this.newMemberEmail.trim().includes("@")) {
+      this.actionError = "Please enter a valid email address";
+      return;
+    }
 
     this.isProcessing = true;
     this.actionError = null;
 
     this.groupHttpService
-      .addMember(this.group.id, this.newMemberId.trim())
+      .addMemberByEmail(this.group.id, this.newMemberEmail.trim())
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updatedGroup) => {

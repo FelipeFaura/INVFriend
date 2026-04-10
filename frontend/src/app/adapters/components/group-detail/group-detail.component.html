@@ -210,17 +210,17 @@
           <span class="alert__content">{{ actionError }}</span>
         </div>
         <div class="form-group">
-          <label for="memberId" class="form-group__label">User ID</label>
+          <label for="memberEmail" class="form-group__label">Email</label>
           <input 
-            type="text" 
-            id="memberId"
-            [(ngModel)]="newMemberId"
-            placeholder="Enter user ID"
+            type="email" 
+            id="memberEmail"
+            [(ngModel)]="newMemberEmail"
+            placeholder="Enter member's email"
             class="form-input"
-            data-testid="member-id-input"
-            aria-describedby="memberId-hint"
+            data-testid="member-email-input"
+            aria-describedby="memberEmail-hint"
           />
-          <span id="memberId-hint" class="form-hint">Enter the user's unique identifier</span>
+          <span id="memberEmail-hint" class="form-hint">The user must be registered in INVFriend</span>
         </div>
       </div>
       <footer class="modal__footer">
@@ -234,7 +234,7 @@
           class="btn btn--primary" 
           [class.btn--loading]="isProcessing"
           (click)="addMember()"
-          [disabled]="isProcessing || !newMemberId.trim()"
+          [disabled]="isProcessing || !newMemberEmail.trim()"
           data-testid="confirm-add-btn">
           <span *ngIf="isProcessing" class="btn__spinner" aria-hidden="true"></span>
           {{ isProcessing ? 'Adding...' : 'Add Member' }}

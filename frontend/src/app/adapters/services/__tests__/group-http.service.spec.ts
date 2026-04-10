@@ -352,6 +352,78 @@ describe("GroupHttpService", () => {
     });
   });
 
+  describe("addMemberByEmail", () => {
+    it("should invite member by email and return updated Group", () => {
+      const groupId = "group-123";
+      const email = "newuser@test.com";
+
+      let result: Group | undefined;
+      service.addMemberByEmail(groupId, email).subscribe((group) => {
+        result = group;
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/${groupId}/members/invite`);
+      expect(req.request.method).toBe("POST");
+      expect(req.request.body).toEqual({ email });
+      req.flush({
+        ...mockGroupResponse,
+        members: ["user-1", "user-2", "user-3"],
+      });
+
+      expect(result).toBeDefined();
+      expect(result!.members).toContain("user-3");
+    });
+
+    it("should handle user not found error", () => {
+      const groupId = "group-123";
+      const email = "unknown@test.com";
+      let error: Error | undefined;
+
+      service.addMemberByEmail(groupId, email).subscribe({
+        error: (e) => {
+          error = e;
+        },
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/${groupId}/members/invite`);
+      req.flush(
+        {
+          error: "Not Found",
+          code: "USER_NOT_FOUND",
+          message: "No user found with that email",
+        },
+        { status: 404, statusText: "Not Found" },
+      );
+
+      expect(error).toBeDefined();
+      expect(error!.message).toBe("No user found with that email");
+    });
+
+    it("should handle already member error", () => {
+      const groupId = "group-123";
+      const email = "existing@test.com";
+      let error: AlreadyGroupMemberError | undefined;
+
+      service.addMemberByEmail(groupId, email).subscribe({
+        error: (e) => {
+          error = e;
+        },
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/${groupId}/members/invite`);
+      req.flush(
+        {
+          error: "Bad Request",
+          code: "ALREADY_GROUP_MEMBER",
+          message: "Already a member",
+        },
+        { status: 400, statusText: "Bad Request" },
+      );
+
+      expect(error).toBeInstanceOf(AlreadyGroupMemberError);
+    });
+  });
+
   describe("removeMember", () => {
     it("should remove member and return updated Group", () => {
       const groupId = "group-123";

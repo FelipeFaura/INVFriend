@@ -44,6 +44,7 @@ describe("GroupDetailComponent", () => {
       "getGroupById",
       "deleteGroup",
       "addMember",
+      "addMemberByEmail",
       "removeMember",
     ]);
     mockRouter = jasmine.createSpyObj("Router", ["navigate"]);
@@ -337,33 +338,42 @@ describe("GroupDetailComponent", () => {
         ...mockGroup,
         members: [...mockGroup.members, "new-member"],
       };
-      mockGroupService.addMember.and.returnValue(of(updatedGroup));
+      mockGroupService.addMemberByEmail.and.returnValue(of(updatedGroup));
 
       component.openAddMemberModal();
-      component.newMemberId = "new-member";
+      component.newMemberEmail = "newmember@test.com";
       component.addMember();
       tick();
 
-      expect(mockGroupService.addMember).toHaveBeenCalledWith(
+      expect(mockGroupService.addMemberByEmail).toHaveBeenCalledWith(
         "group-123",
-        "new-member",
+        "newmember@test.com",
       );
       expect(component.group?.members).toContain("new-member");
       expect(component.showAddMemberModal).toBeFalse();
     }));
 
     it("should show error on add member failure", fakeAsync(() => {
-      mockGroupService.addMember.and.returnValue(
+      mockGroupService.addMemberByEmail.and.returnValue(
         throwError(() => new Error("Already a member")),
       );
 
       component.openAddMemberModal();
-      component.newMemberId = "member-1";
+      component.newMemberEmail = "member@test.com";
       component.addMember();
       tick();
 
       expect(component.actionError).toBe("Already a member");
     }));
+
+    it("should show validation error for invalid email", () => {
+      component.openAddMemberModal();
+      component.newMemberEmail = "not-an-email";
+      component.addMember();
+
+      expect(component.actionError).toBe("Please enter a valid email address");
+      expect(mockGroupService.addMemberByEmail).not.toHaveBeenCalled();
+    });
   });
 
   describe("Remove Member", () => {
