@@ -32,10 +32,22 @@
 | [PROJECT_PROGRESS.md](./PROJECT_PROGRESS.md)                                       | **Live progress dashboard** - Sprint status, metrics, timeline | Everyone                   |
 | [SPRINT_PLANNING.md](./SPRINT_PLANNING.md)                                         | **Current sprint roadmap** - Active and upcoming sprints       | Product Owners, Architects |
 | [SPRINTS_ARCHIVE.md](./SPRINTS_ARCHIVE.md)                                         | **Completed sprints history** - Detailed past sprint records   | Developers, Reviewers      |
-| [TASKS_BACKEND/README.md](./TASKS_BACKEND/README.md)                               | **Backend task tracker** - Completed and pending tasks         | Backend Developers         |
-| [TASKS_FRONTEND/README.md](./TASKS_FRONTEND/README.md)                             | **Frontend task tracker** - Angular tasks and status           | Frontend Developers        |
 | [GUIDELINES.md](./GUIDELINES.md#-control-de-scope-para-ia) - Scope Control Section | **Assign tasks to AI** without going out of scope              | Product Owners, Architects |
-| [TASK_TEMPLATE.md](./TASK_TEMPLATE.md)                                             | **Template for clear tasks** - Real examples included          | Task assigners             |
+
+### Agent System
+
+| Document                                                     | Purpose                                                  |
+| ------------------------------------------------------------ | -------------------------------------------------------- |
+| [AGENT-SYSTEM-README.md](./AGENT-SYSTEM-README.md)           | Overview of the multi-agent orchestration system          |
+| `.github/agents/project-lead.agent.md`                       | User-facing orchestrator — plans, delegates, commits     |
+| `.github/agents/coder.agent.md`                              | Full-stack implementer (Angular + Express + tests)       |
+| `.github/agents/reviewer.agent.md`                           | Code quality + security reviewer (read-only)             |
+| `.github/agents/ui-designer.agent.md`                        | SCSS, HTML, accessibility specialist                     |
+| `.github/skills/coding-guidelines/SKILL.md`                  | Shared coding conventions loaded by all agents           |
+
+### Archived
+
+Task and plan files from previous sprints are in `docs/archive/`.
 
 ---
 
