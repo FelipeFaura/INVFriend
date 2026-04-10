@@ -2,6 +2,7 @@
 name: coder
 description: "Writes code, fixes bugs, and delivers unit tests. Handles both Angular frontend and Express backend following hexagonal architecture."
 tools: ['read', 'edit', 'search', 'execute']
+model: 'Claude Opus 4.6'
 user-invocable: true
 ---
 

@@ -2,6 +2,7 @@
 name: ui-designer
 description: "Implements UI styling, layouts, accessibility, and visual components. Focuses on SCSS, HTML templates, and responsive design."
 tools: ['read', 'edit', 'search', 'execute']
+model: 'Claude Sonnet 4.6'
 user-invocable: false
 disable-model-invocation: false
 ---

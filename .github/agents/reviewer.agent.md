@@ -2,6 +2,7 @@
 name: reviewer
 description: "Reviews code for quality, security (OWASP), architecture compliance, and maintainability. Read-only — never modifies production code."
 tools: ['read', 'search']
+model: 'Claude Sonnet 4.6'
 user-invocable: true
 disable-model-invocation: false
 ---

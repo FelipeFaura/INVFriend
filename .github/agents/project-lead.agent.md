@@ -3,6 +3,7 @@ name: project-lead
 description: "Coordinates specialist agents to deliver features. Plans work, delegates to coder/reviewer/ui-designer, reviews output, commits. Never writes production code."
 tools: [read, search, execute, agent, todo]
 agents: [coder, reviewer, ui-designer]
+model: 'Claude Sonnet 4.6'
 ---
 
 # 🎯 AGENT: Project Lead (Coordinator & Orchestrator)
@@ -99,13 +100,12 @@ For each wave:
    - If coder claims "tests not applicable", verify their justification matches valid exceptions
 3. **Fix small issues** (wrong import paths, config) — these are NOT production code
 4. **Run review** — optionally call `@reviewer` on the changed files
-5. **Commit per task** — one conventional commit message per task:
+5. **Commit per task** — stage ONLY files from this task, never `git add -A`:
+   ```bash
+   git add <file1> <file2>  # only files the sub-agent created/modified
+   git commit -m "feat(scope): description"
    ```
-   feat(backend|frontend): short description
-   
-   - Detail 1
-   - Detail 2
-   ```
+   If unsure which files belong to this task, run `git diff --name-only` and cross-reference with the sub-agent report.
 6. **Report wave completion** to user
 
 ### Phase 5: Closure
