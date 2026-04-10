@@ -36,13 +36,14 @@ export class AuthInterceptor implements HttpInterceptor {
 
     // Add auth header if token exists
     const token = this.authService.accessToken;
+    const hadToken = !!token;
     if (token) {
       request = this.addAuthHeader(request, token);
     }
 
     return next.handle(request).pipe(
       catchError((error) => {
-        if (error instanceof HttpErrorResponse && error.status === 401) {
+        if (error instanceof HttpErrorResponse && error.status === 401 && hadToken) {
           return this.handle401Error(request, next);
         }
         return throwError(() => error);

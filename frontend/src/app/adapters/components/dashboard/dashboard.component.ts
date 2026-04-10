@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Router } from "@angular/router";
 import { Subject, forkJoin, of } from "rxjs";
-import { catchError, takeUntil } from "rxjs/operators";
+import { catchError, filter, take, takeUntil } from "rxjs/operators";
 
 import { AuthApplicationService } from "../../../application/services/auth-application.service";
 import { AssignmentHttpService } from "../../services/assignment-http.service";
@@ -40,10 +40,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private readonly assignmentService: AssignmentHttpService,
     private readonly userService: UserHttpService,
     private readonly router: Router,
+    private readonly cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
-    this.loadAssignments();
+    this.authService.currentUser$
+      .pipe(
+        filter((user) => user !== null),
+        take(1),
+        takeUntil(this.destroy$),
+      )
+      .subscribe(() => this.loadAssignments());
   }
 
   ngOnDestroy(): void {
@@ -77,6 +84,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
           if (assignments.length === 0) {
             this.loading = false;
+            this.cdr.markForCheck();
             return;
           }
 
@@ -95,14 +103,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
                   profile: profiles[i],
                 }));
                 this.loading = false;
+                this.cdr.markForCheck();
               },
               error: () => {
                 this.loading = false;
+                this.cdr.markForCheck();
               },
             });
         },
         error: () => {
           this.loading = false;
+          this.cdr.markForCheck();
         },
       });
   }
