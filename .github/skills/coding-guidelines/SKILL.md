@@ -1,3 +1,8 @@
+---
+name: coding-guidelines
+description: "Detailed coding conventions, architecture patterns, and code examples for the project. Use when implementing features, reviewing code, or checking naming/structure conventions. Covers hexagonal architecture, TypeScript patterns, entity/use-case/controller/component patterns."
+---
+
 # 📐 SKILL: Coding Guidelines
 
 ## 📌 Purpose
