@@ -130,6 +130,7 @@ export class GroupHttpService {
       raffleStatus: dto.raffleStatus,
       createdAt: new Date(dto.createdAt),
       updatedAt: new Date(dto.updatedAt),
+      memberDetails: dto.memberDetails,
     };
   }
 

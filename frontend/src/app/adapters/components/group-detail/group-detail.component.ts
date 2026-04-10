@@ -76,7 +76,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
           this.group = group;
           this.isLoading = false;
           // Load member names after group is loaded
-          this.loadMemberNames(group.members);
+          this.loadMemberNames(group);
         },
         error: (err) => {
           this.error = err.message || "Failed to load group";
@@ -86,9 +86,27 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Load display names for all members from Firestore
+   * Load display names for all members
+   * Uses memberDetails from API response first, falls back to Firestore
    */
-  private loadMemberNames(memberIds: string[]): void {
+  private loadMemberNames(group: Group): void {
+    if (group.memberDetails && group.memberDetails.length > 0) {
+      group.memberDetails.forEach((member) => {
+        this.memberNames.set(
+          member.id,
+          member.name || member.email || this.truncateId(member.id),
+        );
+      });
+      return;
+    }
+
+    this.loadMemberNamesFromFirestore(group.members);
+  }
+
+  /**
+   * Load display names for all members from Firestore (legacy fallback)
+   */
+  private loadMemberNamesFromFirestore(memberIds: string[]): void {
     memberIds.forEach((memberId) => {
       this.firestore
         .collection("users")
@@ -297,6 +315,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (updatedGroup) => {
           this.group = updatedGroup;
+          this.loadMemberNames(updatedGroup);
           this.isProcessing = false;
           this.closeAddMemberModal();
         },

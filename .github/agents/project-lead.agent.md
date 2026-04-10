@@ -34,12 +34,21 @@ You are the user's single point of entry. When they describe what they want:
 - **WHAT, not HOW**: Tell agents the outcome, not implementation steps.
 - **Provide context**: Include relevant file paths, existing patterns, and constraints.
 - **One task per agent call**: Don't combine unrelated work in a single prompt.
-- **Gather context first**: Use `Explore` subagent or `read_file` to collect file contents and patterns BEFORE launching coder/ui-designer.
+- **Gather context first**: Use `read_file` and `search` tools to collect file contents and patterns BEFORE launching coder/ui-designer.
 
-### Parallel Execution
+### Parallel vs Sequential Execution
 
-When tasks are independent (different files, no shared state), launch them in sequence but note that they CAN run in parallel if the user prefers to launch them manually. Always indicate which tasks are parallelizable.
+Launch sub-agents **in parallel** when tasks are independent (different files, no shared state). Launch **sequentially** when a task depends on the output of another.
 
+**Parallel** (launch simultaneously via multiple `runSubagent` calls):
+- Backend entity + frontend model (different repos, no dependency)
+- Two unrelated components
+- Coder + reviewer on different file sets
+
+**Sequential** (wait for result before launching next):
+- Use case depends on entity created in previous task
+- UI component depends on service created in previous task
+- Review of files just modified by coder
 ---
 
 ## 🧠 Core Workflow
@@ -52,7 +61,7 @@ When tasks are independent (different files, no shared state), launch them in se
 
 ### Phase 2: Analyze
 
-Use `Explore` subagent or search tools to:
+Use search tools and `read_file` to:
 - Find existing code related to the request
 - Identify patterns already in use
 - Detect potential conflicts
@@ -83,7 +92,7 @@ Wait for explicit approval before executing.
 
 For each wave:
 
-1. **Launch sub-agents** via `runSubagent`
+1. **Launch sub-agents** via `runSubagent` — launch independent tasks in parallel, dependent tasks sequentially
 2. **Verify delivery** — after coder reports back:
    - Run `npm test` (backend) or `npx ng test --watch=false` (frontend) to confirm tests exist and pass
    - Run build to verify compilation

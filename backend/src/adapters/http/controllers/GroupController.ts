@@ -45,7 +45,7 @@ export class GroupController {
     userRepository: IUserRepository,
   ) {
     this.createGroupUseCase = new CreateGroupUseCase(groupRepository);
-    this.getGroupDetailsUseCase = new GetGroupDetailsUseCase(groupRepository);
+    this.getGroupDetailsUseCase = new GetGroupDetailsUseCase(groupRepository, userRepository);
     this.getUserGroupsUseCase = new GetUserGroupsUseCase(groupRepository);
     this.updateGroupUseCase = new UpdateGroupUseCase(groupRepository);
     this.addMemberToGroupUseCase = new AddMemberToGroupUseCase(groupRepository);

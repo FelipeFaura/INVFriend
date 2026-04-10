@@ -52,6 +52,15 @@ export interface RemoveMemberDTO {
 }
 
 /**
+ * DTO representing a group member's details
+ */
+export interface MemberDetailDTO {
+  id: string;
+  name: string;
+  email: string;
+}
+
+/**
  * Output DTO representing a group
  */
 export interface GroupResponseDTO {
@@ -65,6 +74,7 @@ export interface GroupResponseDTO {
   raffleDate: number | null;
   createdAt: number;
   updatedAt: number;
+  memberDetails?: MemberDetailDTO[];
 }
 
 /**
