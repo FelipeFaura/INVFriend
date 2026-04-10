@@ -11,6 +11,7 @@ import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { GroupHttpService } from "../../services/group-http.service";
 import { Group } from "../../../domain/models/group.model";
 import { AuthApplicationService } from "../../../application/services/auth-application.service";
+import { UpdateGroupDTO } from "../../../application/dto/group.dto";
 
 @Component({
   selector: "app-group-detail",
@@ -30,8 +31,10 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
   showDeleteConfirm = false;
   showAddMemberModal = false;
   showRemoveMemberConfirm = false;
+  showEditModal = false;
   memberToRemove: string | null = null;
   newMemberEmail = "";
+  editForm: { name: string; description: string; budgetLimit: number } = { name: '', description: '', budgetLimit: 0 };
   actionError: string | null = null;
   isProcessing = false;
 
@@ -159,11 +162,79 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Navigate to edit page (placeholder)
+   * Open edit modal with current group data
    */
   editGroup(): void {
-    // For now, just show a message - edit component will be in future sprint
-    alert("Edit functionality coming soon!");
+    if (!this.group) return;
+    this.editForm = {
+      name: this.group.name,
+      description: this.group.description || '',
+      budgetLimit: this.group.budgetLimit,
+    };
+    this.showEditModal = true;
+    this.actionError = null;
+  }
+
+  /**
+   * Close edit modal
+   */
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.actionError = null;
+  }
+
+  /**
+   * Save group changes
+   */
+  saveGroupChanges(): void {
+    if (!this.group) return;
+
+    if (!this.editForm.name || this.editForm.name.trim().length < 3) {
+      this.actionError = 'Group name must be at least 3 characters';
+      return;
+    }
+
+    if (!this.editForm.budgetLimit || this.editForm.budgetLimit <= 0) {
+      this.actionError = 'Budget limit must be greater than 0';
+      return;
+    }
+
+    const dto: UpdateGroupDTO = {};
+    const trimmedName = this.editForm.name.trim();
+    const trimmedDescription = this.editForm.description.trim();
+
+    if (trimmedName !== this.group.name) {
+      dto.name = trimmedName;
+    }
+    if (trimmedDescription !== (this.group.description || '')) {
+      dto.description = trimmedDescription;
+    }
+    if (this.editForm.budgetLimit !== this.group.budgetLimit) {
+      dto.budgetLimit = this.editForm.budgetLimit;
+    }
+
+    if (Object.keys(dto).length === 0) {
+      this.closeEditModal();
+      return;
+    }
+
+    this.isProcessing = true;
+    this.actionError = null;
+
+    this.groupHttpService
+      .updateGroup(this.group.id, dto)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (updatedGroup) => {
+          this.group = updatedGroup;
+          this.isProcessing = false;
+          this.closeEditModal();
+        },
+        error: (err) => {
+          this.actionError = err.message || 'Failed to update group';
+          this.isProcessing = false;
+        },
+      });
   }
 
   // Delete Group

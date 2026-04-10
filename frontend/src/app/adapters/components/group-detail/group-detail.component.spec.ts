@@ -46,6 +46,7 @@ describe("GroupDetailComponent", () => {
       "addMember",
       "addMemberByEmail",
       "removeMember",
+      "updateGroup",
     ]);
     mockRouter = jasmine.createSpyObj("Router", ["navigate"]);
     
@@ -488,5 +489,101 @@ describe("GroupDetailComponent", () => {
       expect(component.isMemberAdmin("admin-user")).toBeTrue();
       expect(component.isMemberAdmin("member-1")).toBeFalse();
     });
+  });
+
+  describe("Edit Group", () => {
+    beforeEach(fakeAsync(() => {
+      fixture.detectChanges();
+      paramsSubject.next({ id: "group-123" });
+      tick();
+      fixture.detectChanges();
+    }));
+
+    it("should open edit modal with current group data", () => {
+      const editBtn = fixture.nativeElement.querySelector(
+        '[data-testid="edit-btn"]',
+      );
+      editBtn.click();
+      fixture.detectChanges();
+
+      expect(component.showEditModal).toBeTrue();
+      expect(component.editForm.name).toBe("Test Group");
+      expect(component.editForm.description).toBe(
+        "A test group description",
+      );
+      expect(component.editForm.budgetLimit).toBe(50);
+
+      const modal = fixture.nativeElement.querySelector(
+        '[data-testid="edit-group-modal"]',
+      );
+      expect(modal).toBeTruthy();
+    });
+
+    it("should close edit modal", () => {
+      component.editGroup();
+      expect(component.showEditModal).toBeTrue();
+
+      component.closeEditModal();
+      expect(component.showEditModal).toBeFalse();
+    });
+
+    it("should save group changes", fakeAsync(() => {
+      const updatedGroup = {
+        ...mockGroup,
+        name: "Updated Name",
+        budgetLimit: 75,
+      };
+      mockGroupService.updateGroup.and.returnValue(of(updatedGroup));
+
+      component.editGroup();
+      component.editForm.name = "Updated Name";
+      component.editForm.budgetLimit = 75;
+      component.saveGroupChanges();
+      tick();
+
+      expect(mockGroupService.updateGroup).toHaveBeenCalledWith(
+        "group-123",
+        { name: "Updated Name", budgetLimit: 75 },
+      );
+      expect(component.group?.name).toBe("Updated Name");
+      expect(component.group?.budgetLimit).toBe(75);
+      expect(component.showEditModal).toBeFalse();
+    }));
+
+    it("should show validation error for short name", () => {
+      component.editGroup();
+      component.editForm.name = "AB";
+      component.saveGroupChanges();
+
+      expect(component.actionError).toBe(
+        "Group name must be at least 3 characters",
+      );
+      expect(mockGroupService.updateGroup).not.toHaveBeenCalled();
+    });
+
+    it("should show validation error for invalid budget", () => {
+      component.editGroup();
+      component.editForm.budgetLimit = 0;
+      component.saveGroupChanges();
+
+      expect(component.actionError).toBe(
+        "Budget limit must be greater than 0",
+      );
+      expect(mockGroupService.updateGroup).not.toHaveBeenCalled();
+    });
+
+    it("should show error on save failure", fakeAsync(() => {
+      mockGroupService.updateGroup.and.returnValue(
+        throwError(() => new Error("Update failed")),
+      );
+
+      component.editGroup();
+      component.editForm.name = "New Name";
+      component.saveGroupChanges();
+      tick();
+
+      expect(component.actionError).toBe("Update failed");
+      expect(component.showEditModal).toBeTrue();
+    }));
   });
 });
