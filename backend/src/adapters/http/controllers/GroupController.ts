@@ -14,6 +14,8 @@ import {
   AddMemberByEmailUseCase,
   RemoveMemberFromGroupUseCase,
   DeleteGroupUseCase,
+  AcceptInvitationUseCase,
+  RejectInvitationUseCase,
 } from "../../../application/use-cases";
 import {
   GroupNotFoundError,
@@ -41,6 +43,8 @@ export class GroupController {
   private addMemberByEmailUseCase: AddMemberByEmailUseCase;
   private removeMemberFromGroupUseCase: RemoveMemberFromGroupUseCase;
   private deleteGroupUseCase: DeleteGroupUseCase;
+  private acceptInvitationUseCase: AcceptInvitationUseCase;
+  private rejectInvitationUseCase: RejectInvitationUseCase;
 
   constructor(
     groupRepository: IGroupRepository,
@@ -59,6 +63,8 @@ export class GroupController {
       groupRepository,
     );
     this.deleteGroupUseCase = new DeleteGroupUseCase(groupRepository);
+    this.acceptInvitationUseCase = new AcceptInvitationUseCase(groupRepository);
+    this.rejectInvitationUseCase = new RejectInvitationUseCase(groupRepository);
   }
 
   /**
@@ -287,6 +293,63 @@ export class GroupController {
       });
 
       res.status(200).json(result);
+    } catch (error) {
+      this.handleGroupError(error, res);
+    }
+  }
+
+  /**
+   * POST /groups/:id/accept
+   * Accept a group invitation (pending member only)
+   */
+  async acceptInvitation(
+    req: AuthenticatedRequest,
+    res: Response,
+  ): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({
+          error: "Unauthorized",
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        });
+        return;
+      }
+
+      const { id } = req.params;
+      const result = await this.acceptInvitationUseCase.execute(
+        id,
+        req.user.uid,
+      );
+
+      res.status(200).json(result);
+    } catch (error) {
+      this.handleGroupError(error, res);
+    }
+  }
+
+  /**
+   * POST /groups/:id/reject
+   * Reject a group invitation (pending member only)
+   */
+  async rejectInvitation(
+    req: AuthenticatedRequest,
+    res: Response,
+  ): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({
+          error: "Unauthorized",
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        });
+        return;
+      }
+
+      const { id } = req.params;
+      await this.rejectInvitationUseCase.execute(id, req.user.uid);
+
+      res.status(200).json({ success: true, message: "Invitation rejected" });
     } catch (error) {
       this.handleGroupError(error, res);
     }

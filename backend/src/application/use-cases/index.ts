@@ -12,6 +12,10 @@ export { AddMemberByEmailUseCase } from "./AddMemberByEmailUseCase";
 export { RemoveMemberFromGroupUseCase } from "./RemoveMemberFromGroupUseCase";
 export { DeleteGroupUseCase } from "./DeleteGroupUseCase";
 
+// Invitation Use Cases
+export { AcceptInvitationUseCase } from "./AcceptInvitationUseCase";
+export { RejectInvitationUseCase } from "./RejectInvitationUseCase";
+
 // Raffle Use Cases
 export {
   PerformRaffleUseCase,

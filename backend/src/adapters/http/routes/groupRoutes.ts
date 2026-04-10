@@ -43,6 +43,14 @@ export function createGroupRoutes(
     groupController.removeMember(req, res),
   );
 
+  // Invitation operations
+  router.post("/:id/accept", (req, res) =>
+    groupController.acceptInvitation(req, res),
+  );
+  router.post("/:id/reject", (req, res) =>
+    groupController.rejectInvitation(req, res),
+  );
+
   // Raffle operations
   router.post("/:id/raffle", (req, res) =>
     raffleController.performRaffle(req, res),

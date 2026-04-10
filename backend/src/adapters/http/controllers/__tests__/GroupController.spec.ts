@@ -44,6 +44,12 @@ jest.mock("../../../../application/use-cases", () => ({
   AddMemberByEmailUseCase: jest.fn().mockImplementation(() => ({
     execute: jest.fn(),
   })),
+  AcceptInvitationUseCase: jest.fn().mockImplementation(() => ({
+    execute: jest.fn(),
+  })),
+  RejectInvitationUseCase: jest.fn().mockImplementation(() => ({
+    execute: jest.fn(),
+  })),
 }));
 
 describe("GroupController", () => {
