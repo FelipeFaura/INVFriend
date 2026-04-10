@@ -111,7 +111,7 @@ describe("GroupListComponent", () => {
       );
       expect(groupsList).toBeTruthy();
 
-      const groupCards = fixture.nativeElement.querySelectorAll(".group-card");
+      const groupCards = fixture.nativeElement.querySelectorAll(".card--interactive");
       expect(groupCards.length).toBe(3);
     });
 
@@ -147,7 +147,7 @@ describe("GroupListComponent", () => {
       component.loadGroups();
       fixture.detectChanges();
 
-      const firstCard = fixture.nativeElement.querySelector(".group-card");
+      const firstCard = fixture.nativeElement.querySelector(".card--interactive");
       expect(firstCard.textContent).toContain("1 member");
     });
   });
@@ -259,7 +259,7 @@ describe("GroupListComponent", () => {
       mockGroupService.getGroups.and.returnValue(of(mockGroups));
 
       const retryBtn = fixture.nativeElement.querySelector(
-        ".error-container .btn",
+        ".alert--error .btn--secondary",
       );
       retryBtn.click();
       fixture.detectChanges();

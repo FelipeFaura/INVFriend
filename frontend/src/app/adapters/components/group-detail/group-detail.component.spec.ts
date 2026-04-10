@@ -123,18 +123,18 @@ describe("GroupDetailComponent", () => {
     }));
 
     it("should display group name", () => {
-      const title = fixture.nativeElement.querySelector(".group-title");
+      const title = fixture.nativeElement.querySelector(".group-header__title");
       expect(title.textContent).toContain("Test Group");
     });
 
     it("should display group info", () => {
-      const infoSection = fixture.nativeElement.querySelector(".info-section");
+      const infoSection = fixture.nativeElement.querySelector(".group-info");
       expect(infoSection.textContent).toContain("$50");
     });
 
     it("should display description", () => {
       const description = fixture.nativeElement.querySelector(
-        ".description-section",
+        ".description-text",
       );
       expect(description.textContent).toContain("A test group description");
     });
@@ -154,7 +154,7 @@ describe("GroupDetailComponent", () => {
         '[data-testid="member-admin-user"]',
       );
       expect(adminMember.textContent).toContain("👑");
-      expect(adminMember.textContent).toContain("(Admin)");
+      expect(adminMember.textContent).toContain("Admin");
     });
   });
 

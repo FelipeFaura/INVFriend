@@ -7,8 +7,11 @@ import {
 import { of, throwError } from "rxjs";
 import { SimpleChange } from "@angular/core";
 
+import { Router } from "@angular/router";
+
 import { SecretSantaRevealComponent } from "./secret-santa-reveal.component";
 import { RaffleHttpService } from "../../services/raffle-http.service";
+import { UserHttpService } from "../../services/user-http.service";
 import { Group } from "../../../domain/models/group.model";
 import { Assignment } from "../../../domain/models/assignment.model";
 import {
@@ -21,6 +24,8 @@ describe("SecretSantaRevealComponent", () => {
   let component: SecretSantaRevealComponent;
   let fixture: ComponentFixture<SecretSantaRevealComponent>;
   let mockRaffleService: jasmine.SpyObj<RaffleHttpService>;
+  let mockUserService: jasmine.SpyObj<UserHttpService>;
+  let mockRouter: jasmine.SpyObj<Router>;
 
   const mockGroup: Group = {
     id: "group-123",
@@ -45,11 +50,23 @@ describe("SecretSantaRevealComponent", () => {
     mockRaffleService = jasmine.createSpyObj("RaffleHttpService", [
       "getMyAssignment",
     ]);
+    mockUserService = jasmine.createSpyObj("UserHttpService", [
+      "getUserPublicProfile",
+    ]);
+    mockRouter = jasmine.createSpyObj("Router", ["navigate"]);
+
     mockRaffleService.getMyAssignment.and.returnValue(of(mockAssignment));
+    mockUserService.getUserPublicProfile.and.returnValue(
+      of({ id: "member-2", name: "Member Two", photoUrl: null }),
+    );
 
     await TestBed.configureTestingModule({
       declarations: [SecretSantaRevealComponent],
-      providers: [{ provide: RaffleHttpService, useValue: mockRaffleService }],
+      providers: [
+        { provide: RaffleHttpService, useValue: mockRaffleService },
+        { provide: UserHttpService, useValue: mockUserService },
+        { provide: Router, useValue: mockRouter },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SecretSantaRevealComponent);
