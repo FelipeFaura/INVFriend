@@ -33,7 +33,7 @@ app.get("/health", (_req, res) => {
 // API Routes
 app.use(
   "/api/groups",
-  createGroupRoutes(groupRepository, assignmentRepository),
+  createGroupRoutes(groupRepository, assignmentRepository, userRepository),
 );
 app.use(
   "/api/groups/:groupId/wishes",

@@ -8,6 +8,7 @@ export { GetGroupDetailsUseCase } from "./GetGroupDetailsUseCase";
 export { GetUserGroupsUseCase } from "./GetUserGroupsUseCase";
 export { UpdateGroupUseCase } from "./UpdateGroupUseCase";
 export { AddMemberToGroupUseCase } from "./AddMemberToGroupUseCase";
+export { AddMemberByEmailUseCase } from "./AddMemberByEmailUseCase";
 export { RemoveMemberFromGroupUseCase } from "./RemoveMemberFromGroupUseCase";
 export { DeleteGroupUseCase } from "./DeleteGroupUseCase";
 

@@ -46,4 +46,30 @@ export class FirebaseUserRepository implements IUserRepository {
       data.updatedAt,
     );
   }
+
+  /**
+   * Finds a user by their email address
+   */
+  async findByEmail(email: string): Promise<User | null> {
+    const normalizedEmail = email.toLowerCase().trim();
+    const snapshot = await this.collection
+      .where("email", "==", normalizedEmail)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      return null;
+    }
+
+    const doc = snapshot.docs[0];
+    const data = doc.data() as UserDocument;
+    return User.fromDatabase(
+      doc.id,
+      data.email,
+      data.name,
+      data.photoUrl,
+      data.createdAt,
+      data.updatedAt,
+    );
+  }
 }

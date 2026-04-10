@@ -34,6 +34,15 @@ export interface AddMemberDTO {
 }
 
 /**
+ * Input DTO for adding a member to a group by email
+ */
+export interface AddMemberByEmailDTO {
+  groupId: string;
+  email: string;
+  requesterId: string;
+}
+
+/**
  * Input DTO for removing a member from a group
  */
 export interface RemoveMemberDTO {
