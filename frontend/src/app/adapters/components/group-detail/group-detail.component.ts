@@ -11,6 +11,7 @@ import { AngularFirestore } from "@angular/fire/compat/firestore";
 import { GroupHttpService } from "../../services/group-http.service";
 import { Group } from "../../../domain/models/group.model";
 import { AuthApplicationService } from "../../../application/services/auth-application.service";
+import { UpdateGroupDTO } from "../../../application/dto/group.dto";
 
 @Component({
   selector: "app-group-detail",
@@ -22,6 +23,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
   currentUserId: string | null = null;
   isLoading = false;
   error: string | null = null;
+  isPendingMember = false;
 
   // Member names map (userId -> displayName)
   memberNames: Map<string, string> = new Map();
@@ -30,8 +32,10 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
   showDeleteConfirm = false;
   showAddMemberModal = false;
   showRemoveMemberConfirm = false;
+  showEditModal = false;
   memberToRemove: string | null = null;
-  newMemberId = "";
+  newMemberEmail = "";
+  editForm: { name: string; description: string; budgetLimit: number } = { name: '', description: '', budgetLimit: 0 };
   actionError: string | null = null;
   isProcessing = false;
 
@@ -71,9 +75,10 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (group) => {
           this.group = group;
+          this.isPendingMember = group.members.length === 0 && !this.isAdmin;
           this.isLoading = false;
           // Load member names after group is loaded
-          this.loadMemberNames(group.members);
+          this.loadMemberNames(group);
         },
         error: (err) => {
           this.error = err.message || "Failed to load group";
@@ -83,9 +88,27 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Load display names for all members from Firestore
+   * Load display names for all members
+   * Uses memberDetails from API response first, falls back to Firestore
    */
-  private loadMemberNames(memberIds: string[]): void {
+  private loadMemberNames(group: Group): void {
+    if (group.memberDetails && group.memberDetails.length > 0) {
+      group.memberDetails.forEach((member) => {
+        this.memberNames.set(
+          member.id,
+          member.name || member.email || this.truncateId(member.id),
+        );
+      });
+      return;
+    }
+
+    this.loadMemberNamesFromFirestore(group.members);
+  }
+
+  /**
+   * Load display names for all members from Firestore (legacy fallback)
+   */
+  private loadMemberNamesFromFirestore(memberIds: string[]): void {
     memberIds.forEach((memberId) => {
       this.firestore
         .collection("users")
@@ -159,11 +182,79 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Navigate to edit page (placeholder)
+   * Open edit modal with current group data
    */
   editGroup(): void {
-    // For now, just show a message - edit component will be in future sprint
-    alert("Edit functionality coming soon!");
+    if (!this.group) return;
+    this.editForm = {
+      name: this.group.name,
+      description: this.group.description || '',
+      budgetLimit: this.group.budgetLimit,
+    };
+    this.showEditModal = true;
+    this.actionError = null;
+  }
+
+  /**
+   * Close edit modal
+   */
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.actionError = null;
+  }
+
+  /**
+   * Save group changes
+   */
+  saveGroupChanges(): void {
+    if (!this.group) return;
+
+    if (!this.editForm.name || this.editForm.name.trim().length < 3) {
+      this.actionError = 'Group name must be at least 3 characters';
+      return;
+    }
+
+    if (!this.editForm.budgetLimit || this.editForm.budgetLimit <= 0) {
+      this.actionError = 'Budget limit must be greater than 0';
+      return;
+    }
+
+    const dto: UpdateGroupDTO = {};
+    const trimmedName = this.editForm.name.trim();
+    const trimmedDescription = this.editForm.description.trim();
+
+    if (trimmedName !== this.group.name) {
+      dto.name = trimmedName;
+    }
+    if (trimmedDescription !== (this.group.description || '')) {
+      dto.description = trimmedDescription;
+    }
+    if (this.editForm.budgetLimit !== this.group.budgetLimit) {
+      dto.budgetLimit = this.editForm.budgetLimit;
+    }
+
+    if (Object.keys(dto).length === 0) {
+      this.closeEditModal();
+      return;
+    }
+
+    this.isProcessing = true;
+    this.actionError = null;
+
+    this.groupHttpService
+      .updateGroup(this.group.id, dto)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (updatedGroup) => {
+          this.group = updatedGroup;
+          this.isProcessing = false;
+          this.closeEditModal();
+        },
+        error: (err) => {
+          this.actionError = err.message || 'Failed to update group';
+          this.isProcessing = false;
+        },
+      });
   }
 
   // Delete Group
@@ -199,28 +290,34 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
   // Add Member
   openAddMemberModal(): void {
     this.showAddMemberModal = true;
-    this.newMemberId = "";
+    this.newMemberEmail = "";
     this.actionError = null;
   }
 
   closeAddMemberModal(): void {
     this.showAddMemberModal = false;
-    this.newMemberId = "";
+    this.newMemberEmail = "";
     this.actionError = null;
   }
 
   addMember(): void {
-    if (!this.group || !this.newMemberId.trim()) return;
+    if (!this.group || !this.newMemberEmail.trim()) return;
+
+    if (!this.newMemberEmail.trim().includes("@")) {
+      this.actionError = "Please enter a valid email address";
+      return;
+    }
 
     this.isProcessing = true;
     this.actionError = null;
 
     this.groupHttpService
-      .addMember(this.group.id, this.newMemberId.trim())
+      .addMemberByEmail(this.group.id, this.newMemberEmail.trim())
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (updatedGroup) => {
           this.group = updatedGroup;
+          this.loadMemberNames(updatedGroup);
           this.isProcessing = false;
           this.closeAddMemberModal();
         },
@@ -261,6 +358,52 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
           this.actionError = err.message || "Failed to remove member";
           this.isProcessing = false;
           this.cancelRemoveMember();
+        },
+      });
+  }
+
+  /**
+   * Accept group invitation (pending member flow)
+   */
+  acceptGroupInvitation(): void {
+    if (!this.group) return;
+    this.isProcessing = true;
+    this.actionError = null;
+
+    this.groupHttpService
+      .acceptInvitation(this.group.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.isPendingMember = false;
+          this.isProcessing = false;
+          this.loadGroup();
+        },
+        error: (err: Error) => {
+          this.actionError = err.message || "Failed to accept invitation";
+          this.isProcessing = false;
+        },
+      });
+  }
+
+  /**
+   * Reject group invitation and navigate back to groups list
+   */
+  rejectGroupInvitation(): void {
+    if (!this.group) return;
+    this.isProcessing = true;
+    this.actionError = null;
+
+    this.groupHttpService
+      .rejectInvitation(this.group.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.router.navigate(["/groups"]);
+        },
+        error: (err: Error) => {
+          this.actionError = err.message || "Failed to reject invitation";
+          this.isProcessing = false;
         },
       });
   }

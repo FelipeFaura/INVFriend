@@ -48,6 +48,7 @@ describe("GroupHttpService", () => {
         memberCount: 3,
         isAdmin: true,
         raffleStatus: "pending",
+        isPending: false,
       },
       {
         id: "group-2",
@@ -55,6 +56,7 @@ describe("GroupHttpService", () => {
         memberCount: 5,
         isAdmin: false,
         raffleStatus: "completed",
+        isPending: false,
       },
     ],
   };
@@ -126,7 +128,7 @@ describe("GroupHttpService", () => {
   });
 
   describe("getGroups", () => {
-    it("should return array of GroupSummary", () => {
+    it("should return array of GroupSummary with isPending", () => {
       let result: GroupSummary[] | undefined;
       service.getGroups().subscribe((groups) => {
         result = groups;
@@ -140,6 +142,7 @@ describe("GroupHttpService", () => {
       expect(result!.length).toBe(2);
       expect(result![0].name).toBe("Group 1");
       expect(result![0].isAdmin).toBe(true);
+      expect(result![0].isPending).toBe(false);
       expect(result![1].raffleStatus).toBe("completed");
     });
   });
@@ -352,6 +355,78 @@ describe("GroupHttpService", () => {
     });
   });
 
+  describe("addMemberByEmail", () => {
+    it("should invite member by email and return updated Group", () => {
+      const groupId = "group-123";
+      const email = "newuser@test.com";
+
+      let result: Group | undefined;
+      service.addMemberByEmail(groupId, email).subscribe((group) => {
+        result = group;
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/${groupId}/members/invite`);
+      expect(req.request.method).toBe("POST");
+      expect(req.request.body).toEqual({ email });
+      req.flush({
+        ...mockGroupResponse,
+        members: ["user-1", "user-2", "user-3"],
+      });
+
+      expect(result).toBeDefined();
+      expect(result!.members).toContain("user-3");
+    });
+
+    it("should handle user not found error", () => {
+      const groupId = "group-123";
+      const email = "unknown@test.com";
+      let error: Error | undefined;
+
+      service.addMemberByEmail(groupId, email).subscribe({
+        error: (e) => {
+          error = e;
+        },
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/${groupId}/members/invite`);
+      req.flush(
+        {
+          error: "Not Found",
+          code: "USER_NOT_FOUND",
+          message: "No user found with that email",
+        },
+        { status: 404, statusText: "Not Found" },
+      );
+
+      expect(error).toBeDefined();
+      expect(error!.message).toBe("No user found with that email");
+    });
+
+    it("should handle already member error", () => {
+      const groupId = "group-123";
+      const email = "existing@test.com";
+      let error: AlreadyGroupMemberError | undefined;
+
+      service.addMemberByEmail(groupId, email).subscribe({
+        error: (e) => {
+          error = e;
+        },
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/${groupId}/members/invite`);
+      req.flush(
+        {
+          error: "Bad Request",
+          code: "ALREADY_GROUP_MEMBER",
+          message: "Already a member",
+        },
+        { status: 400, statusText: "Bad Request" },
+      );
+
+      expect(error).toBeInstanceOf(AlreadyGroupMemberError);
+    });
+  });
+
   describe("removeMember", () => {
     it("should remove member and return updated Group", () => {
       const groupId = "group-123";
@@ -396,6 +471,76 @@ describe("GroupHttpService", () => {
 
       expect(error).toBeDefined();
       expect(error!.message).toBe("Cannot remove admin");
+    });
+  });
+
+  describe("acceptInvitation", () => {
+    it("should POST to accept endpoint and return mapped Group", () => {
+      const groupId = "group-123";
+      let result: Group | undefined;
+
+      service.acceptInvitation(groupId).subscribe((group) => {
+        result = group;
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/${groupId}/accept`);
+      expect(req.request.method).toBe("POST");
+      expect(req.request.body).toEqual({});
+      req.flush(mockGroupResponse);
+
+      expect(result).toBeDefined();
+      expect(result!.id).toBe("group-123");
+      expect(result!.createdAt).toBeInstanceOf(Date);
+    });
+
+    it("should handle error on accept invitation", () => {
+      const groupId = "group-123";
+      let error: Error | undefined;
+
+      service.acceptInvitation(groupId).subscribe({ error: (e) => { error = e; } });
+
+      const req = httpMock.expectOne(`${apiUrl}/${groupId}/accept`);
+      req.flush(
+        { error: "Not Found", code: "GROUP_NOT_FOUND", message: "Group not found" },
+        { status: 404, statusText: "Not Found" },
+      );
+
+      expect(error).toBeDefined();
+    });
+  });
+
+  describe("rejectInvitation", () => {
+    it("should POST to reject endpoint and return success response", () => {
+      const groupId = "group-123";
+      let result: { success: boolean; message: string } | undefined;
+
+      service.rejectInvitation(groupId).subscribe((response) => {
+        result = response;
+      });
+
+      const req = httpMock.expectOne(`${apiUrl}/${groupId}/reject`);
+      expect(req.request.method).toBe("POST");
+      expect(req.request.body).toEqual({});
+      req.flush({ success: true, message: "Invitation rejected" });
+
+      expect(result).toBeDefined();
+      expect(result!.success).toBe(true);
+      expect(result!.message).toBe("Invitation rejected");
+    });
+
+    it("should handle error on reject invitation", () => {
+      const groupId = "group-123";
+      let error: Error | undefined;
+
+      service.rejectInvitation(groupId).subscribe({ error: (e) => { error = e; } });
+
+      const req = httpMock.expectOne(`${apiUrl}/${groupId}/reject`);
+      req.flush(
+        { error: "Not Found", code: "GROUP_NOT_FOUND", message: "Group not found" },
+        { status: 404, statusText: "Not Found" },
+      );
+
+      expect(error).toBeDefined();
     });
   });
 

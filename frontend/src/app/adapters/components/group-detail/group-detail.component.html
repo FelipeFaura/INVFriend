@@ -18,6 +18,43 @@
 
   <!-- Group Content -->
   <div *ngIf="group && !isLoading && !error" class="group-content">
+
+  <!-- Pending Member State -->
+  <div *ngIf="isPendingMember && group && !isLoading" class="pending-invite-card" data-testid="pending-invite">
+    <div class="card card--featured">
+      <div class="card__body pending-invite__body">
+        <span class="pending-invite__icon" aria-hidden="true">📬</span>
+        <h2 class="pending-invite__title">Invitation Pending</h2>
+        <p class="pending-invite__description">
+          You have been invited to join <strong>{{ group.name }}</strong>.
+          Accept the invitation to see the group details.
+        </p>
+        <div *ngIf="actionError" class="alert alert--error action-alert" role="alert" data-testid="invite-action-error">
+          <span class="alert__icon" aria-hidden="true">⚠️</span>
+          <span class="alert__content">{{ actionError }}</span>
+        </div>
+        <div class="pending-invite__actions">
+          <button
+            class="btn btn--danger"
+            (click)="rejectGroupInvitation()"
+            [disabled]="isProcessing"
+            data-testid="detail-reject-btn">
+            {{ isProcessing ? 'Rejecting...' : 'Reject Invitation' }}
+          </button>
+          <button
+            class="btn btn--primary"
+            (click)="acceptGroupInvitation()"
+            [disabled]="isProcessing"
+            data-testid="detail-accept-btn">
+            {{ isProcessing ? 'Accepting...' : 'Accept Invitation' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Group Content (only shown for accepted members) -->
+  <div *ngIf="!isPendingMember && group && !isLoading && !error" class="group-content-inner">
     <!-- Back Navigation -->
     <nav class="page-nav" aria-label="Breadcrumb">
       <button 
@@ -153,7 +190,8 @@
         </ul>
       </div>
     </section>
-  </div>
+  </div><!-- end group-content-inner -->
+  </div><!-- end group-content -->
 
   <!-- Delete Confirmation Modal -->
   <div 
@@ -210,17 +248,17 @@
           <span class="alert__content">{{ actionError }}</span>
         </div>
         <div class="form-group">
-          <label for="memberId" class="form-group__label">User ID</label>
+          <label for="memberEmail" class="form-group__label">Email</label>
           <input 
-            type="text" 
-            id="memberId"
-            [(ngModel)]="newMemberId"
-            placeholder="Enter user ID"
+            type="email" 
+            id="memberEmail"
+            [(ngModel)]="newMemberEmail"
+            placeholder="Enter member's email"
             class="form-input"
-            data-testid="member-id-input"
-            aria-describedby="memberId-hint"
+            data-testid="member-email-input"
+            aria-describedby="memberEmail-hint"
           />
-          <span id="memberId-hint" class="form-hint">Enter the user's unique identifier</span>
+          <span id="memberEmail-hint" class="form-hint">The user must be registered in INVFriend</span>
         </div>
       </div>
       <footer class="modal__footer">
@@ -234,7 +272,7 @@
           class="btn btn--primary" 
           [class.btn--loading]="isProcessing"
           (click)="addMember()"
-          [disabled]="isProcessing || !newMemberId.trim()"
+          [disabled]="isProcessing || !newMemberEmail.trim()"
           data-testid="confirm-add-btn">
           <span *ngIf="isProcessing" class="btn__spinner" aria-hidden="true"></span>
           {{ isProcessing ? 'Adding...' : 'Add Member' }}
@@ -273,6 +311,81 @@
           data-testid="confirm-remove-btn">
           <span *ngIf="isProcessing" class="btn__spinner" aria-hidden="true"></span>
           {{ isProcessing ? 'Removing...' : 'Remove' }}
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Edit Group Modal -->
+  <div 
+    *ngIf="showEditModal" 
+    class="modal-backdrop" 
+    data-testid="edit-group-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="edit-group-modal-title">
+    <div class="modal">
+      <header class="modal__header">
+        <h3 id="edit-group-modal-title" class="modal__title">Edit Group</h3>
+      </header>
+      <div class="modal__body">
+        <div *ngIf="actionError" class="alert alert--error modal-alert" role="alert">
+          <span class="alert__icon" aria-hidden="true">⚠️</span>
+          <span class="alert__content">{{ actionError }}</span>
+        </div>
+
+        <div class="form-group">
+          <label for="editGroupName" class="form-group__label">Group Name</label>
+          <input 
+            type="text" 
+            id="editGroupName"
+            [(ngModel)]="editForm.name"
+            class="form-input"
+            data-testid="edit-group-name"
+            required
+            minlength="3"
+            maxlength="100"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="editGroupDescription" class="form-group__label">Description</label>
+          <textarea 
+            id="editGroupDescription"
+            [(ngModel)]="editForm.description"
+            class="form-input form-textarea"
+            data-testid="edit-group-description"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="editGroupBudget" class="form-group__label">Budget Limit ($)</label>
+          <input 
+            type="number" 
+            id="editGroupBudget"
+            [(ngModel)]="editForm.budgetLimit"
+            class="form-input"
+            data-testid="edit-group-budget"
+            min="1"
+          />
+        </div>
+      </div>
+      <footer class="modal__footer">
+        <button 
+          class="btn btn--secondary" 
+          (click)="closeEditModal()"
+          [disabled]="isProcessing">
+          Cancel
+        </button>
+        <button 
+          class="btn btn--primary" 
+          [class.btn--loading]="isProcessing"
+          (click)="saveGroupChanges()"
+          [disabled]="isProcessing"
+          data-testid="save-group-btn">
+          <span *ngIf="isProcessing" class="btn__spinner" aria-hidden="true"></span>
+          {{ isProcessing ? 'Saving...' : 'Save Changes' }}
         </button>
       </footer>
     </div>

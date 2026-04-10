@@ -44,7 +44,11 @@ describe("GroupDetailComponent", () => {
       "getGroupById",
       "deleteGroup",
       "addMember",
+      "addMemberByEmail",
       "removeMember",
+      "updateGroup",
+      "acceptInvitation",
+      "rejectInvitation",
     ]);
     mockRouter = jasmine.createSpyObj("Router", ["navigate"]);
     
@@ -123,18 +127,18 @@ describe("GroupDetailComponent", () => {
     }));
 
     it("should display group name", () => {
-      const title = fixture.nativeElement.querySelector(".group-title");
+      const title = fixture.nativeElement.querySelector(".group-header__title");
       expect(title.textContent).toContain("Test Group");
     });
 
     it("should display group info", () => {
-      const infoSection = fixture.nativeElement.querySelector(".info-section");
+      const infoSection = fixture.nativeElement.querySelector(".group-info");
       expect(infoSection.textContent).toContain("$50");
     });
 
     it("should display description", () => {
       const description = fixture.nativeElement.querySelector(
-        ".description-section",
+        ".description-text",
       );
       expect(description.textContent).toContain("A test group description");
     });
@@ -154,7 +158,7 @@ describe("GroupDetailComponent", () => {
         '[data-testid="member-admin-user"]',
       );
       expect(adminMember.textContent).toContain("👑");
-      expect(adminMember.textContent).toContain("(Admin)");
+      expect(adminMember.textContent).toContain("Admin");
     });
   });
 
@@ -337,33 +341,42 @@ describe("GroupDetailComponent", () => {
         ...mockGroup,
         members: [...mockGroup.members, "new-member"],
       };
-      mockGroupService.addMember.and.returnValue(of(updatedGroup));
+      mockGroupService.addMemberByEmail.and.returnValue(of(updatedGroup));
 
       component.openAddMemberModal();
-      component.newMemberId = "new-member";
+      component.newMemberEmail = "newmember@test.com";
       component.addMember();
       tick();
 
-      expect(mockGroupService.addMember).toHaveBeenCalledWith(
+      expect(mockGroupService.addMemberByEmail).toHaveBeenCalledWith(
         "group-123",
-        "new-member",
+        "newmember@test.com",
       );
       expect(component.group?.members).toContain("new-member");
       expect(component.showAddMemberModal).toBeFalse();
     }));
 
     it("should show error on add member failure", fakeAsync(() => {
-      mockGroupService.addMember.and.returnValue(
+      mockGroupService.addMemberByEmail.and.returnValue(
         throwError(() => new Error("Already a member")),
       );
 
       component.openAddMemberModal();
-      component.newMemberId = "member-1";
+      component.newMemberEmail = "member@test.com";
       component.addMember();
       tick();
 
       expect(component.actionError).toBe("Already a member");
     }));
+
+    it("should show validation error for invalid email", () => {
+      component.openAddMemberModal();
+      component.newMemberEmail = "not-an-email";
+      component.addMember();
+
+      expect(component.actionError).toBe("Please enter a valid email address");
+      expect(mockGroupService.addMemberByEmail).not.toHaveBeenCalled();
+    });
   });
 
   describe("Remove Member", () => {
@@ -477,6 +490,221 @@ describe("GroupDetailComponent", () => {
     it("should identify admin member", () => {
       expect(component.isMemberAdmin("admin-user")).toBeTrue();
       expect(component.isMemberAdmin("member-1")).toBeFalse();
+    });
+  });
+
+  describe("Edit Group", () => {
+    beforeEach(fakeAsync(() => {
+      fixture.detectChanges();
+      paramsSubject.next({ id: "group-123" });
+      tick();
+      fixture.detectChanges();
+    }));
+
+    it("should open edit modal with current group data", () => {
+      const editBtn = fixture.nativeElement.querySelector(
+        '[data-testid="edit-btn"]',
+      );
+      editBtn.click();
+      fixture.detectChanges();
+
+      expect(component.showEditModal).toBeTrue();
+      expect(component.editForm.name).toBe("Test Group");
+      expect(component.editForm.description).toBe(
+        "A test group description",
+      );
+      expect(component.editForm.budgetLimit).toBe(50);
+
+      const modal = fixture.nativeElement.querySelector(
+        '[data-testid="edit-group-modal"]',
+      );
+      expect(modal).toBeTruthy();
+    });
+
+    it("should close edit modal", () => {
+      component.editGroup();
+      expect(component.showEditModal).toBeTrue();
+
+      component.closeEditModal();
+      expect(component.showEditModal).toBeFalse();
+    });
+
+    it("should save group changes", fakeAsync(() => {
+      const updatedGroup = {
+        ...mockGroup,
+        name: "Updated Name",
+        budgetLimit: 75,
+      };
+      mockGroupService.updateGroup.and.returnValue(of(updatedGroup));
+
+      component.editGroup();
+      component.editForm.name = "Updated Name";
+      component.editForm.budgetLimit = 75;
+      component.saveGroupChanges();
+      tick();
+
+      expect(mockGroupService.updateGroup).toHaveBeenCalledWith(
+        "group-123",
+        { name: "Updated Name", budgetLimit: 75 },
+      );
+      expect(component.group?.name).toBe("Updated Name");
+      expect(component.group?.budgetLimit).toBe(75);
+      expect(component.showEditModal).toBeFalse();
+    }));
+
+    it("should show validation error for short name", () => {
+      component.editGroup();
+      component.editForm.name = "AB";
+      component.saveGroupChanges();
+
+      expect(component.actionError).toBe(
+        "Group name must be at least 3 characters",
+      );
+      expect(mockGroupService.updateGroup).not.toHaveBeenCalled();
+    });
+
+    it("should show validation error for invalid budget", () => {
+      component.editGroup();
+      component.editForm.budgetLimit = 0;
+      component.saveGroupChanges();
+
+      expect(component.actionError).toBe(
+        "Budget limit must be greater than 0",
+      );
+      expect(mockGroupService.updateGroup).not.toHaveBeenCalled();
+    });
+
+    it("should show error on save failure", fakeAsync(() => {
+      mockGroupService.updateGroup.and.returnValue(
+        throwError(() => new Error("Update failed")),
+      );
+
+      component.editGroup();
+      component.editForm.name = "New Name";
+      component.saveGroupChanges();
+      tick();
+
+      expect(component.actionError).toBe("Update failed");
+      expect(component.showEditModal).toBeTrue();
+    }));
+  });
+
+  describe("Pending Member State", () => {
+    const pendingGroup: Group = {
+      id: "group-123",
+      name: "Test Group",
+      description: "A test group description",
+      adminId: "admin-user",
+      members: [], // empty — indicates pending membership
+      budgetLimit: 50,
+      raffleStatus: "pending",
+      createdAt: new Date("2026-01-15"),
+      updatedAt: new Date("2026-01-15"),
+    };
+
+    beforeEach(fakeAsync(() => {
+      // Non-admin user gets empty members array => pending state
+      mockAuthService.currentUser = { id: "member-1", email: "member@test.com", displayName: "Member User" };
+      mockGroupService.getGroupById.and.returnValue(of(pendingGroup));
+
+      fixture = TestBed.createComponent(GroupDetailComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      paramsSubject.next({ id: "group-123" });
+      tick();
+      fixture.detectChanges();
+    }));
+
+    it("should show pending state when user is not in members list", () => {
+      expect(component.isPendingMember).toBeTrue();
+
+      const pendingInvite = fixture.nativeElement.querySelector(
+        '[data-testid="pending-invite"]',
+      );
+      expect(pendingInvite).toBeTruthy();
+      expect(pendingInvite.textContent).toContain("Invitation Pending");
+      expect(pendingInvite.textContent).toContain("Test Group");
+    });
+
+    it("should not show group content when user is pending", () => {
+      const groupContent = fixture.nativeElement.querySelector(".group-content-inner");
+      expect(groupContent).toBeFalsy();
+    });
+
+    it("should show accept and reject buttons in pending state", () => {
+      const acceptBtn = fixture.nativeElement.querySelector('[data-testid="detail-accept-btn"]');
+      const rejectBtn = fixture.nativeElement.querySelector('[data-testid="detail-reject-btn"]');
+      expect(acceptBtn).toBeTruthy();
+      expect(rejectBtn).toBeTruthy();
+    });
+
+    it("should navigate to groups on reject invitation", fakeAsync(() => {
+      mockGroupService.rejectInvitation.and.returnValue(
+        of({ success: true, message: "Rejected" }),
+      );
+
+      component.rejectGroupInvitation();
+      tick();
+
+      expect(mockGroupService.rejectInvitation).toHaveBeenCalledWith("group-123");
+      expect(mockRouter.navigate).toHaveBeenCalledWith(["/groups"]);
+    }));
+
+    it("should show error on reject failure", fakeAsync(() => {
+      mockGroupService.rejectInvitation.and.returnValue(
+        throwError(() => new Error("Reject failed")),
+      );
+
+      component.rejectGroupInvitation();
+      tick();
+
+      expect(component.actionError).toBe("Reject failed");
+      expect(component.isProcessing).toBeFalse();
+    }));
+
+    it("should reload group and clear pending state on accept invitation", fakeAsync(() => {
+      const acceptedGroup: Group = { ...pendingGroup, members: ["member-1"] };
+      mockGroupService.acceptInvitation.and.returnValue(of(acceptedGroup));
+      // After reload, the group now has members so isPendingMember will be false
+      mockGroupService.getGroupById.and.returnValue(of(acceptedGroup));
+
+      component.acceptGroupInvitation();
+      tick();
+      fixture.detectChanges();
+
+      expect(mockGroupService.acceptInvitation).toHaveBeenCalledWith("group-123");
+      expect(component.isPendingMember).toBeFalse();
+    }));
+
+    it("should show error on accept failure", fakeAsync(() => {
+      mockGroupService.acceptInvitation.and.returnValue(
+        throwError(() => new Error("Accept failed")),
+      );
+
+      component.acceptGroupInvitation();
+      tick();
+
+      expect(component.actionError).toBe("Accept failed");
+      expect(component.isProcessing).toBeFalse();
+    }));
+  });
+
+  describe("Group Content State (accepted member)", () => {
+    beforeEach(fakeAsync(() => {
+      fixture.detectChanges();
+      paramsSubject.next({ id: "group-123" });
+      tick();
+      fixture.detectChanges();
+    }));
+
+    it("should show group content when user is a member", () => {
+      expect(component.isPendingMember).toBeFalse();
+
+      const pendingInvite = fixture.nativeElement.querySelector('[data-testid="pending-invite"]');
+      expect(pendingInvite).toBeFalsy();
+
+      const groupContent = fixture.nativeElement.querySelector(".group-content-inner");
+      expect(groupContent).toBeTruthy();
     });
   });
 });

@@ -6,6 +6,8 @@ import {
   CannotRemoveAdminError,
   NotEnoughMembersError,
   RaffleAlreadyCompletedError,
+  AlreadyPendingMemberError,
+  NotPendingMemberError,
 } from "../errors/GroupErrors";
 
 /**
@@ -31,6 +33,7 @@ export class Group {
     readonly description: string | null,
     readonly adminId: string,
     readonly members: readonly string[],
+    readonly pendingMembers: readonly string[],
     readonly budgetLimit: number,
     readonly raffleStatus: RaffleStatus,
     readonly raffleDate: number | null,
@@ -79,6 +82,7 @@ export class Group {
       description?.trim() || null,
       adminId,
       [adminId], // Admin is automatically added as first member
+      [], // No pending members initially
       budgetLimit,
       "pending",
       null,
@@ -101,6 +105,7 @@ export class Group {
     raffleDate: number | null,
     createdAt: number,
     updatedAt: number,
+    pendingMembers: string[] = [],
   ): Group {
     return new Group(
       id,
@@ -108,6 +113,7 @@ export class Group {
       description,
       adminId,
       [...members],
+      [...pendingMembers],
       budgetLimit,
       raffleStatus,
       raffleDate,
@@ -161,6 +167,7 @@ export class Group {
       newDescription,
       this.adminId,
       this.members,
+      this.pendingMembers,
       newBudget,
       this.raffleStatus,
       this.raffleDate,
@@ -193,6 +200,7 @@ export class Group {
       this.description,
       this.adminId,
       [...this.members, userId],
+      this.pendingMembers,
       this.budgetLimit,
       this.raffleStatus,
       this.raffleDate,
@@ -230,6 +238,7 @@ export class Group {
       this.description,
       this.adminId,
       this.members.filter((id) => id !== userId),
+      this.pendingMembers,
       this.budgetLimit,
       this.raffleStatus,
       this.raffleDate,
@@ -259,12 +268,112 @@ export class Group {
       this.description,
       this.adminId,
       this.members,
+      this.pendingMembers,
       this.budgetLimit,
       "completed",
       Date.now(),
       this.createdAt,
       Date.now(),
     );
+  }
+
+  /**
+   * Adds a user to the pending members list
+   * @param userId - User ID to add as pending
+   * @returns New Group instance with user in pendingMembers
+   * @throws RaffleAlreadyCompletedError if raffle is completed
+   * @throws AlreadyGroupMemberError if user is already a member
+   * @throws AlreadyPendingMemberError if user already has a pending invitation
+   */
+  addPendingMember(userId: string): Group {
+    if (this.raffleStatus === "completed") {
+      throw new RaffleAlreadyCompletedError(
+        "Cannot add members after raffle has been completed",
+      );
+    }
+
+    if (this.members.includes(userId)) {
+      throw new AlreadyGroupMemberError();
+    }
+
+    if (this.pendingMembers.includes(userId)) {
+      throw new AlreadyPendingMemberError();
+    }
+
+    return new Group(
+      this.id,
+      this.name,
+      this.description,
+      this.adminId,
+      this.members,
+      [...this.pendingMembers, userId],
+      this.budgetLimit,
+      this.raffleStatus,
+      this.raffleDate,
+      this.createdAt,
+      Date.now(),
+    );
+  }
+
+  /**
+   * Accepts a pending invitation, moving user from pendingMembers to members
+   * @param userId - User ID accepting the invitation
+   * @returns New Group instance with user moved to members
+   * @throws NotPendingMemberError if user is not in pendingMembers
+   */
+  acceptInvitation(userId: string): Group {
+    if (!this.pendingMembers.includes(userId)) {
+      throw new NotPendingMemberError();
+    }
+
+    return new Group(
+      this.id,
+      this.name,
+      this.description,
+      this.adminId,
+      [...this.members, userId],
+      this.pendingMembers.filter((id) => id !== userId),
+      this.budgetLimit,
+      this.raffleStatus,
+      this.raffleDate,
+      this.createdAt,
+      Date.now(),
+    );
+  }
+
+  /**
+   * Rejects a pending invitation, removing user from pendingMembers
+   * @param userId - User ID rejecting the invitation
+   * @returns New Group instance with user removed from pendingMembers
+   * @throws NotPendingMemberError if user is not in pendingMembers
+   */
+  rejectInvitation(userId: string): Group {
+    if (!this.pendingMembers.includes(userId)) {
+      throw new NotPendingMemberError();
+    }
+
+    return new Group(
+      this.id,
+      this.name,
+      this.description,
+      this.adminId,
+      this.members,
+      this.pendingMembers.filter((id) => id !== userId),
+      this.budgetLimit,
+      this.raffleStatus,
+      this.raffleDate,
+      this.createdAt,
+      Date.now(),
+    );
+  }
+
+  /**
+   * Check if a user has a pending invitation
+   * @param userId - User ID to check
+   * @returns true if user is a pending member
+   */
+  isPendingMember(userId: string): boolean {
+    return this.pendingMembers.includes(userId);
   }
 
   /**
@@ -306,6 +415,7 @@ export class Group {
       description: this.description,
       adminId: this.adminId,
       members: [...this.members],
+      pendingMembers: [...this.pendingMembers],
       budgetLimit: this.budgetLimit,
       raffleStatus: this.raffleStatus,
       raffleDate: this.raffleDate,

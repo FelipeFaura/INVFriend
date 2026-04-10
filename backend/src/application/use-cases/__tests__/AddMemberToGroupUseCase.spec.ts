@@ -9,6 +9,7 @@ import {
   NotGroupAdminError,
   AlreadyGroupMemberError,
   RaffleAlreadyCompletedError,
+  AlreadyPendingMemberError,
 } from "../../../domain/errors/GroupErrors";
 
 describe("AddMemberToGroupUseCase", () => {
@@ -18,6 +19,7 @@ describe("AddMemberToGroupUseCase", () => {
   const createMockGroup = (overrides?: {
     raffleStatus?: "pending" | "completed";
     members?: string[];
+    pendingMembers?: string[];
   }) => {
     return Group.fromDatabase(
       "group-123",
@@ -30,6 +32,7 @@ describe("AddMemberToGroupUseCase", () => {
       overrides?.raffleStatus === "completed" ? Date.now() : null,
       Date.now(),
       Date.now(),
+      overrides?.pendingMembers || [],
     );
   };
 
@@ -58,8 +61,8 @@ describe("AddMemberToGroupUseCase", () => {
       requesterId: "admin-123",
     });
 
-    expect(result.members).toContain("new-member-789");
-    expect(result.members.length).toBe(2);
+    expect(result.pendingMembers).toContain("new-member-789");
+    expect(result.members.length).toBe(1); // Only admin
     expect(mockRepository.update).toHaveBeenCalled();
   });
 
@@ -137,6 +140,27 @@ describe("AddMemberToGroupUseCase", () => {
     }
 
     expect(error).toBeInstanceOf(RaffleAlreadyCompletedError);
+    expect(mockRepository.update).not.toHaveBeenCalled();
+  });
+
+  it("should throw AlreadyPendingMemberError when user is already pending", async () => {
+    const mockGroup = createMockGroup({
+      pendingMembers: ["pending-member"],
+    });
+    mockRepository.findById.mockResolvedValue(mockGroup);
+
+    let error: unknown;
+    try {
+      await useCase.execute({
+        groupId: "group-123",
+        userId: "pending-member",
+        requesterId: "admin-123",
+      });
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).toBeInstanceOf(AlreadyPendingMemberError);
     expect(mockRepository.update).not.toHaveBeenCalled();
   });
 });

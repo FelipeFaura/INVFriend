@@ -11,4 +11,11 @@ export interface IUserRepository {
    * @returns User entity or null if not found
    */
   findById(id: string): Promise<User | null>;
+
+  /**
+   * Finds a user by their email address
+   * @param email - User email address
+   * @returns User entity or null if not found
+   */
+  findByEmail(email: string): Promise<User | null>;
 }

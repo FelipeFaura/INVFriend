@@ -63,10 +63,12 @@ describe("GetUserGroupsUseCase", () => {
     expect(result[0].name).toBe("Secret Santa 2026");
     expect(result[0].memberCount).toBe(2);
     expect(result[0].isAdmin).toBe(false);
+    expect(result[0].isPending).toBe(false);
 
     // Second group - user is admin
     expect(result[1].id).toBe("group-2");
     expect(result[1].isAdmin).toBe(true);
+    expect(result[1].isPending).toBe(false);
     expect(result[1].raffleStatus).toBe("completed");
   });
 
@@ -112,5 +114,30 @@ describe("GetUserGroupsUseCase", () => {
 
     expect(result[0].isAdmin).toBe(true);
     expect(result[1].isAdmin).toBe(false);
+  });
+
+  it("should mark groups where user is a pending member", async () => {
+    const mockGroups = [
+      Group.fromDatabase(
+        "group-1",
+        "Pending Group",
+        null,
+        "other-admin",
+        ["other-admin"],
+        50,
+        "pending",
+        null,
+        Date.now(),
+        Date.now(),
+        ["user-123"],
+      ),
+    ];
+
+    mockRepository.findByMemberId.mockResolvedValue(mockGroups);
+
+    const result = await useCase.execute("user-123");
+
+    expect(result[0].isPending).toBe(true);
+    expect(result[0].isAdmin).toBe(false);
   });
 });

@@ -27,6 +27,7 @@ describe("GroupListComponent", () => {
       memberCount: 5,
       isAdmin: true,
       raffleStatus: "pending",
+      isPending: false,
     },
     {
       id: "group-2",
@@ -34,6 +35,7 @@ describe("GroupListComponent", () => {
       memberCount: 12,
       isAdmin: false,
       raffleStatus: "completed",
+      isPending: false,
     },
     {
       id: "group-3",
@@ -41,11 +43,25 @@ describe("GroupListComponent", () => {
       memberCount: 8,
       isAdmin: true,
       raffleStatus: "pending",
+      isPending: false,
     },
   ];
 
+  const mockPendingGroup: GroupSummary = {
+    id: "pending-1",
+    name: "Pending Group",
+    memberCount: 4,
+    isAdmin: false,
+    raffleStatus: "pending",
+    isPending: true,
+  };
+
   beforeEach(async () => {
-    mockGroupService = jasmine.createSpyObj("GroupHttpService", ["getGroups"]);
+    mockGroupService = jasmine.createSpyObj("GroupHttpService", [
+      "getGroups",
+      "acceptInvitation",
+      "rejectInvitation",
+    ]);
     mockRouter = jasmine.createSpyObj("Router", ["navigate"]);
 
     await TestBed.configureTestingModule({
@@ -111,7 +127,7 @@ describe("GroupListComponent", () => {
       );
       expect(groupsList).toBeTruthy();
 
-      const groupCards = fixture.nativeElement.querySelectorAll(".group-card");
+      const groupCards = fixture.nativeElement.querySelectorAll(".card--interactive");
       expect(groupCards.length).toBe(3);
     });
 
@@ -147,7 +163,7 @@ describe("GroupListComponent", () => {
       component.loadGroups();
       fixture.detectChanges();
 
-      const firstCard = fixture.nativeElement.querySelector(".group-card");
+      const firstCard = fixture.nativeElement.querySelector(".card--interactive");
       expect(firstCard.textContent).toContain("1 member");
     });
   });
@@ -222,6 +238,135 @@ describe("GroupListComponent", () => {
 
       expect(mockRouter.navigate).toHaveBeenCalledWith(["/groups", "group-1"]);
     });
+
+    it("should not navigate when pending group card is clicked", () => {
+      component.groups = [...mockGroups, mockPendingGroup];
+      component.navigateToGroup("pending-1");
+      expect(mockRouter.navigate).not.toHaveBeenCalledWith(["/groups", "pending-1"]);
+    });
+  });
+
+  describe("Pending Invitations", () => {
+    it("should show pending invitations section when there are pending groups", () => {
+      mockGroupService.getGroups.and.returnValue(
+        of([...mockGroups, mockPendingGroup]),
+      );
+      fixture.detectChanges();
+
+      const pendingSection = fixture.nativeElement.querySelector(".pending-section");
+      expect(pendingSection).toBeTruthy();
+
+      const pendingCard = fixture.nativeElement.querySelector(
+        '[data-testid="pending-card-pending-1"]',
+      );
+      expect(pendingCard).toBeTruthy();
+      expect(pendingCard.textContent).toContain("Pending Group");
+    });
+
+    it("should not show pending section when no pending groups", () => {
+      fixture.detectChanges();
+
+      const pendingSection = fixture.nativeElement.querySelector(".pending-section");
+      expect(pendingSection).toBeFalsy();
+    });
+
+    it("should call acceptInvitation and reload groups on accept click", fakeAsync(() => {
+      mockGroupService.getGroups.and.returnValue(
+        of([...mockGroups, mockPendingGroup]),
+      );
+      mockGroupService.acceptInvitation.and.returnValue(
+        of({ id: "pending-1", name: "Pending Group", description: undefined, adminId: "admin", members: ["user-1"], budgetLimit: 0, raffleStatus: "pending" as const, createdAt: new Date(), updatedAt: new Date() }),
+      );
+      fixture.detectChanges();
+
+      const acceptBtn = fixture.nativeElement.querySelector(
+        '[data-testid="accept-pending-1"]',
+      );
+      acceptBtn.click();
+      tick();
+
+      expect(mockGroupService.acceptInvitation).toHaveBeenCalledWith("pending-1");
+      expect(mockGroupService.getGroups).toHaveBeenCalledTimes(2); // initial + reload
+    }));
+
+    it("should call rejectInvitation and reload groups on reject click", fakeAsync(() => {
+      mockGroupService.getGroups.and.returnValue(
+        of([...mockGroups, mockPendingGroup]),
+      );
+      mockGroupService.rejectInvitation.and.returnValue(
+        of({ success: true, message: "Rejected" }),
+      );
+      fixture.detectChanges();
+
+      const rejectBtn = fixture.nativeElement.querySelector(
+        '[data-testid="reject-pending-1"]',
+      );
+      rejectBtn.click();
+      tick();
+
+      expect(mockGroupService.rejectInvitation).toHaveBeenCalledWith("pending-1");
+      expect(mockGroupService.getGroups).toHaveBeenCalledTimes(2); // initial + reload
+    }));
+
+    it("should show invitation error on accept failure", fakeAsync(() => {
+      mockGroupService.getGroups.and.returnValue(
+        of([...mockGroups, mockPendingGroup]),
+      );
+      mockGroupService.acceptInvitation.and.returnValue(
+        throwError(() => new Error("Accept failed")),
+      );
+      fixture.detectChanges();
+
+      const acceptBtn = fixture.nativeElement.querySelector(
+        '[data-testid="accept-pending-1"]',
+      );
+      acceptBtn.click();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.invitationError).toBe("Accept failed");
+      const errorEl = fixture.nativeElement.querySelector('[data-testid="invitation-error"]');
+      expect(errorEl).toBeTruthy();
+    }));
+
+    it("should show invitation error on reject failure", fakeAsync(() => {
+      mockGroupService.getGroups.and.returnValue(
+        of([...mockGroups, mockPendingGroup]),
+      );
+      mockGroupService.rejectInvitation.and.returnValue(
+        throwError(() => new Error("Reject failed")),
+      );
+      fixture.detectChanges();
+
+      const rejectBtn = fixture.nativeElement.querySelector(
+        '[data-testid="reject-pending-1"]',
+      );
+      rejectBtn.click();
+      tick();
+      fixture.detectChanges();
+
+      expect(component.invitationError).toBe("Reject failed");
+    }));
+
+    it("should return pendingGroups getter filtering by isPending", () => {
+      mockGroupService.getGroups.and.returnValue(
+        of([...mockGroups, mockPendingGroup]),
+      );
+      fixture.detectChanges();
+
+      expect(component.pendingGroups.length).toBe(1);
+      expect(component.pendingGroups[0].id).toBe("pending-1");
+    });
+
+    it("should return acceptedGroups getter filtering by !isPending", () => {
+      mockGroupService.getGroups.and.returnValue(
+        of([...mockGroups, mockPendingGroup]),
+      );
+      fixture.detectChanges();
+
+      expect(component.acceptedGroups.length).toBe(3);
+      expect(component.acceptedGroups.every((g) => !g.isPending)).toBeTrue();
+    });
   });
 
   describe("States", () => {
@@ -259,7 +404,7 @@ describe("GroupListComponent", () => {
       mockGroupService.getGroups.and.returnValue(of(mockGroups));
 
       const retryBtn = fixture.nativeElement.querySelector(
-        ".error-container .btn",
+        ".alert--error .btn--secondary",
       );
       retryBtn.click();
       fixture.detectChanges();

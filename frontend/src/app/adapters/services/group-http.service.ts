@@ -93,6 +93,18 @@ export class GroupHttpService {
   }
 
   /**
+   * Add a member to a group by email (invite endpoint)
+   */
+  addMemberByEmail(groupId: string, email: string): Observable<Group> {
+    return this.http
+      .post<GroupResponseDTO>(`${this.apiUrl}/${groupId}/members/invite`, { email })
+      .pipe(
+        map((response) => this.mapToGroup(response)),
+        catchError((error) => this.handleError(error)),
+      );
+  }
+
+  /**
    * Remove a member from a group
    */
   removeMember(groupId: string, userId: string): Observable<Group> {
@@ -102,6 +114,27 @@ export class GroupHttpService {
         map((response) => this.mapToGroup(response)),
         catchError((error) => this.handleError(error)),
       );
+  }
+
+  /**
+   * Accept a pending group invitation
+   */
+  acceptInvitation(groupId: string): Observable<Group> {
+    return this.http
+      .post<GroupResponseDTO>(`${this.apiUrl}/${groupId}/accept`, {})
+      .pipe(
+        map((response) => this.mapToGroup(response)),
+        catchError((error) => this.handleError(error)),
+      );
+  }
+
+  /**
+   * Reject a pending group invitation
+   */
+  rejectInvitation(groupId: string): Observable<{ success: boolean; message: string }> {
+    return this.http
+      .post<{ success: boolean; message: string }>(`${this.apiUrl}/${groupId}/reject`, {})
+      .pipe(catchError((error) => this.handleError(error)));
   }
 
   /**
@@ -118,6 +151,7 @@ export class GroupHttpService {
       raffleStatus: dto.raffleStatus,
       createdAt: new Date(dto.createdAt),
       updatedAt: new Date(dto.updatedAt),
+      memberDetails: dto.memberDetails,
     };
   }
 

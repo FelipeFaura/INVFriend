@@ -31,6 +31,15 @@ export interface AddMemberDTO {
 }
 
 /**
+ * DTO representing a group member's details
+ */
+export interface MemberDetailDTO {
+  id: string;
+  name: string;
+  email: string;
+}
+
+/**
  * Response DTO for a full group
  */
 export interface GroupResponseDTO {
@@ -43,6 +52,7 @@ export interface GroupResponseDTO {
   raffleStatus: RaffleStatus;
   createdAt: string;
   updatedAt: string;
+  memberDetails?: MemberDetailDTO[];
 }
 
 /**
@@ -54,6 +64,7 @@ export interface GroupSummaryDTO {
   memberCount: number;
   isAdmin: boolean;
   raffleStatus: RaffleStatus;
+  isPending: boolean;
 }
 
 /**

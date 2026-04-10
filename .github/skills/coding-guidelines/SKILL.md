@@ -1,3 +1,8 @@
+---
+name: coding-guidelines
+description: "Detailed coding conventions, architecture patterns, and code examples for the project. Use when implementing features, reviewing code, or checking naming/structure conventions. Covers hexagonal architecture, TypeScript patterns, entity/use-case/controller/component patterns."
+---
+
 # 📐 SKILL: Coding Guidelines
 
 ## 📌 Purpose
@@ -297,6 +302,72 @@ export class GroupHttpService {
     return this.http.post<Group>(this.apiUrl, dto);
   }
 }
+```
+
+---
+
+## 🔄 Workflow Rules (All Agents)
+
+These rules apply to every agent that writes or reviews code.
+
+### Build Verification
+
+After making changes, verify the build passes:
+
+```bash
+# Backend
+cd backend && npm run build && npm test
+
+# Frontend
+cd frontend && npx ng build --configuration=development
+```
+
+For plan closure, verify **production** build:
+```bash
+cd frontend && npx ng build   # NOT --configuration=development
+```
+
+### External Issue Reporting
+
+If you discover a problem **outside your assigned scope**, do NOT fix it. Report it:
+
+```
+## Issues detected (outside scope)
+- [file path]: [description of the issue] — needs attention from orchestrator
+```
+
+The orchestrator will triage and assign the issue.
+
+### Scope Boundaries
+
+- Only modify files directly relevant to your assignment.
+- If a change requires modifying a shared file (e.g., `index.ts`, routing), note it in your report.
+- Never modify test assertions to make them pass — fix the production code.
+- No `console.log()` or debug code in production files.
+
+### SCSS Import Paths
+
+Frontend SCSS files must use **full relative paths**:
+```scss
+// ✅ Correct
+@use '../../../../styles/tokens' as *;
+@use '../../../../styles/mixins' as mix;
+
+// ❌ Wrong — will fail at build time
+@use "tokens" as *;
+@use "mixins" as mix;
+```
+
+### Angular Template Null Safety
+
+Inside `*ngIf` guards, TypeScript still considers properties nullable in bindings:
+```html
+<!-- ✅ Correct -->
+<img [src]="item.profile!.photoUrl" />
+<span>{{ item.profile?.displayName }}</span>
+
+<!-- ❌ Will cause TS2531 -->
+<img [src]="item.profile.photoUrl" />
 ```
 
 ---

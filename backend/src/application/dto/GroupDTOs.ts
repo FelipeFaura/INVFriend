@@ -34,12 +34,30 @@ export interface AddMemberDTO {
 }
 
 /**
+ * Input DTO for adding a member to a group by email
+ */
+export interface AddMemberByEmailDTO {
+  groupId: string;
+  email: string;
+  requesterId: string;
+}
+
+/**
  * Input DTO for removing a member from a group
  */
 export interface RemoveMemberDTO {
   groupId: string;
   userId: string;
   requesterId: string; // User making the request (must be admin)
+}
+
+/**
+ * DTO representing a group member's details
+ */
+export interface MemberDetailDTO {
+  id: string;
+  name: string;
+  email: string;
 }
 
 /**
@@ -51,11 +69,13 @@ export interface GroupResponseDTO {
   description: string | null;
   adminId: string;
   members: string[];
+  pendingMembers: string[];
   budgetLimit: number;
   raffleStatus: RaffleStatus;
   raffleDate: number | null;
   createdAt: number;
   updatedAt: number;
+  memberDetails?: MemberDetailDTO[];
 }
 
 /**
@@ -69,4 +89,5 @@ export interface GroupSummaryDTO {
   budgetLimit: number;
   raffleStatus: RaffleStatus;
   isAdmin: boolean;
+  isPending: boolean;
 }

@@ -18,6 +18,7 @@ export interface Group {
   raffleStatus: RaffleStatus;
   createdAt: Date;
   updatedAt: Date;
+  memberDetails?: { id: string; name: string; email: string }[];
 }
 
 /**
@@ -30,6 +31,7 @@ export interface GroupSummary {
   memberCount: number;
   isAdmin: boolean;
   raffleStatus: RaffleStatus;
+  isPending: boolean;
 }
 
 /**

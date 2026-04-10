@@ -21,6 +21,8 @@ export class GroupListComponent implements OnInit, OnDestroy {
   searchTerm = "";
   isLoading = false;
   error: string | null = null;
+  isProcessing: { [groupId: string]: boolean } = {};
+  invitationError: string | null = null;
 
   private destroy$ = new Subject<void>();
   private searchSubject$ = new Subject<string>();
@@ -82,7 +84,69 @@ export class GroupListComponent implements OnInit, OnDestroy {
    * Navigate to group detail page
    */
   navigateToGroup(groupId: string): void {
+    const group = this.groups.find((g) => g.id === groupId);
+    if (group?.isPending) return;
     this.router.navigate(["/groups", groupId]);
+  }
+
+  /**
+   * Accept a pending group invitation
+   */
+  acceptInvitation(groupId: string, event: Event): void {
+    event.stopPropagation();
+    this.isProcessing[groupId] = true;
+    this.invitationError = null;
+
+    this.groupHttpService
+      .acceptInvitation(groupId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.isProcessing[groupId] = false;
+          this.loadGroups();
+        },
+        error: (err: Error) => {
+          this.invitationError = err.message || "Failed to accept invitation";
+          this.isProcessing[groupId] = false;
+        },
+      });
+  }
+
+  /**
+   * Reject a pending group invitation
+   */
+  rejectInvitation(groupId: string, event: Event): void {
+    event.stopPropagation();
+    this.isProcessing[groupId] = true;
+    this.invitationError = null;
+
+    this.groupHttpService
+      .rejectInvitation(groupId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.isProcessing[groupId] = false;
+          this.loadGroups();
+        },
+        error: (err: Error) => {
+          this.invitationError = err.message || "Failed to reject invitation";
+          this.isProcessing[groupId] = false;
+        },
+      });
+  }
+
+  /**
+   * Get pending invitation groups from the filtered list
+   */
+  get pendingGroups(): GroupSummary[] {
+    return this.filteredGroups.filter((g) => g.isPending);
+  }
+
+  /**
+   * Get accepted (non-pending) groups from the filtered list
+   */
+  get acceptedGroups(): GroupSummary[] {
+    return this.filteredGroups.filter((g) => !g.isPending);
   }
 
   /**

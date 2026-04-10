@@ -4,14 +4,18 @@
  */
 import { Response } from "express";
 import { IGroupRepository } from "../../../ports/IGroupRepository";
+import { IUserRepository } from "../../../ports/IUserRepository";
 import {
   CreateGroupUseCase,
   GetGroupDetailsUseCase,
   GetUserGroupsUseCase,
   UpdateGroupUseCase,
   AddMemberToGroupUseCase,
+  AddMemberByEmailUseCase,
   RemoveMemberFromGroupUseCase,
   DeleteGroupUseCase,
+  AcceptInvitationUseCase,
+  RejectInvitationUseCase,
 } from "../../../application/use-cases";
 import {
   GroupNotFoundError,
@@ -23,8 +27,11 @@ import {
   InvalidGroupNameError,
   InvalidBudgetLimitError,
   RaffleAlreadyCompletedError,
+  AlreadyPendingMemberError,
+  NotPendingMemberError,
   GroupError,
 } from "../../../domain/errors/GroupErrors";
+import { UserNotFoundError } from "../../../domain/errors/AuthErrors";
 import { AuthenticatedRequest } from "../middleware/authMiddleware";
 
 export class GroupController {
@@ -33,19 +40,31 @@ export class GroupController {
   private getUserGroupsUseCase: GetUserGroupsUseCase;
   private updateGroupUseCase: UpdateGroupUseCase;
   private addMemberToGroupUseCase: AddMemberToGroupUseCase;
+  private addMemberByEmailUseCase: AddMemberByEmailUseCase;
   private removeMemberFromGroupUseCase: RemoveMemberFromGroupUseCase;
   private deleteGroupUseCase: DeleteGroupUseCase;
+  private acceptInvitationUseCase: AcceptInvitationUseCase;
+  private rejectInvitationUseCase: RejectInvitationUseCase;
 
-  constructor(groupRepository: IGroupRepository) {
+  constructor(
+    groupRepository: IGroupRepository,
+    userRepository: IUserRepository,
+  ) {
     this.createGroupUseCase = new CreateGroupUseCase(groupRepository);
-    this.getGroupDetailsUseCase = new GetGroupDetailsUseCase(groupRepository);
+    this.getGroupDetailsUseCase = new GetGroupDetailsUseCase(groupRepository, userRepository);
     this.getUserGroupsUseCase = new GetUserGroupsUseCase(groupRepository);
     this.updateGroupUseCase = new UpdateGroupUseCase(groupRepository);
     this.addMemberToGroupUseCase = new AddMemberToGroupUseCase(groupRepository);
+    this.addMemberByEmailUseCase = new AddMemberByEmailUseCase(
+      groupRepository,
+      userRepository,
+    );
     this.removeMemberFromGroupUseCase = new RemoveMemberFromGroupUseCase(
       groupRepository,
     );
     this.deleteGroupUseCase = new DeleteGroupUseCase(groupRepository);
+    this.acceptInvitationUseCase = new AcceptInvitationUseCase(groupRepository);
+    this.rejectInvitationUseCase = new RejectInvitationUseCase(groupRepository);
   }
 
   /**
@@ -218,6 +237,39 @@ export class GroupController {
   }
 
   /**
+   * POST /groups/:id/members/invite
+   * Adds a member to the group by email (admin only)
+   */
+  async addMemberByEmail(
+    req: AuthenticatedRequest,
+    res: Response,
+  ): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({
+          error: "Unauthorized",
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        });
+        return;
+      }
+
+      const { id } = req.params;
+      const { email } = req.body;
+
+      const result = await this.addMemberByEmailUseCase.execute({
+        groupId: id,
+        email,
+        requesterId: req.user.uid,
+      });
+
+      res.status(200).json(result);
+    } catch (error) {
+      this.handleGroupError(error, res);
+    }
+  }
+
+  /**
    * DELETE /groups/:id/members/:userId
    * Removes a member from the group (admin only)
    */
@@ -241,6 +293,63 @@ export class GroupController {
       });
 
       res.status(200).json(result);
+    } catch (error) {
+      this.handleGroupError(error, res);
+    }
+  }
+
+  /**
+   * POST /groups/:id/accept
+   * Accept a group invitation (pending member only)
+   */
+  async acceptInvitation(
+    req: AuthenticatedRequest,
+    res: Response,
+  ): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({
+          error: "Unauthorized",
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        });
+        return;
+      }
+
+      const { id } = req.params;
+      const result = await this.acceptInvitationUseCase.execute(
+        id,
+        req.user.uid,
+      );
+
+      res.status(200).json(result);
+    } catch (error) {
+      this.handleGroupError(error, res);
+    }
+  }
+
+  /**
+   * POST /groups/:id/reject
+   * Reject a group invitation (pending member only)
+   */
+  async rejectInvitation(
+    req: AuthenticatedRequest,
+    res: Response,
+  ): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({
+          error: "Unauthorized",
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        });
+        return;
+      }
+
+      const { id } = req.params;
+      await this.rejectInvitationUseCase.execute(id, req.user.uid);
+
+      res.status(200).json({ success: true, message: "Invitation rejected" });
     } catch (error) {
       this.handleGroupError(error, res);
     }
@@ -305,6 +414,24 @@ export class GroupController {
       return;
     }
 
+    if (error instanceof AlreadyPendingMemberError) {
+      res.status(400).json({
+        error: "Bad Request",
+        code: error.code,
+        message: error.message,
+      });
+      return;
+    }
+
+    if (error instanceof NotPendingMemberError) {
+      res.status(400).json({
+        error: "Bad Request",
+        code: error.code,
+        message: error.message,
+      });
+      return;
+    }
+
     // Authorization errors (403)
     if (error instanceof NotGroupAdminError) {
       res.status(403).json({
@@ -343,6 +470,15 @@ export class GroupController {
         error: "Not Found",
         code: error.code,
         message: error.message,
+      });
+      return;
+    }
+
+    if (error instanceof UserNotFoundError) {
+      res.status(404).json({
+        error: "Not Found",
+        code: error.code,
+        message: "No registered user found with that email",
       });
       return;
     }

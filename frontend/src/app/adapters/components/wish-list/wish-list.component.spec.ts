@@ -150,12 +150,12 @@ describe("WishListComponent", () => {
     }));
 
     it("should display my wishes list", () => {
-      const wishCards = fixture.nativeElement.querySelectorAll(".wish-card");
+      const wishCards = fixture.nativeElement.querySelectorAll(".wish-item");
       expect(wishCards.length).toBe(2);
     });
 
     it("should display wish title", () => {
-      const wishTitle = fixture.nativeElement.querySelector(".wish-title");
+      const wishTitle = fixture.nativeElement.querySelector(".wish-item__title");
       expect(wishTitle.textContent).toContain("PlayStation 5");
     });
 
@@ -196,7 +196,7 @@ describe("WishListComponent", () => {
       fixture.detectChanges();
 
       const assignedSection =
-        fixture.nativeElement.querySelector(".assigned-wishes");
+        fixture.nativeElement.querySelector(".wish-section--assigned");
       expect(assignedSection).toBeFalsy();
     }));
 
@@ -207,7 +207,7 @@ describe("WishListComponent", () => {
       fixture.detectChanges();
 
       const assignedSection =
-        fixture.nativeElement.querySelector(".assigned-wishes");
+        fixture.nativeElement.querySelector(".wish-section--assigned");
       expect(assignedSection).toBeTruthy();
     }));
   });

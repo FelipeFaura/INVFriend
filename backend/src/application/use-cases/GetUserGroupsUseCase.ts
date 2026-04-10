@@ -27,6 +27,7 @@ export class GetUserGroupsUseCase {
       budgetLimit: group.budgetLimit,
       raffleStatus: group.raffleStatus,
       isAdmin: group.isAdmin(userId),
+      isPending: group.isPendingMember(userId),
     }));
   }
 }

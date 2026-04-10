@@ -5,6 +5,7 @@
 import { Response } from "express";
 import { GroupController } from "../GroupController";
 import { IGroupRepository } from "../../../../ports/IGroupRepository";
+import { IUserRepository } from "../../../../ports/IUserRepository";
 import {
   GroupNotFoundError,
   NotGroupAdminError,
@@ -40,11 +41,21 @@ jest.mock("../../../../application/use-cases", () => ({
   DeleteGroupUseCase: jest.fn().mockImplementation(() => ({
     execute: jest.fn(),
   })),
+  AddMemberByEmailUseCase: jest.fn().mockImplementation(() => ({
+    execute: jest.fn(),
+  })),
+  AcceptInvitationUseCase: jest.fn().mockImplementation(() => ({
+    execute: jest.fn(),
+  })),
+  RejectInvitationUseCase: jest.fn().mockImplementation(() => ({
+    execute: jest.fn(),
+  })),
 }));
 
 describe("GroupController", () => {
   let controller: GroupController;
   let mockRepository: jest.Mocked<IGroupRepository>;
+  let mockUserRepository: jest.Mocked<IUserRepository>;
   let mockRequest: Partial<AuthenticatedRequest>;
   let mockResponse: Partial<Response>;
   let jsonData: unknown;
@@ -80,7 +91,12 @@ describe("GroupController", () => {
       generateId: jest.fn(),
     };
 
-    controller = new GroupController(mockRepository);
+    mockUserRepository = {
+      findById: jest.fn(),
+      findByEmail: jest.fn(),
+    };
+
+    controller = new GroupController(mockRepository, mockUserRepository);
 
     jsonData = null;
 
@@ -112,7 +128,7 @@ describe("GroupController", () => {
       const mockExecute = jest.fn().mockResolvedValue(mockGroupResponse);
       CreateGroupUseCase.mockImplementation(() => ({ execute: mockExecute }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.createGroup(
         mockRequest as AuthenticatedRequest,
@@ -145,7 +161,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockRejectedValue(new InvalidGroupNameError()),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.createGroup(
         mockRequest as AuthenticatedRequest,
@@ -166,7 +182,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockRejectedValue(new InvalidBudgetLimitError()),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.createGroup(
         mockRequest as AuthenticatedRequest,
@@ -199,7 +215,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockResolvedValue(mockGroups),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.getGroups(
         mockRequest as AuthenticatedRequest,
@@ -233,7 +249,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockResolvedValue(mockGroupResponse),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.getGroupById(
         mockRequest as AuthenticatedRequest,
@@ -256,7 +272,7 @@ describe("GroupController", () => {
           .mockRejectedValue(new GroupNotFoundError("non-existent")),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.getGroupById(
         mockRequest as AuthenticatedRequest,
@@ -283,7 +299,7 @@ describe("GroupController", () => {
           ),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.getGroupById(
         mockRequest as AuthenticatedRequest,
@@ -309,7 +325,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockResolvedValue(updatedGroup),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.updateGroup(
         mockRequest as AuthenticatedRequest,
@@ -331,7 +347,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockRejectedValue(new NotGroupAdminError()),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.updateGroup(
         mockRequest as AuthenticatedRequest,
@@ -355,7 +371,7 @@ describe("GroupController", () => {
           .mockRejectedValue(new GroupNotFoundError("non-existent")),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.updateGroup(
         mockRequest as AuthenticatedRequest,
@@ -377,7 +393,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockResolvedValue(undefined),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.deleteGroup(
         mockRequest as AuthenticatedRequest,
@@ -398,7 +414,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockRejectedValue(new NotGroupAdminError()),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.deleteGroup(
         mockRequest as AuthenticatedRequest,
@@ -420,7 +436,7 @@ describe("GroupController", () => {
           .mockRejectedValue(new CannotDeleteAfterRaffleError()),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.deleteGroup(
         mockRequest as AuthenticatedRequest,
@@ -451,7 +467,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockResolvedValue(updatedGroup),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.addMember(
         mockRequest as AuthenticatedRequest,
@@ -475,7 +491,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockRejectedValue(new NotGroupAdminError()),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.addMember(
         mockRequest as AuthenticatedRequest,
@@ -496,7 +512,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockRejectedValue(new AlreadyGroupMemberError()),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.addMember(
         mockRequest as AuthenticatedRequest,
@@ -521,7 +537,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockResolvedValue(updatedGroup),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.removeMember(
         mockRequest as AuthenticatedRequest,
@@ -541,7 +557,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockRejectedValue(new NotGroupAdminError()),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.removeMember(
         mockRequest as AuthenticatedRequest,
@@ -561,7 +577,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockRejectedValue(new CannotRemoveAdminError()),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.removeMember(
         mockRequest as AuthenticatedRequest,
@@ -582,7 +598,7 @@ describe("GroupController", () => {
         execute: jest.fn().mockRejectedValue(new NotGroupMemberError()),
       }));
 
-      controller = new GroupController(mockRepository);
+      controller = new GroupController(mockRepository, mockUserRepository);
 
       await controller.removeMember(
         mockRequest as AuthenticatedRequest,
