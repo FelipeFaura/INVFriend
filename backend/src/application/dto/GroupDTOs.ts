@@ -69,6 +69,7 @@ export interface GroupResponseDTO {
   description: string | null;
   adminId: string;
   members: string[];
+  pendingMembers: string[];
   budgetLimit: number;
   raffleStatus: RaffleStatus;
   raffleDate: number | null;
@@ -88,4 +89,5 @@ export interface GroupSummaryDTO {
   budgetLimit: number;
   raffleStatus: RaffleStatus;
   isAdmin: boolean;
+  isPending: boolean;
 }

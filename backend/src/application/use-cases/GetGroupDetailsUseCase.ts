@@ -39,15 +39,36 @@ export class GetGroupDetailsUseCase {
       throw new GroupNotFoundError(groupId);
     }
 
-    // Verify requester is a member
-    if (!group.isMember(requesterId)) {
+    const isMember = group.isMember(requesterId);
+    const isPending = group.isPendingMember(requesterId);
+
+    if (!isMember && !isPending) {
       throw new NotGroupMemberError(
         "You must be a member to view group details",
       );
     }
 
+    // For pending members, return limited info
+    if (isPending) {
+      return {
+        id: group.id,
+        name: group.name,
+        description: group.description,
+        adminId: group.adminId,
+        members: [],
+        pendingMembers: [],
+        memberDetails: [],
+        budgetLimit: group.budgetLimit,
+        raffleStatus: group.raffleStatus,
+        raffleDate: group.raffleDate,
+        createdAt: group.createdAt,
+        updatedAt: group.updatedAt,
+      };
+    }
+
+    // Full access for accepted members
     const baseDTO = toResponseDTO(group);
-    const memberDetails = await this.resolveMemberDetails(group.members);
+    const memberDetails = await this.resolveMemberDetails([...group.members]);
     return { ...baseDTO, memberDetails };
   }
 

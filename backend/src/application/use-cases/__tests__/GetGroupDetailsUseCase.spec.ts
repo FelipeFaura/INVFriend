@@ -170,4 +170,43 @@ describe("GetGroupDetailsUseCase", () => {
       email: "",
     });
   });
+
+  it("should return limited info for a pending member", async () => {
+    const mockGroup = Group.fromDatabase(
+      "group-123",
+      "Secret Santa 2026",
+      "Christmas exchange",
+      "admin-123",
+      ["admin-123", "member-456"],
+      50,
+      "pending",
+      null,
+      Date.now(),
+      Date.now(),
+      ["pending-user"],
+    );
+    mockRepository.findById.mockResolvedValue(mockGroup);
+
+    const result = await useCase.execute("group-123", "pending-user");
+
+    expect(result.id).toBe("group-123");
+    expect(result.name).toBe("Secret Santa 2026");
+    expect(result.members).toEqual([]);
+    expect(result.pendingMembers).toEqual([]);
+    expect(result.memberDetails).toEqual([]);
+  });
+
+  it("should throw NotGroupMemberError when user is neither member nor pending", async () => {
+    const mockGroup = createMockGroup();
+    mockRepository.findById.mockResolvedValue(mockGroup);
+
+    let error: unknown;
+    try {
+      await useCase.execute("group-123", "outsider-user");
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).toBeInstanceOf(NotGroupMemberError);
+  });
 });

@@ -25,6 +25,8 @@ import {
   InvalidGroupNameError,
   InvalidBudgetLimitError,
   RaffleAlreadyCompletedError,
+  AlreadyPendingMemberError,
+  NotPendingMemberError,
   GroupError,
 } from "../../../domain/errors/GroupErrors";
 import { UserNotFoundError } from "../../../domain/errors/AuthErrors";
@@ -341,6 +343,24 @@ export class GroupController {
     }
 
     if (error instanceof RaffleAlreadyCompletedError) {
+      res.status(400).json({
+        error: "Bad Request",
+        code: error.code,
+        message: error.message,
+      });
+      return;
+    }
+
+    if (error instanceof AlreadyPendingMemberError) {
+      res.status(400).json({
+        error: "Bad Request",
+        code: error.code,
+        message: error.message,
+      });
+      return;
+    }
+
+    if (error instanceof NotPendingMemberError) {
       res.status(400).json({
         error: "Bad Request",
         code: error.code,

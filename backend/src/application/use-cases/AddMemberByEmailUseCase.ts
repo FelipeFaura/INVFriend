@@ -51,8 +51,8 @@ export class AddMemberByEmailUseCase {
       throw new UserNotFoundError(dto.email);
     }
 
-    // Add the member (validation happens in the entity)
-    const updatedGroup = group.addMember(user.id);
+    // Add the member as pending (validation happens in the entity)
+    const updatedGroup = group.addPendingMember(user.id);
 
     // Persist the changes
     await this.groupRepository.update(updatedGroup);

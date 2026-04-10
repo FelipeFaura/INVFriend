@@ -38,8 +38,8 @@ export class AddMemberToGroupUseCase {
       throw new NotGroupAdminError("Only the group admin can add members");
     }
 
-    // Add the member (validation happens in the entity)
-    const updatedGroup = group.addMember(dto.userId);
+    // Add the member as pending (validation happens in the entity)
+    const updatedGroup = group.addPendingMember(dto.userId);
 
     // Persist the changes
     await this.groupRepository.update(updatedGroup);

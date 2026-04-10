@@ -19,6 +19,13 @@ jest.mock("../../../config/firebase.config", () => {
   };
 });
 
+interface ChainMock {
+  where: jest.Mock;
+  orderBy: jest.Mock;
+  get: jest.Mock;
+  doc: jest.Mock;
+}
+
 describe("FirebaseGroupRepository", () => {
   let repository: FirebaseGroupRepository;
   let mockCollection: jest.Mock;
@@ -44,6 +51,7 @@ describe("FirebaseGroupRepository", () => {
     description: "Christmas gift exchange",
     adminId: "admin-user-123",
     members: ["admin-user-123"],
+    pendingMembers: [] as string[],
     budgetLimit: 50,
     raffleStatus: "pending" as const,
     raffleDate: null,
@@ -97,6 +105,7 @@ describe("FirebaseGroupRepository", () => {
       expect(setCallArg.budgetLimit).toBe(validGroupData.budgetLimit);
       expect(setCallArg.description).toBe(validGroupData.description);
       expect(setCallArg.members).toEqual([validGroupData.adminId]);
+      expect(setCallArg.pendingMembers).toEqual([]);
       expect(setCallArg.raffleStatus).toBe("pending");
       expect(setCallArg.raffleDate).toBeNull();
       expect(result).toBe(group);
@@ -132,61 +141,93 @@ describe("FirebaseGroupRepository", () => {
   });
 
   describe("findByMemberId", () => {
-    it("should return groups where user is a member", async () => {
-      const mockWhere = jest.fn().mockReturnThis();
-      const mockOrderBy = jest.fn().mockReturnThis();
-      const mockGet = jest.fn().mockResolvedValue({
-        docs: [
-          { id: "group-1", data: () => mockGroupDocument },
-          {
-            id: "group-2",
-            data: () => ({ ...mockGroupDocument, name: "Group 2" }),
-          },
-        ],
-      });
-
-      mockCollection.mockReturnValue({
+    it("should return groups where user is a member or pending", async () => {
+      // First call returns members query, second returns pending query
+      let whereCallCount = 0;
+      const chainMock: ChainMock = {
+        where: jest.fn((..._args: unknown[]) => {
+          whereCallCount++;
+          return chainMock;
+        }),
+        orderBy: jest.fn().mockReturnThis() as jest.Mock,
+        get: jest.fn(() => {
+          if (whereCallCount <= 1) {
+            return Promise.resolve({
+              docs: [
+                { id: "group-1", data: () => mockGroupDocument },
+                {
+                  id: "group-2",
+                  data: () => ({ ...mockGroupDocument, name: "Group 2" }),
+                },
+              ],
+            });
+          }
+          return Promise.resolve({ docs: [] });
+        }),
         doc: mockDoc,
-        where: mockWhere,
-        orderBy: mockOrderBy,
-        get: mockGet,
-      });
+      };
 
-      // Create new repository with updated mock
+      mockCollection.mockReturnValue(chainMock);
+
       repository = new FirebaseGroupRepository();
 
       const result = await repository.findByMemberId("admin-user-123");
 
-      expect(mockWhere).toHaveBeenCalledWith(
-        "members",
-        "array-contains",
-        "admin-user-123",
-      );
-      expect(mockOrderBy).toHaveBeenCalledWith("createdAt", "desc");
       expect(result.length).toBe(2);
       expect(result[0].id).toBe("group-1");
       expect(result[1].id).toBe("group-2");
     });
 
     it("should return empty array when no groups found", async () => {
-      const mockWhere = jest.fn().mockReturnThis();
-      const mockOrderBy = jest.fn().mockReturnThis();
-      const mockGet = jest.fn().mockResolvedValue({
-        docs: [],
-      });
-
-      mockCollection.mockReturnValue({
+      const chainMock = {
+        where: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
+        get: jest.fn().mockResolvedValue({ docs: [] }),
         doc: mockDoc,
-        where: mockWhere,
-        orderBy: mockOrderBy,
-        get: mockGet,
-      });
+      };
+
+      mockCollection.mockReturnValue(chainMock);
 
       repository = new FirebaseGroupRepository();
 
       const result = await repository.findByMemberId("unknown-user");
 
       expect(result.length).toBe(0);
+    });
+
+    it("should deduplicate groups found in both member and pending queries", async () => {
+      let whereCallCount = 0;
+      const chainMock: ChainMock = {
+        where: jest.fn((..._args: unknown[]) => {
+          whereCallCount++;
+          return chainMock;
+        }),
+        orderBy: jest.fn().mockReturnThis() as jest.Mock,
+        get: jest.fn(() => {
+          if (whereCallCount <= 1) {
+            return Promise.resolve({
+              docs: [
+                { id: "group-1", data: () => mockGroupDocument },
+              ],
+            });
+          }
+          return Promise.resolve({
+            docs: [
+              { id: "group-1", data: () => mockGroupDocument },
+            ],
+          });
+        }),
+        doc: mockDoc,
+      };
+
+      mockCollection.mockReturnValue(chainMock);
+
+      repository = new FirebaseGroupRepository();
+
+      const result = await repository.findByMemberId("admin-user-123");
+
+      expect(result.length).toBe(1);
+      expect(result[0].id).toBe("group-1");
     });
   });
 
@@ -232,6 +273,7 @@ describe("FirebaseGroupRepository", () => {
         null,
         1704067200000,
         Date.now(),
+        [],
       );
 
       await repository.update(group);
@@ -258,6 +300,7 @@ describe("FirebaseGroupRepository", () => {
         null,
         1704067200000,
         Date.now(),
+        [],
       );
 
       let error: unknown;

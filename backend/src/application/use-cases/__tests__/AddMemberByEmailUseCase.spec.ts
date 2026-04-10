@@ -11,6 +11,7 @@ import {
   NotGroupAdminError,
   AlreadyGroupMemberError,
   RaffleAlreadyCompletedError,
+  AlreadyPendingMemberError,
 } from "../../../domain/errors/GroupErrors";
 import { UserNotFoundError } from "../../../domain/errors/AuthErrors";
 
@@ -22,6 +23,7 @@ describe("AddMemberByEmailUseCase", () => {
   const createMockGroup = (overrides?: {
     raffleStatus?: "pending" | "completed";
     members?: string[];
+    pendingMembers?: string[];
   }): Group => {
     return Group.fromDatabase(
       "group-123",
@@ -34,6 +36,7 @@ describe("AddMemberByEmailUseCase", () => {
       overrides?.raffleStatus === "completed" ? Date.now() : null,
       Date.now(),
       Date.now(),
+      overrides?.pendingMembers || [],
     );
   };
 
@@ -83,8 +86,8 @@ describe("AddMemberByEmailUseCase", () => {
       requesterId: "admin-123",
     });
 
-    expect(result.members).toContain("new-member-789");
-    expect(result.members.length).toBe(2);
+    expect(result.pendingMembers).toContain("new-member-789");
+    expect(result.members.length).toBe(1); // Only admin
     expect(mockUserRepository.findByEmail).toHaveBeenCalledWith(
       "newmember@test.com",
     );
@@ -191,6 +194,29 @@ describe("AddMemberByEmailUseCase", () => {
     }
 
     expect(error).toBeInstanceOf(RaffleAlreadyCompletedError);
+    expect(mockGroupRepository.update).not.toHaveBeenCalled();
+  });
+
+  it("should throw AlreadyPendingMemberError when user already has a pending invitation", async () => {
+    const mockGroup = createMockGroup({
+      pendingMembers: ["pending-user"],
+    });
+    const mockUser = createMockUser("pending-user", "pending@test.com");
+    mockGroupRepository.findById.mockResolvedValue(mockGroup);
+    mockUserRepository.findByEmail.mockResolvedValue(mockUser);
+
+    let error: unknown;
+    try {
+      await useCase.execute({
+        groupId: "group-123",
+        email: "pending@test.com",
+        requesterId: "admin-123",
+      });
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).toBeInstanceOf(AlreadyPendingMemberError);
     expect(mockGroupRepository.update).not.toHaveBeenCalled();
   });
 });

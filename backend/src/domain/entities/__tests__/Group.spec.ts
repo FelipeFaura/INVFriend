@@ -7,6 +7,8 @@ import {
   CannotRemoveAdminError,
   NotEnoughMembersError,
   RaffleAlreadyCompletedError,
+  AlreadyPendingMemberError,
+  NotPendingMemberError,
 } from "../../errors/GroupErrors";
 
 describe("Group Entity", () => {
@@ -35,6 +37,7 @@ describe("Group Entity", () => {
       expect(group.description).toBe(validGroupData.description);
       expect(group.raffleStatus).toBe("pending");
       expect(group.raffleDate).toBeNull();
+      expect(group.pendingMembers).toEqual([]);
       expect(group.createdAt).toBeDefined();
       expect(group.updatedAt).toBeDefined();
     });
@@ -468,7 +471,189 @@ describe("Group Entity", () => {
       expect(json.budgetLimit).toBe(validGroupData.budgetLimit);
       expect(json.description).toBe(validGroupData.description);
       expect(json.members).toEqual([validGroupData.adminId]);
+      expect(json.pendingMembers).toEqual([]);
       expect(json.raffleStatus).toBe("pending");
+    });
+  });
+
+  describe("addPendingMember", () => {
+    it("should add a user to pendingMembers", () => {
+      const group = Group.create(
+        validGroupData.id,
+        validGroupData.name,
+        validGroupData.adminId,
+        validGroupData.budgetLimit,
+      );
+
+      const updated = group.addPendingMember("pending-user-1");
+
+      expect(updated.pendingMembers).toContain("pending-user-1");
+      expect(updated.pendingMembers.length).toBe(1);
+      expect(updated.members).not.toContain("pending-user-1");
+    });
+
+    it("should throw AlreadyGroupMemberError if user is already a member", () => {
+      const group = Group.create(
+        validGroupData.id,
+        validGroupData.name,
+        validGroupData.adminId,
+        validGroupData.budgetLimit,
+      );
+
+      expect(() => group.addPendingMember(validGroupData.adminId)).toThrow(
+        AlreadyGroupMemberError,
+      );
+    });
+
+    it("should throw AlreadyPendingMemberError if user is already pending", () => {
+      const group = Group.create(
+        validGroupData.id,
+        validGroupData.name,
+        validGroupData.adminId,
+        validGroupData.budgetLimit,
+      );
+      const withPending = group.addPendingMember("pending-user");
+
+      expect(() => withPending.addPendingMember("pending-user")).toThrow(
+        AlreadyPendingMemberError,
+      );
+    });
+
+    it("should throw RaffleAlreadyCompletedError if raffle is completed", () => {
+      const group = Group.create(
+        validGroupData.id,
+        validGroupData.name,
+        validGroupData.adminId,
+        validGroupData.budgetLimit,
+      );
+      const withMember = group.addMember("user-2");
+      const completed = withMember.completeRaffle();
+
+      expect(() => completed.addPendingMember("user-3")).toThrow(
+        RaffleAlreadyCompletedError,
+      );
+    });
+  });
+
+  describe("acceptInvitation", () => {
+    it("should move user from pendingMembers to members", () => {
+      const group = Group.create(
+        validGroupData.id,
+        validGroupData.name,
+        validGroupData.adminId,
+        validGroupData.budgetLimit,
+      );
+      const withPending = group.addPendingMember("pending-user");
+
+      const updated = withPending.acceptInvitation("pending-user");
+
+      expect(updated.members).toContain("pending-user");
+      expect(updated.pendingMembers).not.toContain("pending-user");
+    });
+
+    it("should throw NotPendingMemberError if user is not pending", () => {
+      const group = Group.create(
+        validGroupData.id,
+        validGroupData.name,
+        validGroupData.adminId,
+        validGroupData.budgetLimit,
+      );
+
+      expect(() => group.acceptInvitation("non-pending-user")).toThrow(
+        NotPendingMemberError,
+      );
+    });
+  });
+
+  describe("rejectInvitation", () => {
+    it("should remove user from pendingMembers", () => {
+      const group = Group.create(
+        validGroupData.id,
+        validGroupData.name,
+        validGroupData.adminId,
+        validGroupData.budgetLimit,
+      );
+      const withPending = group.addPendingMember("pending-user");
+
+      const updated = withPending.rejectInvitation("pending-user");
+
+      expect(updated.pendingMembers).not.toContain("pending-user");
+      expect(updated.members).not.toContain("pending-user");
+    });
+
+    it("should throw NotPendingMemberError if user is not pending", () => {
+      const group = Group.create(
+        validGroupData.id,
+        validGroupData.name,
+        validGroupData.adminId,
+        validGroupData.budgetLimit,
+      );
+
+      expect(() => group.rejectInvitation("non-pending-user")).toThrow(
+        NotPendingMemberError,
+      );
+    });
+  });
+
+  describe("isPendingMember", () => {
+    it("should return true for a pending member", () => {
+      const group = Group.create(
+        validGroupData.id,
+        validGroupData.name,
+        validGroupData.adminId,
+        validGroupData.budgetLimit,
+      );
+      const withPending = group.addPendingMember("pending-user");
+
+      expect(withPending.isPendingMember("pending-user")).toBe(true);
+    });
+
+    it("should return false for non-pending user", () => {
+      const group = Group.create(
+        validGroupData.id,
+        validGroupData.name,
+        validGroupData.adminId,
+        validGroupData.budgetLimit,
+      );
+
+      expect(group.isPendingMember("non-pending")).toBe(false);
+    });
+  });
+
+  describe("fromDatabase with pendingMembers", () => {
+    it("should create group with pendingMembers from database", () => {
+      const group = Group.fromDatabase(
+        "group-123",
+        "Test Group",
+        "Test",
+        "admin-123",
+        ["admin-123"],
+        100,
+        "pending",
+        null,
+        1704067200000,
+        1704067200000,
+        ["pending-user-1", "pending-user-2"],
+      );
+
+      expect(group.pendingMembers).toEqual(["pending-user-1", "pending-user-2"]);
+    });
+
+    it("should default pendingMembers to empty array for legacy data", () => {
+      const group = Group.fromDatabase(
+        "group-123",
+        "Test Group",
+        "Test",
+        "admin-123",
+        ["admin-123"],
+        100,
+        "pending",
+        null,
+        1704067200000,
+        1704067200000,
+      );
+
+      expect(group.pendingMembers).toEqual([]);
     });
   });
 });

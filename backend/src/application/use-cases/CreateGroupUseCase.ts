@@ -16,6 +16,7 @@ function toResponseDTO(group: Group): GroupResponseDTO {
     description: group.description,
     adminId: group.adminId,
     members: [...group.members],
+    pendingMembers: [...group.pendingMembers],
     budgetLimit: group.budgetLimit,
     raffleStatus: group.raffleStatus,
     raffleDate: group.raffleDate,

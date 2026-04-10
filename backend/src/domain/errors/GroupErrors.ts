@@ -134,3 +134,29 @@ export class RaffleAlreadyCompletedError extends GroupError {
     Object.setPrototypeOf(this, RaffleAlreadyCompletedError.prototype);
   }
 }
+
+/**
+ * Error thrown when a user already has a pending invitation
+ */
+export class AlreadyPendingMemberError extends GroupError {
+  constructor(
+    message: string = "User already has a pending invitation for this group",
+  ) {
+    super(message, "ALREADY_PENDING_MEMBER");
+    this.name = "AlreadyPendingMemberError";
+    Object.setPrototypeOf(this, AlreadyPendingMemberError.prototype);
+  }
+}
+
+/**
+ * Error thrown when a user does not have a pending invitation
+ */
+export class NotPendingMemberError extends GroupError {
+  constructor(
+    message: string = "User does not have a pending invitation for this group",
+  ) {
+    super(message, "NOT_PENDING_MEMBER");
+    this.name = "NotPendingMemberError";
+    Object.setPrototypeOf(this, NotPendingMemberError.prototype);
+  }
+}

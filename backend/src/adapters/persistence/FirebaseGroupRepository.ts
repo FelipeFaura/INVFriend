@@ -18,6 +18,7 @@ interface GroupDocument {
   description: string | null;
   adminId: string;
   members: string[];
+  pendingMembers: string[];
   budgetLimit: number;
   raffleStatus: RaffleStatus;
   raffleDate: number | null;
@@ -61,14 +62,29 @@ export class FirebaseGroupRepository implements IGroupRepository {
    * Finds all groups where a user is a member
    */
   async findByMemberId(userId: string): Promise<Group[]> {
-    const snapshot = await this.collection
-      .where("members", "array-contains", userId)
-      .orderBy("createdAt", "desc")
-      .get();
+    const [membersSnapshot, pendingSnapshot] = await Promise.all([
+      this.collection
+        .where("members", "array-contains", userId)
+        .orderBy("createdAt", "desc")
+        .get(),
+      this.collection
+        .where("pendingMembers", "array-contains", userId)
+        .orderBy("createdAt", "desc")
+        .get(),
+    ]);
 
-    return snapshot.docs.map((doc) =>
-      this.toEntity(doc.id, doc.data() as GroupDocument),
-    );
+    const groupMap = new Map<string, Group>();
+
+    for (const doc of membersSnapshot.docs) {
+      groupMap.set(doc.id, this.toEntity(doc.id, doc.data() as GroupDocument));
+    }
+    for (const doc of pendingSnapshot.docs) {
+      if (!groupMap.has(doc.id)) {
+        groupMap.set(doc.id, this.toEntity(doc.id, doc.data() as GroupDocument));
+      }
+    }
+
+    return Array.from(groupMap.values()).sort((a, b) => b.createdAt - a.createdAt);
   }
 
   /**
@@ -130,6 +146,7 @@ export class FirebaseGroupRepository implements IGroupRepository {
       description: group.description,
       adminId: group.adminId,
       members: [...group.members],
+      pendingMembers: [...group.pendingMembers],
       budgetLimit: group.budgetLimit,
       raffleStatus: group.raffleStatus,
       raffleDate: group.raffleDate,
@@ -153,6 +170,7 @@ export class FirebaseGroupRepository implements IGroupRepository {
       data.raffleDate,
       data.createdAt,
       data.updatedAt,
+      data.pendingMembers || [],
     );
   }
 }
