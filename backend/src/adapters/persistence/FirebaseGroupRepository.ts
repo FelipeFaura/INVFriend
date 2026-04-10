@@ -69,7 +69,6 @@ export class FirebaseGroupRepository implements IGroupRepository {
         .get(),
       this.collection
         .where("pendingMembers", "array-contains", userId)
-        .orderBy("createdAt", "desc")
         .get(),
     ]);
 
