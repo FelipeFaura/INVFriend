@@ -23,6 +23,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
   currentUserId: string | null = null;
   isLoading = false;
   error: string | null = null;
+  isPendingMember = false;
 
   // Member names map (userId -> displayName)
   memberNames: Map<string, string> = new Map();
@@ -74,6 +75,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (group) => {
           this.group = group;
+          this.isPendingMember = group.members.length === 0 && !this.isAdmin;
           this.isLoading = false;
           // Load member names after group is loaded
           this.loadMemberNames(group);
@@ -356,6 +358,52 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
           this.actionError = err.message || "Failed to remove member";
           this.isProcessing = false;
           this.cancelRemoveMember();
+        },
+      });
+  }
+
+  /**
+   * Accept group invitation (pending member flow)
+   */
+  acceptGroupInvitation(): void {
+    if (!this.group) return;
+    this.isProcessing = true;
+    this.actionError = null;
+
+    this.groupHttpService
+      .acceptInvitation(this.group.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.isPendingMember = false;
+          this.isProcessing = false;
+          this.loadGroup();
+        },
+        error: (err: Error) => {
+          this.actionError = err.message || "Failed to accept invitation";
+          this.isProcessing = false;
+        },
+      });
+  }
+
+  /**
+   * Reject group invitation and navigate back to groups list
+   */
+  rejectGroupInvitation(): void {
+    if (!this.group) return;
+    this.isProcessing = true;
+    this.actionError = null;
+
+    this.groupHttpService
+      .rejectInvitation(this.group.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.router.navigate(["/groups"]);
+        },
+        error: (err: Error) => {
+          this.actionError = err.message || "Failed to reject invitation";
+          this.isProcessing = false;
         },
       });
   }

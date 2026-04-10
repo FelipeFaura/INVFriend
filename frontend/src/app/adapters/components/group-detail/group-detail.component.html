@@ -18,6 +18,43 @@
 
   <!-- Group Content -->
   <div *ngIf="group && !isLoading && !error" class="group-content">
+
+  <!-- Pending Member State -->
+  <div *ngIf="isPendingMember && group && !isLoading" class="pending-invite-card" data-testid="pending-invite">
+    <div class="card card--featured">
+      <div class="card__body pending-invite__body">
+        <span class="pending-invite__icon" aria-hidden="true">📬</span>
+        <h2 class="pending-invite__title">Invitation Pending</h2>
+        <p class="pending-invite__description">
+          You have been invited to join <strong>{{ group.name }}</strong>.
+          Accept the invitation to see the group details.
+        </p>
+        <div *ngIf="actionError" class="alert alert--error action-alert" role="alert" data-testid="invite-action-error">
+          <span class="alert__icon" aria-hidden="true">⚠️</span>
+          <span class="alert__content">{{ actionError }}</span>
+        </div>
+        <div class="pending-invite__actions">
+          <button
+            class="btn btn--danger"
+            (click)="rejectGroupInvitation()"
+            [disabled]="isProcessing"
+            data-testid="detail-reject-btn">
+            {{ isProcessing ? 'Rejecting...' : 'Reject Invitation' }}
+          </button>
+          <button
+            class="btn btn--primary"
+            (click)="acceptGroupInvitation()"
+            [disabled]="isProcessing"
+            data-testid="detail-accept-btn">
+            {{ isProcessing ? 'Accepting...' : 'Accept Invitation' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Group Content (only shown for accepted members) -->
+  <div *ngIf="!isPendingMember && group && !isLoading && !error" class="group-content-inner">
     <!-- Back Navigation -->
     <nav class="page-nav" aria-label="Breadcrumb">
       <button 
@@ -153,7 +190,8 @@
         </ul>
       </div>
     </section>
-  </div>
+  </div><!-- end group-content-inner -->
+  </div><!-- end group-content -->
 
   <!-- Delete Confirmation Modal -->
   <div 

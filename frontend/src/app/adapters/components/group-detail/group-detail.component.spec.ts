@@ -47,6 +47,8 @@ describe("GroupDetailComponent", () => {
       "addMemberByEmail",
       "removeMember",
       "updateGroup",
+      "acceptInvitation",
+      "rejectInvitation",
     ]);
     mockRouter = jasmine.createSpyObj("Router", ["navigate"]);
     
@@ -585,5 +587,124 @@ describe("GroupDetailComponent", () => {
       expect(component.actionError).toBe("Update failed");
       expect(component.showEditModal).toBeTrue();
     }));
+  });
+
+  describe("Pending Member State", () => {
+    const pendingGroup: Group = {
+      id: "group-123",
+      name: "Test Group",
+      description: "A test group description",
+      adminId: "admin-user",
+      members: [], // empty — indicates pending membership
+      budgetLimit: 50,
+      raffleStatus: "pending",
+      createdAt: new Date("2026-01-15"),
+      updatedAt: new Date("2026-01-15"),
+    };
+
+    beforeEach(fakeAsync(() => {
+      // Non-admin user gets empty members array => pending state
+      mockAuthService.currentUser = { id: "member-1", email: "member@test.com", displayName: "Member User" };
+      mockGroupService.getGroupById.and.returnValue(of(pendingGroup));
+
+      fixture = TestBed.createComponent(GroupDetailComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      paramsSubject.next({ id: "group-123" });
+      tick();
+      fixture.detectChanges();
+    }));
+
+    it("should show pending state when user is not in members list", () => {
+      expect(component.isPendingMember).toBeTrue();
+
+      const pendingInvite = fixture.nativeElement.querySelector(
+        '[data-testid="pending-invite"]',
+      );
+      expect(pendingInvite).toBeTruthy();
+      expect(pendingInvite.textContent).toContain("Invitation Pending");
+      expect(pendingInvite.textContent).toContain("Test Group");
+    });
+
+    it("should not show group content when user is pending", () => {
+      const groupContent = fixture.nativeElement.querySelector(".group-content-inner");
+      expect(groupContent).toBeFalsy();
+    });
+
+    it("should show accept and reject buttons in pending state", () => {
+      const acceptBtn = fixture.nativeElement.querySelector('[data-testid="detail-accept-btn"]');
+      const rejectBtn = fixture.nativeElement.querySelector('[data-testid="detail-reject-btn"]');
+      expect(acceptBtn).toBeTruthy();
+      expect(rejectBtn).toBeTruthy();
+    });
+
+    it("should navigate to groups on reject invitation", fakeAsync(() => {
+      mockGroupService.rejectInvitation.and.returnValue(
+        of({ success: true, message: "Rejected" }),
+      );
+
+      component.rejectGroupInvitation();
+      tick();
+
+      expect(mockGroupService.rejectInvitation).toHaveBeenCalledWith("group-123");
+      expect(mockRouter.navigate).toHaveBeenCalledWith(["/groups"]);
+    }));
+
+    it("should show error on reject failure", fakeAsync(() => {
+      mockGroupService.rejectInvitation.and.returnValue(
+        throwError(() => new Error("Reject failed")),
+      );
+
+      component.rejectGroupInvitation();
+      tick();
+
+      expect(component.actionError).toBe("Reject failed");
+      expect(component.isProcessing).toBeFalse();
+    }));
+
+    it("should reload group and clear pending state on accept invitation", fakeAsync(() => {
+      const acceptedGroup: Group = { ...pendingGroup, members: ["member-1"] };
+      mockGroupService.acceptInvitation.and.returnValue(of(acceptedGroup));
+      // After reload, the group now has members so isPendingMember will be false
+      mockGroupService.getGroupById.and.returnValue(of(acceptedGroup));
+
+      component.acceptGroupInvitation();
+      tick();
+      fixture.detectChanges();
+
+      expect(mockGroupService.acceptInvitation).toHaveBeenCalledWith("group-123");
+      expect(component.isPendingMember).toBeFalse();
+    }));
+
+    it("should show error on accept failure", fakeAsync(() => {
+      mockGroupService.acceptInvitation.and.returnValue(
+        throwError(() => new Error("Accept failed")),
+      );
+
+      component.acceptGroupInvitation();
+      tick();
+
+      expect(component.actionError).toBe("Accept failed");
+      expect(component.isProcessing).toBeFalse();
+    }));
+  });
+
+  describe("Group Content State (accepted member)", () => {
+    beforeEach(fakeAsync(() => {
+      fixture.detectChanges();
+      paramsSubject.next({ id: "group-123" });
+      tick();
+      fixture.detectChanges();
+    }));
+
+    it("should show group content when user is a member", () => {
+      expect(component.isPendingMember).toBeFalse();
+
+      const pendingInvite = fixture.nativeElement.querySelector('[data-testid="pending-invite"]');
+      expect(pendingInvite).toBeFalsy();
+
+      const groupContent = fixture.nativeElement.querySelector(".group-content-inner");
+      expect(groupContent).toBeTruthy();
+    });
   });
 });

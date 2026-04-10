@@ -117,6 +117,27 @@ export class GroupHttpService {
   }
 
   /**
+   * Accept a pending group invitation
+   */
+  acceptInvitation(groupId: string): Observable<Group> {
+    return this.http
+      .post<GroupResponseDTO>(`${this.apiUrl}/${groupId}/accept`, {})
+      .pipe(
+        map((response) => this.mapToGroup(response)),
+        catchError((error) => this.handleError(error)),
+      );
+  }
+
+  /**
+   * Reject a pending group invitation
+   */
+  rejectInvitation(groupId: string): Observable<{ success: boolean; message: string }> {
+    return this.http
+      .post<{ success: boolean; message: string }>(`${this.apiUrl}/${groupId}/reject`, {})
+      .pipe(catchError((error) => this.handleError(error)));
+  }
+
+  /**
    * Map API response to domain model
    */
   private mapToGroup(dto: GroupResponseDTO): Group {

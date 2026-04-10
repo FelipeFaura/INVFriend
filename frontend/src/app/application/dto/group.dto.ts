@@ -64,6 +64,7 @@ export interface GroupSummaryDTO {
   memberCount: number;
   isAdmin: boolean;
   raffleStatus: RaffleStatus;
+  isPending: boolean;
 }
 
 /**

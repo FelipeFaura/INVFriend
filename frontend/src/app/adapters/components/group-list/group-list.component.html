@@ -63,13 +63,55 @@
     <p class="empty-state__description">No groups match "{{ searchTerm }}"</p>
   </div>
 
+  <!-- Pending Invitations -->
+  <section *ngIf="!isLoading && !error && pendingGroups.length > 0" class="pending-section">
+    <h2 class="pending-section__title">📬 Pending Invitations</h2>
+    <div *ngIf="invitationError" class="alert alert--error" role="alert" data-testid="invitation-error">
+      <span>{{ invitationError }}</span>
+    </div>
+    <div class="card-grid">
+      <article
+        *ngFor="let group of pendingGroups"
+        class="card card--pending"
+        [attr.data-testid]="'pending-card-' + group.id"
+        [attr.aria-label]="'Pending invitation to: ' + group.name">
+        <header class="card__header">
+          <span class="badge badge--warning">📬 Pending</span>
+          <h3 class="card__title">{{ group.name }}</h3>
+        </header>
+        <div class="card__body">
+          <p class="pending-card__description">You have been invited to join this group.</p>
+          <p class="pending-card__budget">{{ group.memberCount }} {{ group.memberCount === 1 ? 'member' : 'members' }}</p>
+        </div>
+        <footer class="card__footer pending-card__actions">
+          <button
+            class="btn btn--danger btn--sm"
+            (click)="rejectInvitation(group.id, $event)"
+            [disabled]="isProcessing[group.id]"
+            [attr.data-testid]="'reject-' + group.id"
+            aria-label="Reject invitation">
+            {{ isProcessing[group.id] ? 'Rejecting...' : 'Reject' }}
+          </button>
+          <button
+            class="btn btn--primary btn--sm"
+            (click)="acceptInvitation(group.id, $event)"
+            [disabled]="isProcessing[group.id]"
+            [attr.data-testid]="'accept-' + group.id"
+            aria-label="Accept invitation">
+            {{ isProcessing[group.id] ? 'Accepting...' : 'Accept' }}
+          </button>
+        </footer>
+      </article>
+    </div>
+  </section>
+
   <!-- Group Cards Grid -->
   <div 
-    *ngIf="!isLoading && !error && filteredGroups.length > 0" 
+    *ngIf="!isLoading && !error && acceptedGroups.length > 0" 
     class="card-grid"
     data-testid="groups-list">
     <article
-      *ngFor="let group of filteredGroups"
+      *ngFor="let group of acceptedGroups"
       class="card card--interactive"
       (click)="navigateToGroup(group.id)"
       (keydown.enter)="navigateToGroup(group.id)"
