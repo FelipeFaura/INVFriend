@@ -66,7 +66,7 @@ Is it your first day?
 ```
 Is it clear and specific?
   ├─ YES → Go to GUIDELINES.md, follow the structure
-  └─ NO → Use TASK_TEMPLATE.md to formalize it
+  └─ NO → Describe it clearly to @project-lead
 
 Need to see the big picture?
   ├─ Check PROJECT_PROGRESS.md for current status
@@ -103,7 +103,7 @@ Follow this order:
 1. Check PROJECT_PROGRESS.md to see current sprint status
 2. Check SPRINT_PLANNING.md to understand task context
 3. Read GUIDELINES.md section "🎯 Scope Control for AI"
-4. Use TASK_TEMPLATE.md as template
+4. Describe the task to @project-lead — be specific and concrete
 5. Include: WHAT, WHERE, MODEL, LIMITS
 6. Be specific and concrete
 ```
@@ -118,7 +118,6 @@ INVFriend/
 ├── 🏗️ ARCHITECTURE.md              ← Technical design
 ├── 🏗️ ARCHITECTURE_QUICK_REF.md    ← Visual reference
 ├── 📋 GUIDELINES.md                ← How to code
-├── 📝 TASK_TEMPLATE.md             ← Task template
 ├── 📚 INDEX.md                     ← This file
 │
 ├── frontend/                       ← Angular app
@@ -169,7 +168,7 @@ INVFriend/
 
 1. Read [README.md](./README.md) - what it does
 2. Read [ARCHITECTURE.md](./ARCHITECTURE.md) - what's possible
-3. Use [TASK_TEMPLATE.md](./TASK_TEMPLATE.md) - assign clear tasks
+3. Describe requirements to @project-lead
 
 ### **External Contributor**
 
@@ -234,7 +233,7 @@ INVFriend/
 
 ### "How do I assign tasks to AI?"
 
-→ [GUIDELINES.md](./GUIDELINES.md#-control-de-scope-para-ia) + [TASK_TEMPLATE.md](./TASK_TEMPLATE.md)
+→ [GUIDELINES.md](./GUIDELINES.md#-control-de-scope-para-ia) 
 
 ### "How do I install the project?"
 
@@ -271,7 +270,6 @@ INVFriend/
 1. ✅ [PROJECT_PROGRESS.md](./PROJECT_PROGRESS.md) - Current status
 2. ✅ [SPRINT_PLANNING.md](./SPRINT_PLANNING.md) - Project roadmap
 3. ✅ [GUIDELINES.md](./GUIDELINES.md#-control-de-scope-para-ia) - Scope control
-4. ✅ [TASK_TEMPLATE.md](./TASK_TEMPLATE.md) - Task template
 
 ---
 
@@ -316,7 +314,6 @@ Open a PR with changes. Please:
 | ARCHITECTURE.md           | ~350  | 25 min  | Complete technical design |
 | GUIDELINES.md             | ~500  | 30 min  | Conventions, practices    |
 | ARCHITECTURE_QUICK_REF.md | ~400  | 20 min  | Visual reference          |
-| TASK_TEMPLATE.md          | ~250  | 10 min  | Task template             |
 | SPRINT_PLANNING.md        | ~800  | 40 min  | Project roadmap, 32 tasks |
 
 **Total: ~2,880 lines of documentation**
@@ -352,7 +349,7 @@ Open a PR with changes. Please:
    │   └─ 6. Based on your role:
    │       ├─ Backend Dev → GUIDELINES.md (Node section)
    │       ├─ Frontend Dev → GUIDELINES.md (Angular section)
-   │       ├─ PO/Designer → TASK_TEMPLATE.md
+   │       ├─ PO/Designer → @project-lead
    │       └─ Manager → GUIDELINES "scope control"
    │
    └─ Ready! Begin your first task
@@ -374,6 +371,7 @@ You have all the information you need.
 
 - **If it's your first day:** [README.md](./README.md)
 - **If you have a task:** [GUIDELINES.md](./GUIDELINES.md) + [ARCHITECTURE.md](./ARCHITECTURE.md)
-- **If you need to assign:** [TASK_TEMPLATE.md](./TASK_TEMPLATE.md)
+- **If you need to assign:** Describe to @project-lead
 
 Let's go! 🚀
+

@@ -26,7 +26,7 @@ You are the user's single point of entry. When they describe what they want:
 | Agent         | Purpose                                                    | Invocable by User |
 | ------------- | ---------------------------------------------------------- | ----------------- |
 | `coder`       | Writes code + tests (Angular frontend / Express backend)   | Yes               |
-| `reviewer`    | Reviews code for quality, security, architecture (read-only) | No              |
+| `reviewer`    | Reviews code for quality, security, architecture (read-only) | Yes               |
 | `ui-designer` | SCSS, HTML templates, layouts, accessibility               | No                |
 
 ### Delegation Rules
