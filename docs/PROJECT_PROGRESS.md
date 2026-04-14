@@ -1,6 +1,6 @@
 # 📊 INVFriend - Project Progress Dashboard
 
-**Last Updated**: March 27, 2026
+**Last Updated**: April 14, 2026
 
 ---
 
@@ -200,7 +200,7 @@
 Domain Layer:     ████████████████████ 100% (User, Group, Assignment, Wish)
 Application:      ████████████████████ 100% (All use cases implemented)
 Adapters:         ████████████████████ 100% (Controllers, Repos, Routes)
-Tests:            ████████████████████ 100% (310 tests passing)
+Tests:            ████████████████████ 100% (345 tests passing)
 ```
 
 ### Frontend
@@ -209,7 +209,7 @@ Tests:            ████████████████████ 1
 Domain Layer:     ████████████████████ 100% (All models defined)
 Application:      ████████████████████ 100% (Services complete)
 Adapters:         ████████████████████ 100% (Components, HTTP services)
-Tests:            ████████████████░░░░  88% (239/271 passing - Firebase mock issue)
+Tests:            ████████████████████ 100% (313 passing)
 ```
 
 ---
@@ -277,7 +277,6 @@ Tests:            ████████████████░░░░  
 ### 🚨 Known Issues
 
 - **🔴 Production build fails**: Bundle initial size (1.10 MB) exceeds budget (1.05 MB). → TASK-052
-- **32 frontend tests failing**: Firebase mock configuration missing `angularfire2.app.options` provider in test modules
 
 ---
 
