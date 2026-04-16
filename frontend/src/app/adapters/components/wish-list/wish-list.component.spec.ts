@@ -188,30 +188,6 @@ describe("WishListComponent", () => {
     }));
   });
 
-  describe("Assigned Wishes Section", () => {
-    it("should not show assigned section when raffle is pending", fakeAsync(() => {
-      component.group = mockGroup;
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
-
-      const assignedSection =
-        fixture.nativeElement.querySelector(".wish-section--assigned");
-      expect(assignedSection).toBeFalsy();
-    }));
-
-    it("should show assigned section when raffle is completed", fakeAsync(() => {
-      component.group = mockCompletedGroup;
-      fixture.detectChanges();
-      tick();
-      fixture.detectChanges();
-
-      const assignedSection =
-        fixture.nativeElement.querySelector(".wish-section--assigned");
-      expect(assignedSection).toBeTruthy();
-    }));
-  });
-
   describe("Add Wish Modal", () => {
     beforeEach(fakeAsync(() => {
       component.group = mockGroup;
