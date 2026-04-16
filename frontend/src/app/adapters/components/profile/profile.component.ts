@@ -11,6 +11,8 @@ import { Subject, takeUntil, take } from "rxjs";
 
 import { AuthApplicationService } from "../../../application/services/auth-application.service";
 import { UpdateProfileDTO } from "../../../application/dto/auth.dto";
+import { TranslatePipe } from "../../pipes/translate.pipe";
+import { LanguageSelectorComponent } from "../language-selector/language-selector.component";
 
 /**
  * Profile component - user profile editing form
@@ -19,7 +21,7 @@ import { UpdateProfileDTO } from "../../../application/dto/auth.dto";
 @Component({
   selector: "app-profile",
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, TranslatePipe, LanguageSelectorComponent],
   template: `
     <div class="profile-page">
       <header class="profile-page__header">
@@ -28,9 +30,9 @@ import { UpdateProfileDTO } from "../../../application/dto/auth.dto";
           class="profile-page__back-link"
           aria-label="Go back to dashboard"
         >
-          ← Back to Dashboard
+          {{ 'profileBack' | translate }}
         </a>
-        <h1 class="profile-page__title">Edit Profile</h1>
+        <h1 class="profile-page__title">{{ 'profileTitle' | translate }}</h1>
       </header>
 
       <main class="profile-page__content">
@@ -117,7 +119,7 @@ import { UpdateProfileDTO } from "../../../application/dto/auth.dto";
                 (click)="fileInput.click()"
                 [disabled]="isSubmitting"
               >
-                {{ previewUrl ? "Change Photo" : "Upload Photo" }}
+                {{ previewUrl ? ('profileChangePhoto' | translate) : ('profileUploadPhoto' | translate) }}
               </button>
               <p id="photo-hint" class="photo-upload__hint">
                 JPG, PNG, WebP - Max 2MB
@@ -208,6 +210,14 @@ import { UpdateProfileDTO } from "../../../application/dto/auth.dto";
             <p id="email-hint" class="form-help">Cannot be changed</p>
           </div>
 
+          <!-- Language preference -->
+          <div class="form-group">
+            <label class="form-group__label">{{ 'langSelectorLabel' | translate }}</label>
+            <div>
+              <app-language-selector></app-language-selector>
+            </div>
+          </div>
+
           <!-- Actions -->
           <div class="profile-form__actions">
             <a routerLink="/dashboard" class="btn btn--secondary">Cancel</a>
@@ -226,7 +236,7 @@ import { UpdateProfileDTO } from "../../../application/dto/auth.dto";
                 class="spinner spinner--sm spinner--white"
                 aria-hidden="true"
               ></span>
-              {{ isSubmitting ? "Saving..." : "Save Changes" }}
+              {{ isSubmitting ? ('profileSaving' | translate) : ('profileSave' | translate) }}
             </button>
           </div>
         </form>

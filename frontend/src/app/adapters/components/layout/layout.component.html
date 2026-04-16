@@ -42,7 +42,7 @@
         class="nav-link"
       >
         <span class="nav-icon" aria-hidden="true">🏠</span>
-        <span class="nav-label">Dashboard</span>
+        <span class="nav-label">{{ 'navDashboard' | translate }}</span>
       </a>
       <a
         routerLink="/groups"
@@ -51,7 +51,7 @@
         class="nav-link"
       >
         <span class="nav-icon" aria-hidden="true">👥</span>
-        <span class="nav-label">Groups</span>
+        <span class="nav-label">{{ 'navGroups' | translate }}</span>
       </a>
       <a
         routerLink="/profile"
@@ -60,7 +60,7 @@
         class="nav-link"
       >
         <span class="nav-icon" aria-hidden="true">👤</span>
-        <span class="nav-label">Profile</span>
+        <span class="nav-label">{{ 'navProfile' | translate }}</span>
       </a>
     </nav>
 
@@ -72,9 +72,9 @@
         type="button"
         class="logout-btn"
         (click)="onLogout()"
-        aria-label="Cerrar sesión"
+        [attr.aria-label]="'navLogout' | translate"
       >
-        Cerrar sesión
+        {{ 'navLogout' | translate }}
       </button>
     </div>
   </aside>

@@ -3,6 +3,7 @@ import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 
 import { LayoutComponent } from "./layout.component";
+import { TranslatePipe } from "../../pipes/translate.pipe";
 
 /**
  * Layout Module
@@ -10,7 +11,7 @@ import { LayoutComponent } from "./layout.component";
  */
 @NgModule({
   declarations: [LayoutComponent],
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslatePipe],
   exports: [LayoutComponent],
 })
 export class LayoutModule {}
