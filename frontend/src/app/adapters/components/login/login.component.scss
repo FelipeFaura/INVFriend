@@ -12,6 +12,7 @@
 // ===================
 
 .auth-page {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -98,6 +99,14 @@
         text-decoration: underline;
       }
     }
+  }
+
+  // Language selector positioning (top-right)
+  &__lang-wrapper {
+    position: absolute;
+    top: $space-4;
+    right: $space-4;
+    color: $color-neutral-0;
   }
 }
 

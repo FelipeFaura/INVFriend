@@ -12,6 +12,8 @@ import { takeUntil, finalize } from "rxjs/operators";
 
 import { AuthApplicationService } from "../../../application/services/auth-application.service";
 import { AuthError } from "../../../domain/errors/auth-errors";
+import { TranslatePipe } from "../../pipes/translate.pipe";
+import { LanguageSelectorComponent } from "../language-selector/language-selector.component";
 
 /**
  * Login component for user authentication
@@ -20,7 +22,7 @@ import { AuthError } from "../../../domain/errors/auth-errors";
 @Component({
   selector: "app-login",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe, LanguageSelectorComponent],
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"],
 })

@@ -14,6 +14,7 @@ import { takeUntil, finalize } from "rxjs/operators";
 
 import { AuthApplicationService } from "../../../application/services/auth-application.service";
 import { AuthError } from "../../../domain/errors/auth-errors";
+import { TranslatePipe } from "../../pipes/translate.pipe";
 
 /**
  * Custom validator for password confirmation
@@ -39,7 +40,7 @@ function passwordMatchValidator(
 @Component({
   selector: "app-register",
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: "./register.component.html",
   styleUrls: ["./register.component.scss"],
 })
