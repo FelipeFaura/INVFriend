@@ -15,6 +15,7 @@ import {
   CannotDeleteAfterRaffleError,
   InvalidGroupNameError,
   InvalidBudgetLimitError,
+  RaffleAlreadyCompletedError,
 } from "../../../../domain/errors/GroupErrors";
 import { AuthenticatedRequest } from "../../middleware/authMiddleware";
 
@@ -48,6 +49,9 @@ jest.mock("../../../../application/use-cases", () => ({
     execute: jest.fn(),
   })),
   RejectInvitationUseCase: jest.fn().mockImplementation(() => ({
+    execute: jest.fn(),
+  })),
+  LeaveGroupUseCase: jest.fn().mockImplementation(() => ({
     execute: jest.fn(),
   })),
 }));
@@ -607,6 +611,116 @@ describe("GroupController", () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(400);
       expect((jsonData as { code: string }).code).toBe("NOT_GROUP_MEMBER");
+    });
+  });
+
+  describe("leaveGroup", () => {
+    it("should leave group successfully", async () => {
+      mockRequest.params = { id: "group-123" };
+
+      const updatedGroup = { ...mockGroupResponse, members: ["user-123"] };
+
+      const {
+        LeaveGroupUseCase,
+      } = require("../../../../application/use-cases");
+      LeaveGroupUseCase.mockImplementation(() => ({
+        execute: jest.fn().mockResolvedValue(updatedGroup),
+      }));
+
+      controller = new GroupController(mockRepository, mockUserRepository);
+
+      await controller.leaveGroup(
+        mockRequest as AuthenticatedRequest,
+        mockResponse as Response,
+      );
+
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(jsonData).toEqual(updatedGroup);
+    });
+
+    it("should return 401 when user is not authenticated", async () => {
+      mockRequest.user = undefined;
+      mockRequest.params = { id: "group-123" };
+
+      await controller.leaveGroup(
+        mockRequest as AuthenticatedRequest,
+        mockResponse as Response,
+      );
+
+      expect(mockResponse.status).toHaveBeenCalledWith(401);
+    });
+
+    it("should return 403 when requester is the admin", async () => {
+      mockRequest.params = { id: "group-123" };
+
+      const {
+        LeaveGroupUseCase,
+      } = require("../../../../application/use-cases");
+      LeaveGroupUseCase.mockImplementation(() => ({
+        execute: jest
+          .fn()
+          .mockRejectedValue(
+            new NotGroupAdminError("Group admin cannot leave the group"),
+          ),
+      }));
+
+      controller = new GroupController(mockRepository, mockUserRepository);
+
+      await controller.leaveGroup(
+        mockRequest as AuthenticatedRequest,
+        mockResponse as Response,
+      );
+
+      expect(mockResponse.status).toHaveBeenCalledWith(403);
+      expect((jsonData as { code: string }).code).toBe("NOT_GROUP_ADMIN");
+    });
+
+    it("should return 400 when raffle is already completed", async () => {
+      mockRequest.params = { id: "group-123" };
+
+      const {
+        LeaveGroupUseCase,
+      } = require("../../../../application/use-cases");
+      LeaveGroupUseCase.mockImplementation(() => ({
+        execute: jest
+          .fn()
+          .mockRejectedValue(new RaffleAlreadyCompletedError()),
+      }));
+
+      controller = new GroupController(mockRepository, mockUserRepository);
+
+      await controller.leaveGroup(
+        mockRequest as AuthenticatedRequest,
+        mockResponse as Response,
+      );
+
+      expect(mockResponse.status).toHaveBeenCalledWith(400);
+      expect((jsonData as { code: string }).code).toBe(
+        "RAFFLE_ALREADY_COMPLETED",
+      );
+    });
+
+    it("should return 404 when group not found", async () => {
+      mockRequest.params = { id: "non-existent" };
+
+      const {
+        LeaveGroupUseCase,
+      } = require("../../../../application/use-cases");
+      LeaveGroupUseCase.mockImplementation(() => ({
+        execute: jest
+          .fn()
+          .mockRejectedValue(new GroupNotFoundError("non-existent")),
+      }));
+
+      controller = new GroupController(mockRepository, mockUserRepository);
+
+      await controller.leaveGroup(
+        mockRequest as AuthenticatedRequest,
+        mockResponse as Response,
+      );
+
+      expect(mockResponse.status).toHaveBeenCalledWith(404);
+      expect((jsonData as { code: string }).code).toBe("GROUP_NOT_FOUND");
     });
   });
 });

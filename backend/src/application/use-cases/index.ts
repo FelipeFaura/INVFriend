@@ -11,6 +11,7 @@ export { AddMemberToGroupUseCase } from "./AddMemberToGroupUseCase";
 export { AddMemberByEmailUseCase } from "./AddMemberByEmailUseCase";
 export { RemoveMemberFromGroupUseCase } from "./RemoveMemberFromGroupUseCase";
 export { DeleteGroupUseCase } from "./DeleteGroupUseCase";
+export { LeaveGroupUseCase } from "./LeaveGroupUseCase";
 
 // Invitation Use Cases
 export { AcceptInvitationUseCase } from "./AcceptInvitationUseCase";

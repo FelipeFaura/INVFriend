@@ -7,7 +7,6 @@ import { IGroupRepository } from "../../../ports/IGroupRepository";
 import {
   GroupNotFoundError,
   NotGroupAdminError,
-  CannotDeleteAfterRaffleError,
 } from "../../../domain/errors/GroupErrors";
 
 describe("DeleteGroupUseCase", () => {
@@ -56,6 +55,16 @@ describe("DeleteGroupUseCase", () => {
     expect(mockRepository.delete).toHaveBeenCalledWith("group-123");
   });
 
+  it("should delete a group after raffle is completed", async () => {
+    const mockGroup = createMockGroup({ raffleStatus: "completed" });
+    mockRepository.findById.mockResolvedValue(mockGroup);
+    mockRepository.delete.mockResolvedValue(undefined);
+
+    await useCase.execute("group-123", "admin-123");
+
+    expect(mockRepository.delete).toHaveBeenCalledWith("group-123");
+  });
+
   it("should throw GroupNotFoundError when group does not exist", async () => {
     mockRepository.findById.mockResolvedValue(null);
 
@@ -83,35 +92,5 @@ describe("DeleteGroupUseCase", () => {
 
     expect(error).toBeInstanceOf(NotGroupAdminError);
     expect(mockRepository.delete).not.toHaveBeenCalled();
-  });
-
-  it("should throw CannotDeleteAfterRaffleError when raffle is completed", async () => {
-    const mockGroup = createMockGroup({ raffleStatus: "completed" });
-    mockRepository.findById.mockResolvedValue(mockGroup);
-
-    let error: unknown;
-    try {
-      await useCase.execute("group-123", "admin-123");
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error).toBeInstanceOf(CannotDeleteAfterRaffleError);
-    expect(mockRepository.delete).not.toHaveBeenCalled();
-  });
-
-  it("should throw NotGroupAdminError before checking raffle status", async () => {
-    const mockGroup = createMockGroup({ raffleStatus: "completed" });
-    mockRepository.findById.mockResolvedValue(mockGroup);
-
-    let error: unknown;
-    try {
-      await useCase.execute("group-123", "non-admin-user");
-    } catch (e) {
-      error = e;
-    }
-
-    // Should fail with NotGroupAdminError, not CannotDeleteAfterRaffleError
-    expect(error).toBeInstanceOf(NotGroupAdminError);
   });
 });

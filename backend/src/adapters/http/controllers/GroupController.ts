@@ -14,6 +14,7 @@ import {
   AddMemberByEmailUseCase,
   RemoveMemberFromGroupUseCase,
   DeleteGroupUseCase,
+  LeaveGroupUseCase,
   AcceptInvitationUseCase,
   RejectInvitationUseCase,
 } from "../../../application/use-cases";
@@ -43,6 +44,7 @@ export class GroupController {
   private addMemberByEmailUseCase: AddMemberByEmailUseCase;
   private removeMemberFromGroupUseCase: RemoveMemberFromGroupUseCase;
   private deleteGroupUseCase: DeleteGroupUseCase;
+  private leaveGroupUseCase: LeaveGroupUseCase;
   private acceptInvitationUseCase: AcceptInvitationUseCase;
   private rejectInvitationUseCase: RejectInvitationUseCase;
 
@@ -63,6 +65,7 @@ export class GroupController {
       groupRepository,
     );
     this.deleteGroupUseCase = new DeleteGroupUseCase(groupRepository);
+    this.leaveGroupUseCase = new LeaveGroupUseCase(groupRepository);
     this.acceptInvitationUseCase = new AcceptInvitationUseCase(groupRepository);
     this.rejectInvitationUseCase = new RejectInvitationUseCase(groupRepository);
   }
@@ -292,6 +295,24 @@ export class GroupController {
         requesterId: req.user.uid,
       });
 
+      res.status(200).json(result);
+    } catch (error) {
+      this.handleGroupError(error, res);
+    }
+  }
+
+  /**
+   * DELETE /groups/:id/leave
+   * Leave a group (non-admin member, pending raffle only)
+   */
+  async leaveGroup(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({ error: "Unauthorized", code: "UNAUTHORIZED", message: "Authentication required" });
+        return;
+      }
+      const { id } = req.params;
+      const result = await this.leaveGroupUseCase.execute(id, req.user.uid);
       res.status(200).json(result);
     } catch (error) {
       this.handleGroupError(error, res);

@@ -51,6 +51,11 @@ export function createGroupRoutes(
     groupController.rejectInvitation(req, res),
   );
 
+  // Leave group (member only, before raffle)
+  router.delete("/:id/leave", (req, res) =>
+    groupController.leaveGroup(req, res),
+  );
+
   // Raffle operations
   router.post("/:id/raffle", (req, res) =>
     raffleController.performRaffle(req, res),
