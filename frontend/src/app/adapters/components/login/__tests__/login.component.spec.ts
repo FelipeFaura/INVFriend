@@ -75,7 +75,23 @@ class TestLoginComponent implements OnDestroy {
   }
 
   onGoogleSignIn(): void {
-    this.errorMessage = "Google Sign-In is not yet implemented";
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    this.authService
+      .loginWithGoogle()
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => (this.isLoading = false)),
+      )
+      .subscribe({
+        next: () => {
+          this.router.navigate(["/"]);
+        },
+        error: (error: AuthError) => {
+          this.errorMessage = error.message;
+        },
+      });
   }
 
   ngOnDestroy(): void {
@@ -100,7 +116,7 @@ describe("LoginComponent", () => {
   };
 
   beforeEach(async () => {
-    authServiceSpy = jasmine.createSpyObj("AuthApplicationService", ["login"]);
+    authServiceSpy = jasmine.createSpyObj("AuthApplicationService", ["login", "loginWithGoogle"]);
     routerSpy = jasmine.createSpyObj("Router", ["navigate"]);
 
     await TestBed.configureTestingModule({
@@ -217,10 +233,45 @@ describe("LoginComponent", () => {
     expect(component.isLoading).toBeFalse();
   }));
 
-  it("should show error message for Google Sign-In placeholder", () => {
+  it("should call authService.loginWithGoogle on Google Sign-In click", fakeAsync(() => {
+    authServiceSpy.loginWithGoogle.and.returnValue(of(mockUser));
+
     component.onGoogleSignIn();
-    expect(component.errorMessage).toBe(
-      "Google Sign-In is not yet implemented",
+    tick();
+
+    expect(authServiceSpy.loginWithGoogle).toHaveBeenCalled();
+  }));
+
+  it("should navigate to home on successful Google Sign-In", fakeAsync(() => {
+    authServiceSpy.loginWithGoogle.and.returnValue(of(mockUser));
+
+    component.onGoogleSignIn();
+    tick();
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(["/"]);
+  }));
+
+  it("should display error message on Google Sign-In failure", fakeAsync(() => {
+    const error = new InvalidCredentialsError();
+    authServiceSpy.loginWithGoogle.and.returnValue(throwError(() => error));
+
+    component.onGoogleSignIn();
+    tick();
+
+    expect(component.errorMessage).toBe(error.message);
+  }));
+
+  it("should set loading state during Google Sign-In", fakeAsync(() => {
+    authServiceSpy.loginWithGoogle.and.returnValue(
+      of(mockUser).pipe(delay(100)),
     );
-  });
+
+    expect(component.isLoading).toBeFalse();
+
+    component.onGoogleSignIn();
+    expect(component.isLoading).toBeTrue();
+
+    tick(100);
+    expect(component.isLoading).toBeFalse();
+  }));
 });

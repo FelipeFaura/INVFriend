@@ -96,8 +96,23 @@ export class LoginComponent implements OnDestroy {
    * Handle Google Sign-In button click
    */
   onGoogleSignIn(): void {
-    // TODO: Implement Google Sign-In SDK integration
-    this.errorMessage = "Google Sign-In is not yet implemented";
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    this.authService
+      .loginWithGoogle()
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => (this.isLoading = false)),
+      )
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/']);
+        },
+        error: (error: AuthError) => {
+          this.errorMessage = error.message;
+        },
+      });
   }
 
   ngOnDestroy(): void {
