@@ -132,8 +132,10 @@ $mobile-header-height: 56px;
 }
 
 .brand-icon {
-  font-size: $font-size-2xl;
-  line-height: 1;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .brand-text {

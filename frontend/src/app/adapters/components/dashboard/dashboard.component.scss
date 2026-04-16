@@ -167,4 +167,10 @@
   color: $text-inverse;
   font-size: $font-size-lg;
   line-height: $line-height-relaxed;
+
+  &__mascot {
+    width: 140px;
+    margin-bottom: $space-6;
+    filter: drop-shadow(0 4px 24px rgba(0,0,0,0.3));
+  }
 }
