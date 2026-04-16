@@ -77,6 +77,7 @@ export interface ITranslationDictionary {
   groupDetailRaffleComplete: string;
   groupDetailRafflePending: string;
   groupDetailInvitationPending: string;
+  groupDetailInvitedToJoin: string;
   groupDetailInvitationDesc: string;
   groupDetailRejectInvitation: string;
   groupDetailAcceptInvitation: string;

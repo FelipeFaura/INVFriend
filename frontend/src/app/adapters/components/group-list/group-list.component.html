@@ -1,24 +1,24 @@
 <div class="page-container">
   <!-- Page Header -->
   <header class="page-header">
-    <h1>My Groups</h1>
+    <h1>{{ 'groupListTitle' | translate }}</h1>
     <button 
       class="btn btn--primary" 
       (click)="navigateToCreate()"
       data-testid="create-group-btn"
       aria-label="Create a new group">
-      + Create Group
+      + {{ 'groupListCreate' | translate }}
     </button>
   </header>
 
   <!-- Search -->
   <div class="search-container">
-    <label for="group-search" class="sr-only">Search groups</label>
+    <label for="group-search" class="sr-only">{{ 'groupListSearchPlaceholder' | translate }}</label>
     <input
       id="group-search"
       type="text"
       class="form-input"
-      placeholder="Search groups..."
+      [placeholder]="'groupListSearchPlaceholder' | translate"
       [value]="searchTerm"
       (input)="onSearchChange($any($event.target).value)"
       data-testid="search-input"
@@ -28,14 +28,14 @@
   <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-container" data-testid="loading-spinner" aria-busy="true">
     <div class="spinner spinner--lg"></div>
-    <p class="loading-text">Loading groups...</p>
+    <p class="loading-text">{{ 'groupListLoading' | translate }}</p>
   </div>
 
   <!-- Error State -->
   <div *ngIf="error && !isLoading" class="alert alert--error" role="alert" data-testid="error-message">
     <div class="alert__content">
       <p>{{ error }}</p>
-      <button class="btn btn--secondary" (click)="loadGroups()">Try Again</button>
+      <button class="btn btn--secondary" (click)="loadGroups()">{{ 'groupListTryAgain' | translate }}</button>
     </div>
   </div>
 
@@ -45,11 +45,11 @@
     class="empty-state"
     data-testid="empty-state">
     <span class="empty-state__icon" aria-hidden="true">📭</span>
-    <h2 class="empty-state__title">No Groups Yet</h2>
-    <p class="empty-state__description">Create your first Secret Santa group to get started!</p>
+    <h2 class="empty-state__title">{{ 'groupListNoGroups' | translate }}</h2>
+    <p class="empty-state__description">{{ 'groupListNoGroupsDesc' | translate }}</p>
     <div class="empty-state__actions">
       <button class="btn btn--primary" (click)="navigateToCreate()">
-        Create Your First Group
+        {{ 'groupListCreateFirst' | translate }}
       </button>
     </div>
   </div>
@@ -65,7 +65,7 @@
 
   <!-- Pending Invitations -->
   <section *ngIf="!isLoading && !error && pendingGroups.length > 0" class="pending-section">
-    <h2 class="pending-section__title">📬 Pending Invitations</h2>
+    <h2 class="pending-section__title">{{ 'groupListPendingInvitations' | translate }}</h2>
     <div *ngIf="invitationError" class="alert alert--error" role="alert" data-testid="invitation-error">
       <span>{{ invitationError }}</span>
     </div>
@@ -76,11 +76,11 @@
         [attr.data-testid]="'pending-card-' + group.id"
         [attr.aria-label]="'Pending invitation to: ' + group.name">
         <header class="card__header">
-          <span class="badge badge--warning">📬 Pending</span>
+          <span class="badge badge--warning">{{ 'groupListPending' | translate }}</span>
           <h3 class="card__title">{{ group.name }}</h3>
         </header>
         <div class="card__body">
-          <p class="pending-card__description">You have been invited to join this group.</p>
+          <p class="pending-card__description">{{ 'groupListInvitedDescription' | translate }}</p>
           <p class="pending-card__budget">{{ group.memberCount }} {{ group.memberCount === 1 ? 'member' : 'members' }}</p>
         </div>
         <footer class="card__footer pending-card__actions">
@@ -90,7 +90,7 @@
             [disabled]="isProcessing[group.id]"
             [attr.data-testid]="'reject-' + group.id"
             aria-label="Reject invitation">
-            {{ isProcessing[group.id] ? 'Rejecting...' : 'Reject' }}
+            {{ isProcessing[group.id] ? ('groupListRejecting' | translate) : ('groupListReject' | translate) }}
           </button>
           <button
             class="btn btn--primary btn--sm"
@@ -98,7 +98,7 @@
             [disabled]="isProcessing[group.id]"
             [attr.data-testid]="'accept-' + group.id"
             aria-label="Accept invitation">
-            {{ isProcessing[group.id] ? 'Accepting...' : 'Accept' }}
+            {{ isProcessing[group.id] ? ('groupListAccepting' | translate) : ('groupListAccept' | translate) }}
           </button>
         </footer>
       </article>

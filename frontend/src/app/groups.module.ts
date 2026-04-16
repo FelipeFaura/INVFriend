@@ -15,6 +15,7 @@ import { SecretSantaRevealComponent } from "./adapters/components/secret-santa-r
 import { GroupStatusComponent } from "./adapters/components/group-status/group-status.component";
 import { WishListComponent } from "./adapters/components/wish-list/wish-list.component";
 import { AssignmentWishesComponent } from "./adapters/components/assignment-wishes/assignment-wishes.component";
+import { TranslatePipe } from "./adapters/pipes/translate.pipe";
 
 const routes: Routes = [
   { path: "", component: GroupListComponent },
@@ -39,6 +40,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forChild(routes),
+    TranslatePipe,
   ],
   exports: [
     GroupListComponent,

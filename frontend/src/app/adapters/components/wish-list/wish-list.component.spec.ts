@@ -8,6 +8,7 @@ import {
   tick,
 } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
+import { TranslatePipe } from '../../pipes/translate.pipe';
 import { of, throwError } from "rxjs";
 
 import { WishListComponent } from "./wish-list.component";
@@ -87,7 +88,7 @@ describe("WishListComponent", () => {
     ]);
 
     await TestBed.configureTestingModule({
-      imports: [FormsModule],
+      imports: [FormsModule, TranslatePipe],
       declarations: [WishListComponent],
       providers: [{ provide: WishHttpService, useValue: mockWishService }],
     }).compileComponents();

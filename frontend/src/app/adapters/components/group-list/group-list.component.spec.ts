@@ -11,6 +11,7 @@ import { Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 
 import { GroupListComponent } from "./group-list.component";
+import { TranslatePipe } from '../../pipes/translate.pipe';
 import { GroupHttpService } from "../../services/group-http.service";
 import { GroupSummary } from "../../../domain/models/group.model";
 
@@ -66,6 +67,7 @@ describe("GroupListComponent", () => {
 
     await TestBed.configureTestingModule({
       declarations: [GroupListComponent],
+      imports: [TranslatePipe],
       providers: [
         { provide: GroupHttpService, useValue: mockGroupService },
         { provide: Router, useValue: mockRouter },

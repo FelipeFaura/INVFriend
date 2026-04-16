@@ -9,6 +9,7 @@ import {
 } from "@angular/core/testing";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FormsModule } from "@angular/forms";
+import { TranslatePipe } from '../../pipes/translate.pipe';
 import { of, throwError, Subject } from "rxjs";
 import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 
@@ -72,7 +73,7 @@ describe("GroupDetailComponent", () => {
     paramsSubject = new Subject();
 
     await TestBed.configureTestingModule({
-      imports: [FormsModule],
+      imports: [FormsModule, TranslatePipe],
       declarations: [GroupDetailComponent],
       providers: [
         { provide: GroupHttpService, useValue: mockGroupService },

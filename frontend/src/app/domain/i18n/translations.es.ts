@@ -71,8 +71,8 @@ export const ES: ITranslationDictionary = {
   groupDetailRaffleComplete: '✓ Sorteo realizado',
   groupDetailRafflePending: '⏳ Pendiente',
   groupDetailInvitationPending: 'Invitación pendiente',
-  groupDetailInvitationDesc:
-    'Has sido invitado a unirte a este grupo. Acepta la invitación para ver los detalles.',
+  groupDetailInvitedToJoin: 'Has sido invitado a unirte a',
+  groupDetailInvitationDesc: 'Acepta la invitación para ver los detalles del grupo.',
   groupDetailRejectInvitation: 'Rechazar invitación',
   groupDetailAcceptInvitation: 'Aceptar invitación',
   groupDetailRejecting: 'Rechazando...',

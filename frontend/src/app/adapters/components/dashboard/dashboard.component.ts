@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { Router } from "@angular/router";
+import { TranslatePipe } from "../../pipes/translate.pipe";
 import { Subject, forkJoin, of } from "rxjs";
 import { catchError, filter, take, takeUntil } from "rxjs/operators";
 
@@ -22,7 +23,7 @@ interface AssignmentWithProfile {
 @Component({
   selector: "app-dashboard",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: "./dashboard.component.html",
   styleUrls: ["./dashboard.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,

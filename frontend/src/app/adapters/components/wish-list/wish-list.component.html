@@ -2,12 +2,12 @@
   <!-- My Wishes Section -->
   <section class="card wish-section">
     <header class="card__header card__header--flex">
-      <h3 class="card__title">My Wish List</h3>
+      <h3 class="card__title">{{ 'wishListTitle' | translate }}</h3>
       <button 
         class="btn btn--sm btn--primary"
         (click)="openAddWishModal()"
         data-testid="add-wish-btn">
-        + Add Wish
+        {{ 'wishListAddWish' | translate }}
       </button>
     </header>
 
@@ -15,14 +15,14 @@
       <!-- Loading State -->
       <div *ngIf="isLoading" class="loading-container" data-testid="loading-spinner">
         <div class="spinner spinner--lg"></div>
-        <p class="loading-container__text">Loading wishes...</p>
+        <p class="loading-container__text">{{ 'wishListLoading' | translate }}</p>
       </div>
 
       <!-- Error State -->
       <div *ngIf="error && !isLoading" class="alert alert--error" data-testid="error-message">
         <div class="alert__content">
           <p class="alert__message">{{ error }}</p>
-          <button class="btn btn--sm btn--secondary" (click)="loadMyWishes()">Retry</button>
+          <button class="btn btn--sm btn--secondary" (click)="loadMyWishes()">{{ 'wishListRetry' | translate }}</button>
         </div>
       </div>
 
@@ -31,8 +31,8 @@
         *ngIf="!isLoading && !error && myWishes.length === 0" 
         class="empty-state empty-state--compact"
         data-testid="empty-state">
-        <p class="empty-state__title">No wishes yet</p>
-        <p class="empty-state__description">Add items you'd like to receive as gifts!</p>
+        <p class="empty-state__title">{{ 'wishListNoWishes' | translate }}</p>
+        <p class="empty-state__description">{{ 'wishListNoWishesDesc' | translate }}</p>
       </div>
 
       <!-- Wishes List -->

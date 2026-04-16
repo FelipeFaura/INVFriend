@@ -8,9 +8,9 @@
         (click)="onCancel()"
         aria-label="Go back to groups list"
         data-testid="back-btn">
-        ← Back
+        ← {{ 'groupCreateBack' | translate }}
       </button>
-      <h1 class="card__title">Create New Group</h1>
+      <h1 class="card__title">{{ 'groupCreateTitle' | translate }}</h1>
     </header>
 
     <div class="card__body">
@@ -28,7 +28,7 @@
         <!-- Group Name -->
         <div class="form-group">
           <label for="name" class="form-group__label form-group__label--required">
-            Group Name
+            {{ 'groupCreateNameLabel' | translate }}
           </label>
           <input
             type="text"
@@ -42,13 +42,13 @@
           />
           <div id="name-errors" aria-live="polite">
             <span *ngIf="hasError('name', 'required')" class="form-error" data-testid="name-required-error">
-              Group name is required
+              {{ 'groupCreateNameRequired' | translate }}
             </span>
             <span *ngIf="hasError('name', 'minlength')" class="form-error" data-testid="name-minlength-error">
-              Name must be at least 3 characters
+              {{ 'groupCreateNameMinLength' | translate }}
             </span>
             <span *ngIf="hasError('name', 'maxlength')" class="form-error" data-testid="name-maxlength-error">
-              Name cannot exceed 100 characters
+              {{ 'groupCreateNameMaxLength' | translate }}
             </span>
           </div>
         </div>
@@ -56,7 +56,7 @@
         <!-- Description -->
         <div class="form-group">
           <label for="description" class="form-group__label">
-            Description <span class="form-group__optional">(optional)</span>
+            {{ 'groupCreateDescriptionLabel' | translate }} <span class="form-group__optional">{{ 'groupCreateDescriptionOptional' | translate }}</span>
           </label>
           <textarea
             id="description"
@@ -71,7 +71,7 @@
           <div class="form-group__footer">
             <div id="description-errors" aria-live="polite">
               <span *ngIf="hasError('description', 'maxlength')" class="form-error">
-                Description cannot exceed 500 characters
+                {{ 'groupCreateDescriptionMaxLength' | translate }}
               </span>
             </div>
             <span id="description-hint" class="form-group__char-count">
@@ -83,7 +83,7 @@
         <!-- Budget Limit -->
         <div class="form-group">
           <label for="budgetLimit" class="form-group__label form-group__label--required">
-            Budget Limit ($)
+            {{ 'groupCreateBudgetLabel' | translate }}
           </label>
           <input
             type="number"
@@ -99,10 +99,10 @@
           />
           <div id="budget-errors" aria-live="polite">
             <span *ngIf="hasError('budgetLimit', 'required')" class="form-error" data-testid="budget-required-error">
-              Budget limit is required
+              {{ 'groupCreateBudgetRequired' | translate }}
             </span>
             <span *ngIf="hasError('budgetLimit', 'min')" class="form-error" data-testid="budget-min-error">
-              Budget must be greater than 0
+              {{ 'groupCreateBudgetMin' | translate }}
             </span>
           </div>
         </div>
@@ -115,7 +115,7 @@
             (click)="onCancel()"
             [disabled]="isSubmitting"
             data-testid="cancel-btn">
-            Cancel
+            {{ 'groupCreateCancel' | translate }}
           </button>
           <button
             type="submit"
@@ -124,7 +124,7 @@
             [disabled]="form.invalid || isSubmitting"
             data-testid="submit-btn">
             <span class="btn__spinner" *ngIf="isSubmitting" aria-hidden="true"></span>
-            <span>{{ isSubmitting ? 'Creating...' : 'Create Group' }}</span>
+            <span>{{ isSubmitting ? ('groupCreateSubmitting' | translate) : ('groupCreateSubmit' | translate) }}</span>
           </button>
         </div>
       </form>

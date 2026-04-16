@@ -4,7 +4,7 @@
     <div class="spinner" aria-hidden="true">
       <div class="spinner__circle"></div>
     </div>
-    <p class="loading-state__text">Loading group...</p>
+    <p class="loading-state__text">{{ 'groupDetailLoading' | translate }}</p>
   </div>
 
   <!-- Error State -->
@@ -13,7 +13,7 @@
       <span class="alert__icon" aria-hidden="true">⚠️</span>
       <span class="alert__content">{{ error }}</span>
     </div>
-    <button class="btn btn--secondary" (click)="goBack()">Back to Groups</button>
+    <button class="btn btn--secondary" (click)="goBack()">{{ 'groupDetailBack' | translate }}</button>
   </div>
 
   <!-- Group Content -->
@@ -24,10 +24,10 @@
     <div class="card card--featured">
       <div class="card__body pending-invite__body">
         <span class="pending-invite__icon" aria-hidden="true">📬</span>
-        <h2 class="pending-invite__title">Invitation Pending</h2>
+        <h2 class="pending-invite__title">{{ 'groupDetailInvitationPending' | translate }}</h2>
         <p class="pending-invite__description">
-          You have been invited to join <strong>{{ group.name }}</strong>.
-          Accept the invitation to see the group details.
+          {{ 'groupDetailInvitedToJoin' | translate }} <strong>{{ group.name }}</strong>.
+          {{ 'groupDetailInvitationDesc' | translate }}
         </p>
         <div *ngIf="actionError" class="alert alert--error action-alert" role="alert" data-testid="invite-action-error">
           <span class="alert__icon" aria-hidden="true">⚠️</span>
@@ -39,14 +39,14 @@
             (click)="rejectGroupInvitation()"
             [disabled]="isProcessing"
             data-testid="detail-reject-btn">
-            {{ isProcessing ? 'Rejecting...' : 'Reject Invitation' }}
+            {{ isProcessing ? ('groupDetailRejecting' | translate) : ('groupDetailRejectInvitation' | translate) }}
           </button>
           <button
             class="btn btn--primary"
             (click)="acceptGroupInvitation()"
             [disabled]="isProcessing"
             data-testid="detail-accept-btn">
-            {{ isProcessing ? 'Accepting...' : 'Accept Invitation' }}
+            {{ isProcessing ? ('groupDetailAccepting' | translate) : ('groupDetailAcceptInvitation' | translate) }}
           </button>
         </div>
       </div>
@@ -62,7 +62,7 @@
         (click)="goBack()" 
         data-testid="back-btn"
         aria-label="Go back to groups list">
-        ← Back to Groups
+        ← {{ 'groupDetailBackToGroups' | translate }}
       </button>
     </nav>
 
@@ -81,13 +81,13 @@
             <div class="group-header__meta">
               <span class="badge badge--info">
                 <span aria-hidden="true">👥</span>
-                {{ group.members.length }} {{ group.members.length === 1 ? 'member' : 'members' }}
+                {{ group.members.length }} {{ group.members.length === 1 ? ('groupDetailMember' | translate) : ('groupDetailMembers' | translate) }}
               </span>
               <span 
                 class="badge"
                 [class.badge--success]="group.raffleStatus === 'completed'"
                 [class.badge--warning]="group.raffleStatus === 'pending'">
-                {{ group.raffleStatus === 'completed' ? '✓ Raffle Complete' : '⏳ Pending' }}
+                {{ group.raffleStatus === 'completed' ? ('groupDetailRaffleComplete' | translate) : ('groupDetailRafflePending' | translate) }}
               </span>
             </div>
           </div>

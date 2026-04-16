@@ -8,6 +8,7 @@ import {
   tick,
 } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
+import { TranslatePipe } from '../../pipes/translate.pipe';
 import { Router } from "@angular/router";
 import { of, throwError } from "rxjs";
 
@@ -40,7 +41,7 @@ describe("GroupCreateComponent", () => {
     mockRouter = jasmine.createSpyObj("Router", ["navigate"]);
 
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
+      imports: [ReactiveFormsModule, TranslatePipe],
       declarations: [GroupCreateComponent],
       providers: [
         { provide: GroupHttpService, useValue: mockGroupService },

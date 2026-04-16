@@ -1,19 +1,19 @@
 <div class="dashboard-container">
   <header class="dashboard-header">
-    <h1>Welcome to INVFriend</h1>
-    <p *ngIf="currentUser$ | async as user">Hello, {{ user.name }}!</p>
+    <h1>{{ 'dashboardWelcome' | translate }}</h1>
+    <p *ngIf="currentUser$ | async as user">{{ 'dashboardHello' | translate }}, {{ user.name }}!</p>
   </header>
 
   <main class="dashboard-content">
     <!-- Loading state -->
     <div class="dashboard-loading" *ngIf="loading">
       <div class="spinner spinner--lg spinner--primary"></div>
-      <p>Loading your assignments...</p>
+      <p>{{ 'dashboardLoadingAssignments' | translate }}</p>
     </div>
 
     <!-- Assignments section -->
     <section *ngIf="!loading && assignments.length > 0" class="assignments-section">
-      <h2 class="assignments-title">🎅 Your Secret Santa Assignments</h2>
+      <h2 class="assignments-title">{{ 'dashboardAssignmentsTitle' | translate }}</h2>
       <div class="assignments-grid">
         <article class="card assignment-card"
                  *ngFor="let item of assignmentsWithProfiles"
@@ -33,7 +33,7 @@
           <div class="assignment-card__info">
             <p class="assignment-card__name">{{ item.profile?.name || 'Loading...' }}</p>
             <p class="assignment-card__group">{{ item.assignment.groupName }}</p>
-            <p class="assignment-card__budget">Budget: ${{ item.assignment.budgetLimit }}</p>
+            <p class="assignment-card__budget">{{ 'dashboardBudget' | translate }}: ${{ item.assignment.budgetLimit }}</p>
           </div>
           <span class="assignment-card__arrow" aria-hidden="true">→</span>
         </article>
@@ -42,8 +42,8 @@
 
     <!-- Empty state -->
     <section *ngIf="!loading && assignments.length === 0" class="dashboard-empty">
-      <p>You don't have any Secret Santa assignments yet.</p>
-      <p>Join a group and wait for the raffle to be performed!</p>
+      <p>{{ 'dashboardNoAssignments' | translate }}</p>
+      <p>{{ 'dashboardNoAssignmentsDesc' | translate }}</p>
     </section>
   </main>
 </div>
