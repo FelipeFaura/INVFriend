@@ -18,7 +18,7 @@ export interface Group {
   raffleStatus: RaffleStatus;
   createdAt: Date;
   updatedAt: Date;
-  memberDetails?: { id: string; name: string; email: string }[];
+  memberDetails?: { id: string; name: string; email: string; photoUrl: string | null }[];
 }
 
 /**

@@ -179,7 +179,14 @@
             class="member-item"
             [attr.data-testid]="'member-' + memberId">
             <div class="member-item__avatar" aria-hidden="true">
-              {{ getMemberDisplayName(memberId).charAt(0).toUpperCase() }}
+              <img
+                *ngIf="getMemberPhotoUrl(memberId)"
+                [src]="getMemberPhotoUrl(memberId)!"
+                [alt]="getMemberDisplayName(memberId)"
+                class="member-item__photo">
+              <span *ngIf="!getMemberPhotoUrl(memberId)">
+                {{ getMemberDisplayName(memberId).charAt(0).toUpperCase() }}
+              </span>
             </div>
             <div class="member-item__info">
               <span class="member-item__name">{{ getMemberDisplayName(memberId) }}</span>

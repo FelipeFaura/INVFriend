@@ -492,6 +492,59 @@ describe("GroupDetailComponent", () => {
       expect(component.isMemberAdmin("admin-user")).toBeTrue();
       expect(component.isMemberAdmin("member-1")).toBeFalse();
     });
+
+    it("should return null for getMemberPhotoUrl when no memberDetails", () => {
+      expect(component.getMemberPhotoUrl("admin-user")).toBeNull();
+      expect(component.getMemberPhotoUrl("member-1")).toBeNull();
+    });
+  });
+
+  describe("Member Photo", () => {
+    const groupWithPhotos: Group = {
+      ...mockGroup,
+      memberDetails: [
+        { id: "admin-user", name: "Admin User", email: "admin@test.com", photoUrl: "https://example.com/admin.jpg" },
+        { id: "member-1", name: "Member One", email: "member1@test.com", photoUrl: null },
+        { id: "member-2", name: "Member Two", email: "member2@test.com", photoUrl: "https://example.com/member2.jpg" },
+      ],
+    };
+
+    beforeEach(fakeAsync(() => {
+      mockGroupService.getGroupById.and.returnValue(of(groupWithPhotos));
+      fixture = TestBed.createComponent(GroupDetailComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      paramsSubject.next({ id: "group-123" });
+      tick();
+      fixture.detectChanges();
+    }));
+
+    it("should populate memberPhotos from memberDetails", () => {
+      expect(component.getMemberPhotoUrl("admin-user")).toBe("https://example.com/admin.jpg");
+      expect(component.getMemberPhotoUrl("member-1")).toBeNull();
+      expect(component.getMemberPhotoUrl("member-2")).toBe("https://example.com/member2.jpg");
+    });
+
+    it("should return null for unknown member", () => {
+      expect(component.getMemberPhotoUrl("unknown-id")).toBeNull();
+    });
+
+    it("should render img when member has a photo", () => {
+      const adminItem = fixture.nativeElement.querySelector('[data-testid="member-admin-user"]');
+      const img = adminItem.querySelector('img.member-item__photo');
+      expect(img).toBeTruthy();
+      expect(img.getAttribute('src')).toBe("https://example.com/admin.jpg");
+      expect(img.getAttribute('alt')).toBe("Admin User");
+    });
+
+    it("should render initial span when member has no photo", () => {
+      const memberItem = fixture.nativeElement.querySelector('[data-testid="member-member-1"]');
+      const img = memberItem.querySelector('img.member-item__photo');
+      const span = memberItem.querySelector('.member-item__avatar span');
+      expect(img).toBeFalsy();
+      expect(span).toBeTruthy();
+      expect(span.textContent.trim()).toBe("M");
+    });
   });
 
   describe("Edit Group", () => {

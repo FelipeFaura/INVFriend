@@ -27,6 +27,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
 
   // Member names map (userId -> displayName)
   memberNames: Map<string, string> = new Map();
+  memberPhotos: Map<string, string | null> = new Map();
 
   // Modal states
   showDeleteConfirm = false;
@@ -99,6 +100,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
           member.id,
           member.name || member.email || this.truncateId(member.id),
         );
+        this.memberPhotos.set(member.id, member.photoUrl ?? null);
       });
       return;
     }
@@ -140,6 +142,10 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
    */
   getMemberDisplayName(memberId: string): string {
     return this.memberNames.get(memberId) || this.truncateId(memberId);
+  }
+
+  getMemberPhotoUrl(memberId: string): string | null {
+    return this.memberPhotos.get(memberId) ?? null;
   }
 
   /**
