@@ -83,9 +83,9 @@ export class GetGroupDetailsUseCase {
       memberIds.map(async (memberId): Promise<MemberDetailDTO> => {
         const user = await this.userRepository.findById(memberId);
         if (user) {
-          return { id: user.id, name: user.name, email: user.email };
+          return { id: user.id, name: user.name, email: user.email, photoUrl: user.photoUrl };
         }
-        return { id: memberId, name: memberId, email: "" };
+        return { id: memberId, name: memberId, email: "", photoUrl: null };
       }),
     );
     return details;

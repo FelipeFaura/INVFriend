@@ -58,6 +58,7 @@ export interface MemberDetailDTO {
   id: string;
   name: string;
   email: string;
+  photoUrl: string | null;
 }
 
 /**

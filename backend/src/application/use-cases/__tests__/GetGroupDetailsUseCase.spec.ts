@@ -132,8 +132,8 @@ describe("GetGroupDetailsUseCase", () => {
     expect(result.memberDetails).toBeDefined();
     expect(result.memberDetails!.length).toBe(2);
     expect(result.memberDetails).toEqual([
-      { id: "admin-123", name: "Admin User", email: "admin@example.com" },
-      { id: "member-456", name: "Member User", email: "member@example.com" },
+      { id: "admin-123", name: "Admin User", email: "admin@example.com", photoUrl: null },
+      { id: "member-456", name: "Member User", email: "member@example.com", photoUrl: null },
     ]);
   });
 
@@ -163,11 +163,13 @@ describe("GetGroupDetailsUseCase", () => {
       id: "admin-123",
       name: "Admin User",
       email: "admin@example.com",
+      photoUrl: null,
     });
     expect(result.memberDetails![1]).toEqual({
       id: "member-456",
       name: "member-456",
       email: "",
+      photoUrl: null,
     });
   });
 
