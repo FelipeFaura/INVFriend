@@ -49,6 +49,7 @@ describe("GroupDetailComponent", () => {
       "updateGroup",
       "acceptInvitation",
       "rejectInvitation",
+      "leaveGroup",
     ]);
     mockRouter = jasmine.createSpyObj("Router", ["navigate"]);
     
@@ -686,6 +687,80 @@ describe("GroupDetailComponent", () => {
 
       expect(component.actionError).toBe("Accept failed");
       expect(component.isProcessing).toBeFalse();
+    }));
+  });
+
+  describe("Leave Group", () => {
+    beforeEach(fakeAsync(() => {
+      mockAuthService.currentUser = { id: "member-1", email: "member@test.com", displayName: "Member User" };
+
+      fixture = TestBed.createComponent(GroupDetailComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      paramsSubject.next({ id: "group-123" });
+      tick();
+      fixture.detectChanges();
+    }));
+
+    it("canLeave should be true for non-admin member with pending raffle", () => {
+      expect(component.canLeave).toBeTrue();
+    });
+
+    it("canLeave should be false for admin", fakeAsync(() => {
+      mockAuthService.currentUser = { id: "admin-user", email: "admin@test.com", displayName: "Admin User" };
+      fixture = TestBed.createComponent(GroupDetailComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      paramsSubject.next({ id: "group-123" });
+      tick();
+
+      expect(component.canLeave).toBeFalse();
+    }));
+
+    it("canLeave should be false when raffle is completed", fakeAsync(() => {
+      const completedGroup: Group = { ...mockGroup, raffleStatus: "completed" };
+      mockGroupService.getGroupById.and.returnValue(of(completedGroup));
+      fixture = TestBed.createComponent(GroupDetailComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      paramsSubject.next({ id: "group-123" });
+      tick();
+
+      expect(component.canLeave).toBeFalse();
+    }));
+
+    it("should open leave confirm modal on confirmLeave()", () => {
+      component.confirmLeave();
+      fixture.detectChanges();
+
+      expect(component.showLeaveConfirm).toBeTrue();
+      const modal = fixture.nativeElement.querySelector('[data-testid="leave-modal"]');
+      expect(modal).toBeTruthy();
+    });
+
+    it("should navigate to /groups on successful leaveGroup()", fakeAsync(() => {
+      mockGroupService.leaveGroup.and.returnValue(of(mockGroup));
+
+      component.confirmLeave();
+      component.leaveGroup();
+      tick();
+
+      expect(mockGroupService.leaveGroup).toHaveBeenCalledWith("group-123");
+      expect(mockRouter.navigate).toHaveBeenCalledWith(["/groups"]);
+    }));
+
+    it("should show error on leaveGroup() failure", fakeAsync(() => {
+      mockGroupService.leaveGroup.and.returnValue(
+        throwError(() => new Error("Cannot leave after raffle")),
+      );
+
+      component.confirmLeave();
+      component.leaveGroup();
+      tick();
+
+      expect(component.actionError).toBe("Cannot leave after raffle");
+      expect(component.isProcessing).toBeFalse();
+      expect(component.showLeaveConfirm).toBeFalse();
     }));
   });
 

@@ -109,6 +109,15 @@
               🗑️
             </button>
           </div>
+          <div *ngIf="canLeave" class="group-header__actions">
+            <button
+              class="btn btn--danger btn--sm"
+              (click)="confirmLeave()"
+              data-testid="leave-btn"
+              aria-label="Leave this group">
+              Leave Group
+            </button>
+          </div>
         </div>
         
         <div class="group-info">
@@ -225,6 +234,43 @@
           data-testid="confirm-delete-btn">
           <span *ngIf="isProcessing" class="btn__spinner" aria-hidden="true"></span>
           {{ isProcessing ? 'Deleting...' : 'Delete' }}
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Leave Group Confirmation Modal -->
+  <div
+    *ngIf="showLeaveConfirm"
+    class="modal-backdrop"
+    data-testid="leave-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="leave-modal-title">
+    <div class="modal modal--sm">
+      <header class="modal__header">
+        <h3 id="leave-modal-title" class="modal__title">Leave Group</h3>
+      </header>
+      <div class="modal__body">
+        <p>Are you sure you want to leave "<strong>{{ group?.name }}</strong>"?</p>
+        <p class="modal__warning">You will lose access to this group.</p>
+      </div>
+      <footer class="modal__footer">
+        <button
+          class="btn btn--secondary"
+          (click)="cancelLeave()"
+          [disabled]="isProcessing"
+          data-testid="cancel-leave-btn">
+          Cancel
+        </button>
+        <button
+          class="btn btn--danger"
+          [class.btn--loading]="isProcessing"
+          (click)="leaveGroup()"
+          [disabled]="isProcessing"
+          data-testid="confirm-leave-btn">
+          <span *ngIf="isProcessing" class="btn__spinner" aria-hidden="true"></span>
+          {{ isProcessing ? 'Leaving...' : 'Leave Group' }}
         </button>
       </footer>
     </div>

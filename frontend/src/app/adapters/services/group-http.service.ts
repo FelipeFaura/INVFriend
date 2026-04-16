@@ -117,6 +117,18 @@ export class GroupHttpService {
   }
 
   /**
+   * Leave a group (non-admin member, pending raffle only)
+   */
+  leaveGroup(groupId: string): Observable<Group> {
+    return this.http
+      .delete<GroupResponseDTO>(`${this.apiUrl}/${groupId}/leave`)
+      .pipe(
+        map((response) => this.mapToGroup(response)),
+        catchError((error) => this.handleError(error)),
+      );
+  }
+
+  /**
    * Accept a pending group invitation
    */
   acceptInvitation(groupId: string): Observable<Group> {

@@ -30,6 +30,7 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
 
   // Modal states
   showDeleteConfirm = false;
+  showLeaveConfirm = false;
   showAddMemberModal = false;
   showRemoveMemberConfirm = false;
   showEditModal = false;
@@ -154,6 +155,13 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
    */
   get isAdmin(): boolean {
     return this.group?.adminId === this.currentUserId;
+  }
+
+  get canLeave(): boolean {
+    return !this.isAdmin &&
+      this.group?.raffleStatus === 'pending' &&
+      !!this.currentUserId &&
+      (this.group?.members.includes(this.currentUserId) ?? false);
   }
 
   /**
@@ -283,6 +291,36 @@ export class GroupDetailComponent implements OnInit, OnDestroy {
           this.actionError = err.message || "Failed to delete group";
           this.isProcessing = false;
           this.showDeleteConfirm = false;
+        },
+      });
+  }
+
+  // Leave Group
+  confirmLeave(): void {
+    this.showLeaveConfirm = true;
+  }
+
+  cancelLeave(): void {
+    this.showLeaveConfirm = false;
+  }
+
+  leaveGroup(): void {
+    if (!this.group) return;
+
+    this.isProcessing = true;
+    this.actionError = null;
+
+    this.groupHttpService
+      .leaveGroup(this.group.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/groups']);
+        },
+        error: (err) => {
+          this.actionError = err.message || 'Failed to leave group';
+          this.isProcessing = false;
+          this.showLeaveConfirm = false;
         },
       });
   }
